@@ -105,7 +105,35 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Fundraising here? Or services loved?</h2>
                     <p>You can download Grayscale for free on the preview page at Start Bootstrap.</p>
-                    <a href="http://startbootstrap.com/template-overviews/grayscale/" class="btn btn-default btn-lg">Visit Download Page</a>
+                    <script>
+					<!--
+					/*
+					Random link button- By JavaScript Kit (http://javascriptkit.com)
+					Over 300+ free scripts!
+					This credit MUST stay intact for use
+					*/
+
+					//specify random links below. You can have as many as you want
+					var randomlinks=new Array()
+
+					randomlinks[0]="http://freewarejava.com"
+					randomlinks[1]="http://javascriptkit.com"
+					randomlinks[2]="http://dynamicdrive.com"
+					randomlinks[3]="http://cnn.com"
+					randomlinks[4]="http://www.geocities.com"
+
+					function randomlink(){
+					window.location=randomlinks[Math.floor(Math.random()*randomlinks.length)]
+					}
+					//-->
+					</script>
+					<form method="post">
+					<p><input type="button" class="btn btn-default btn-lg" value="Click Me" onclick="randomlink()"></p> </form>
+
+					<!--Uncomment below to use a regular text link instead
+					<a href="javascript:randomlink()">Random Link</a>
+-->
+                    <a href="" class="btn btn-default btn-lg">Visit Download Page</a>
                 </div>
             </div>
         </div>
@@ -117,7 +145,7 @@
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>Contact</h2>
                 <p>You can reach me at the places below.</p>
-                <p>If I don't know you already, please don't send a LinkedIn connection request without including a note explaining why. I just delete those ones.
+                <p>If I don't know you already, please don't send a LinkedIn connection request without including a note explaining why. I generally just delete those ones.
                 </p>
                 <ul class="list-inline banner-social-buttons">
                     <!-- The font-awesome css folder has button styles -->
@@ -126,6 +154,9 @@
                     </li>
                     <li>
                         <a href="https://github.com/markbarlow" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                    </li>
+                    <li>
+					    <a href="https://instagram.com/markbarlow/" class="btn btn-default btn-lg"><i class="fa fa-instagram fa-fw"></i> <span class="network-name">Instagram</span></a>
                     </li>
                    <!-- don't need this one really do we
                    <li>

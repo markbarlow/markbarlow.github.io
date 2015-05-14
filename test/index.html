@@ -75,7 +75,7 @@
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                         <h1 class="brand-heading">Hello</h1>
-                        <p class="intro-text">Mmmm, moody seascape eh? Courtesy of the very welcome services of <a href="http://gratisography.com/">Gratisography</a>, via the equally handy <a href="http://startbootstrap.com/">Start Bootstrap</a> templates. And hosted for free thanks to <a href="https://pages.github.com/">Github pages</a>, saving me a few quid a year - thanks!</p>
+                        <p class="intro-text">Mmmm, moody seascape eh? Photo courtesy of the esteemed <a href="http://gratisography.com/">Gratisography</a>, via the equally handy <a href="http://startbootstrap.com/">Start Bootstrap</a> templates. And all hosted for free thanks to <a href="https://pages.github.com/">Github pages</a>, saving me a few quid a year - thanks!</p>
                         <a href="#about" class="btn btn-circle page-scroll">
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
@@ -91,7 +91,7 @@
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>About Me</h2>
                 <p>Product management, UX and a bit of music on the side.</p>
-                <p>Experience in large multinationals, small startups and government digital services. Including the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office">Foreign & Commonwealth Office</a>, two-taps-to-a-taxi app <a href="https://www.hailoapp.com/">Hailo</a>, early mobile group messaging app <A href="http://www.telegraph.co.uk/technology/3355166/TruTap-Goodbye-computer-hello-mobile-phone.html">Trutap</a>, peanut butter behemoth <a href="http://www.yahoo.co.uk">Yahoo!</a>, search old-timer and redirected-URL <a href="http://www.altavista.com">AltaVista</a> and <a href="http://www.bbc.co.uk">BBC Online</a>.</p>
+                <p>Experience working in large multinationals, small startups and government digital services. Including the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office">Foreign & Commonwealth Office</a>, two-taps-to-a-taxi app <a href="https://www.hailoapp.com/">Hailo</a>, early mobile group messaging app <A href="http://www.telegraph.co.uk/technology/3355166/TruTap-Goodbye-computer-hello-mobile-phone.html">Trutap</a>, peanut butter behemoth <a href="http://www.yahoo.co.uk">Yahoo!</a>, search old-timer and redirected-URL <a href="http://www.altavista.com">AltaVista</a>, and <a href="http://www.bbc.co.uk">BBC Online</a>.</p>
                 <p>Spanish and French speaker, and something of a Hispanophile.</p>
                 <p>No relation to Gary.</p>
             </div>
@@ -104,36 +104,59 @@
             <div class="container">
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Fundraising here? Or services loved?</h2>
-                    <p>You can download Grayscale for free on the preview page at Start Bootstrap.</p>
-                    <script>
-					<!--
-					/*
-					Random link button- By JavaScript Kit (http://javascriptkit.com)
-					Over 300+ free scripts!
-					This credit MUST stay intact for use
-					*/
+                    <p>You can download Grayscale for free on the page at Start Bootstrap.</p>
+ <a href="" class="btn btn-default btn-lg">Visit Download Page</a>
 
-					//specify random links below. You can have as many as you want
-					var randomlinks=new Array()
+<p>Perfection is finally attained not when there is no longer anything to add, but when there is no longer anything to take away<br><b>Antoine de Saint-Exup&eacute;ry</b></p>
 
-					randomlinks[0]="http://freewarejava.com"
-					randomlinks[1]="http://javascriptkit.com"
-					randomlinks[2]="http://dynamicdrive.com"
-					randomlinks[3]="http://cnn.com"
-					randomlinks[4]="http://www.geocities.com"
+<!-- quotes collection
+This is the devilish thing about foreign affairs: they are foreign and will not always conform to our whim.
+James Reston
 
-					function randomlink(){
-					window.location=randomlinks[Math.floor(Math.random()*randomlinks.length)]
-					}
-					//-->
-					</script>
-					<form method="post">
-					<p><input type="button" class="btn btn-default btn-lg" value="Click Me" onclick="randomlink()"></p> </form>
+The major difference between a thing that might go wrong and a thing that cannot possibly go wrong is that when a thing that cannot possibly go wrong goes wrong it usually turns out to be impossible to get at and repair.
+Douglas Adams
 
-					<!--Uncomment below to use a regular text link instead
-					<a href="javascript:randomlink()">Random Link</a>
 -->
-                    <a href="" class="btn btn-default btn-lg">Visit Download Page</a>
+
+<!-- and another go -->
+
+<script type="text/javascript">
+
+      function getQuote() {
+
+         var quotes = new Array("<p>I pity the FOOL!<br><b>John Smith</b>",
+         "<p>I aint gettin on no plane!<br><b>John Smith</b>",
+         "<p>Quit yo Jibba Jabba!<br><b>XXX</b>",
+         "<p>Shut up, fool!<br><b>XXX</b>",
+         "<p>Life's tough, but I'm tougher!<br><b>XXX</b>",
+         "<p>Do some prep!<br><b>XXX</b>",
+         "<p>I'm on a real short leash here<br><b>XXX</b>",
+         "<p>Don't make me mad, Arrr!<br><b>XXX</b>",
+         "<p>You're gonna meet my friend, PAIN!<br><b>XXX</b>",
+         "<p>You aint hurt, you pathetic!<br><b>XXX</b>");
+
+         var randomChoice = Math.floor(Math.random()* quotes.length)
+
+         $("#myBox").html(quotes[randomChoice]);
+
+      }
+
+   </script>
+
+
+  <div id="myBox" class="col-lg-8 col-lg-offset-2">
+   <p>Perfection is finally attained not when there is no longer anything to add, but when there is no longer anything to take away<br><b>Antoine de Saint-Exup&eacute;ry</b></p>
+   </div>
+
+   <P>
+     <a href="javascript:getQuote()" class="btn btn-default btn-lg">Next quote, FOOL!</a>
+   </p>
+
+<!-- that's that one done -->
+
+
+
+
                 </div>
             </div>
         </div>

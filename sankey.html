@@ -1,0 +1,116 @@
+<html>
+<body>
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<h4>Chart 1 - single authorisation node and no challenge flow split</h4>
+<div id="sankey_multiple" style="width: 1800px; height: 600px; padding: 20px 0px 100px 0px;"></div>
+
+<!-- see https://developers.google.com/chart/interactive/docs/gallery/sankey for instructions and customisation -->
+
+<script type="text/javascript">
+  google.charts.load("current", {packages:["sankey"]});
+  google.charts.setOnLoadCallback(drawChart);
+   function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'From');
+    data.addColumn('string', 'To');
+    data.addColumn('number', 'Number of tx');
+    data.addRows([
+      [ 'Checkout start 3DS', 'Frictionless Authentication',	850000 ],
+      [ 'Checkout start 3DS', 'Challenged Authentication',	150000 ],
+      [ 'Frictionless Authentication', 'Abandoned',	68000 ],
+      [ 'Frictionless Authentication', 'Authorisation', 782000 ],
+      [ 'Challenged Authentication', 'Abandoned',	22500 ],
+      [ 'Challenged Authentication', 'Authorisation', 127500 ],
+      [ 'Authorisation', 'Declined', 86020 ],
+      [ 'Authorisation', 'Accepted post frictionless', 695980 ],
+      [ 'Authorisation', 'Declined', 11475 ],
+      [ 'Authorisation', 'Accepted post challenge', 116025 ],
+      [ 'Accepted post frictionless', 'Chargeback', 835 ],
+      [ 'Accepted post challenge', 'Chargeback', 23 ]
+// splitting authorisation node
+//      [ 'Checkout start 3DS', 'Frictionless Authentication',	850000 ],
+//      [ 'Checkout start 3DS', 'Challenged Authentication',	150000 ],
+//      [ 'Frictionless Authentication', 'Abandoned',	68000 ],
+//      [ 'Frictionless Authentication', 'Authorisation post frictionless', 782000 ],
+//      [ 'Challenged Authentication', 'Abandoned',	22500 ],
+//      [ 'Challenged Authentication', 'Authorisation post challenge', 127500 ],
+//      [ 'Authorisation post frictionless', 'Declined', 86020 ],
+//      [ 'Authorisation post frictionless', 'Accepted post frictionless', 695980 ],
+//      [ 'Authorisation post challenge', 'Declined', 11475 ],
+//      [ 'Authorisation post challenge', 'Accepted post challenge', 116025 ],
+//      [ 'Accepted post frictionless', 'Chargeback', 835 ],
+//      [ 'Accepted post challenge', 'Chargeback', 23 ]
+
+
+    ]);
+
+    // Set chart options
+    var options = {
+      width: 1200,
+      sankey: {
+        iterations: 200,  // affects layout. Set to 0 to control it, 32 to defautl, over for more attempts to optmise
+        node: { nodePadding: 80 },
+        link: { color: { stroke: 'd3d3d3', strokeWidth: 1 } }
+      },
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.Sankey(document.getElementById('sankey_multiple'));
+    chart.draw(data, options);
+   }
+</script>
+
+
+<!-- Chart 2 -->
+
+<hr>
+<h4>Chart 2 - add web flow and app flow but in wrong place for simplicity</h4>
+<div id="sankey_2" style="width: 1800px; height: 600px; padding: 70px 0px 100px 0px;"></div>
+
+<script type="text/javascript">
+  google.charts.load("current", {packages:["sankey"]});
+  google.charts.setOnLoadCallback(drawChart);
+   function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'From');
+    data.addColumn('string', 'To');
+    data.addColumn('number', 'Number of tx');
+    data.addRows([
+      [ 'Checkout start 3DS', 'Frictionless Authentication',	850000 ],
+      [ 'Checkout start 3DS', 'Challenged Authentication',	150000 ],
+      [ 'Frictionless Authentication', 'Abandoned',	68000 ],
+      [ 'Frictionless Authentication', 'Authorisation', 782000 ],
+      [ 'Challenged Authentication', 'Web flow',	75000 ],
+      [ 'Challenged Authentication', 'App flow', 75000 ],
+      [ 'Web flow', 'Abandoned',	11250 ],
+      [ 'Web flow', 'Authorisation', 63750 ],
+      [ 'App flow', 'Abandoned',	11250 ],
+      [ 'App flow', 'Authorisation', 63750 ],
+      [ 'Authorisation', 'Declined', 86020 ],
+      [ 'Authorisation', 'Accepted post frictionless', 695980 ],
+      [ 'Authorisation', 'Declined', 11475 ],
+      [ 'Authorisation', 'Accepted post challenge', 116025 ],
+      [ 'Accepted post frictionless', 'Chargeback', 835 ],
+      [ 'Accepted post challenge', 'Chargeback', 23 ]
+    ]);
+
+    // Set chart options
+    var options = {
+      width: 1200,
+      sankey: {
+        iterations: 200,  // affects layout. Set to 0 to control it, 32 to defautl, over for more attempts to optmise
+        node: { nodePadding: 80 },
+        link: { color: { stroke: 'd3d3d3', strokeWidth: 1 } }
+      },
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.Sankey(document.getElementById('sankey_2'));
+    chart.draw(data, options);
+   }
+</script>
+
+
+</body>
+</html>

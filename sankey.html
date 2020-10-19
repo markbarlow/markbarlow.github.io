@@ -1,4 +1,27 @@
 <html>
+<head>
+  <style type="text/css">
+
+h1, h2, h3, h4, h5, h6 {
+margin: 25px 0 25px 0;
+font-family: "Avenir",Helvetica,Arial,sans-serif;
+font-size: 16px;
+font-weight: 400;
+}
+
+
+hr {
+border: 0;
+background-color: #fff;
+border-top: 1px dashed #8c8c8c;
+width: 100%;
+}
+
+
+
+  </style>
+
+</head>
 <body>
  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -28,21 +51,6 @@
       [ 'Authorisation', 'Accepted post challenge', 116025 ],
       [ 'Accepted post frictionless', 'Chargeback', 835 ],
       [ 'Accepted post challenge', 'Chargeback', 23 ]
-// splitting authorisation node
-//      [ 'Checkout start 3DS', 'Frictionless Authentication',	850000 ],
-//      [ 'Checkout start 3DS', 'Challenged Authentication',	150000 ],
-//      [ 'Frictionless Authentication', 'Abandoned',	68000 ],
-//      [ 'Frictionless Authentication', 'Authorisation post frictionless', 782000 ],
-//      [ 'Challenged Authentication', 'Abandoned',	22500 ],
-//      [ 'Challenged Authentication', 'Authorisation post challenge', 127500 ],
-//      [ 'Authorisation post frictionless', 'Declined', 86020 ],
-//      [ 'Authorisation post frictionless', 'Accepted post frictionless', 695980 ],
-//      [ 'Authorisation post challenge', 'Declined', 11475 ],
-//      [ 'Authorisation post challenge', 'Accepted post challenge', 116025 ],
-//      [ 'Accepted post frictionless', 'Chargeback', 835 ],
-//      [ 'Accepted post challenge', 'Chargeback', 23 ]
-
-
     ]);
 
     // Set chart options
@@ -50,9 +58,19 @@
       width: 1200,
       sankey: {
         iterations: 200,  // affects layout. Set to 0 to control it, 32 to defautl, over for more attempts to optmise
-        node: { nodePadding: 80 },
+        node: {
+          label: {
+              fontName: 'Avenir',
+              fontSize: 13,
+              color: '#000',
+              bold: false,
+              italic: false
+                },
+          nodePadding: 80
+         },
         link: { color: { stroke: 'd3d3d3', strokeWidth: 1 } }
       },
+      tooltip:  {textStyle: {fontName: 'Avenir', fontSize: 13}, showColorCode: true}
     };
 
     // Instantiate and draw our chart, passing in some options.
@@ -65,7 +83,7 @@
 <!-- Chart 2 -->
 
 <hr>
-<h4>Chart 2 - add web flow and app flow but in wrong place for simplicity</h4>
+<h4>Chart 2 - as 1 but add challange web flow and app flow</h4>
 <div id="sankey_2" style="width: 1800px; height: 600px; padding: 70px 0px 100px 0px;"></div>
 
 <script type="text/javascript">
@@ -100,9 +118,19 @@
       width: 1200,
       sankey: {
         iterations: 200,  // affects layout. Set to 0 to control it, 32 to defautl, over for more attempts to optmise
-        node: { nodePadding: 80 },
+        node: {
+          label: {
+              fontName: 'Avenir',
+              fontSize: 13,
+              color: '#000',
+              bold: false,
+              italic: false
+                },
+          nodePadding: 80
+         },
         link: { color: { stroke: 'd3d3d3', strokeWidth: 1 } }
       },
+      tooltip:  {textStyle: {fontName: 'Avenir', fontSize: 13}, showColorCode: true}
     };
 
     // Instantiate and draw our chart, passing in some options.
@@ -110,7 +138,186 @@
     chart.draw(data, options);
    }
 </script>
- 
+
+
+<!-- Chart 3 -->
+
+<hr>
+<h4>Chart 3 - as 2 but splits declines into nodes</h4>
+<div id="sankey_3" style="width: 1800px; height: 600px; padding: 70px 0px 100px 0px;"></div>
+
+<script type="text/javascript">
+  google.charts.load("current", {packages:["sankey"]});
+  google.charts.setOnLoadCallback(drawChart);
+   function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'From');
+    data.addColumn('string', 'To');
+    data.addColumn('number', 'Number of tx');
+    data.addRows([
+      [ 'Checkout start 3DS', 'Frictionless Authentication',	850000 ],
+      [ 'Checkout start 3DS', 'Challenged Authentication',	150000 ],
+      [ 'Frictionless Authentication', 'Abandoned',	68000 ],
+      [ 'Frictionless Authentication', 'Authorisation', 782000 ],
+      [ 'Challenged Authentication', 'Web flow',	75000 ],
+      [ 'Challenged Authentication', 'App flow', 75000 ],
+      [ 'Web flow', 'Abandoned',	11250 ],
+      [ 'Web flow', 'Authorisation', 63750 ],
+      [ 'App flow', 'Abandoned',	11250 ],
+      [ 'App flow', 'Authorisation', 63750 ],
+      [ 'Authorisation', 'Declined post frictionless', 86020 ],
+      [ 'Authorisation', 'Accepted post frictionless', 695980 ],
+      [ 'Authorisation', 'Declined post challenge', 11475 ],
+      [ 'Authorisation', 'Accepted post challenge', 116025 ],
+      [ 'Accepted post frictionless', 'Chargeback', 835 ],
+      [ 'Accepted post challenge', 'Chargeback', 23 ]
+    ]);
+
+    // Set chart options
+    var options = {
+      width: 1200,
+      sankey: {
+        iterations: 200,  // affects layout. Set to 0 to control it, 32 to defautl, over for more attempts to optmise
+        node: {
+          label: {
+              fontName: 'Avenir',
+              fontSize: 13,
+              color: '#000',
+              bold: false,
+              italic: false
+                },
+          nodePadding: 80
+         },
+        link: { color: { stroke: 'd3d3d3', strokeWidth: 1 } }
+      },
+      tooltip:  {textStyle: {fontName: 'Avenir', fontSize: 13}, showColorCode: true}
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.Sankey(document.getElementById('sankey_3'));
+    chart.draw(data, options);
+   }
+</script>
+
+<!-- Chart 4 -->
+
+<hr>
+<h4>Chart 4 - as 3 but splits authorisation into nodes, less effective and authorisation nodes don't line up vertically.</h4>
+<div id="sankey_4" style="width: 1800px; height: 600px; padding: 70px 0px 100px 0px;"></div>
+
+<script type="text/javascript">
+  google.charts.load("current", {packages:["sankey"]});
+  google.charts.setOnLoadCallback(drawChart);
+   function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'From');
+    data.addColumn('string', 'To');
+    data.addColumn('number', 'Number of tx');
+    data.addRows([
+      [ 'Checkout start 3DS', 'Frictionless Authentication',	850000 ],
+      [ 'Checkout start 3DS', 'Challenged Authentication',	150000 ],
+      [ 'Frictionless Authentication', 'Abandoned',	68000 ],
+      [ 'Frictionless Authentication', 'Authorisation post frictionless', 782000 ],
+      [ 'Challenged Authentication', 'Web flow',	75000 ],
+      [ 'Challenged Authentication', 'App flow', 75000 ],
+      [ 'Web flow', 'Abandoned',	11250 ],
+      [ 'Web flow', 'Authorisation post challenge', 63750 ],
+      [ 'App flow', 'Abandoned',	11250 ],
+      [ 'App flow', 'Authorisation post challenge', 63750 ],
+      [ 'Authorisation post frictionless', 'Declined post frictionless', 86020 ],
+      [ 'Authorisation post frictionless', 'Accepted post frictionless', 695980 ],
+      [ 'Authorisation post challenge', 'Declined post challenge', 11475 ],
+      [ 'Authorisation post challenge', 'Accepted post challenge', 116025 ],
+      [ 'Accepted post frictionless', 'Chargeback', 835 ],
+      [ 'Accepted post challenge', 'Chargeback', 23 ]
+    ]);
+
+    // Set chart options
+    var options = {
+      width: 1200,
+      sankey: {
+        iterations: 200,  // affects layout. Set to 0 to control it, 32 to defautl, over for more attempts to optmise
+        node: {
+          label: {
+              fontName: 'Avenir',
+              fontSize: 13,
+              color: '#000',
+              bold: false,
+              italic: false
+                },
+          nodePadding: 80
+         },
+        link: { color: { stroke: 'd3d3d3', strokeWidth: 1 } }
+      },
+      tooltip:  {textStyle: {fontName: 'Avenir', fontSize: 13}, showColorCode: true}
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.Sankey(document.getElementById('sankey_4'));
+    chart.draw(data, options);
+   }
+</script>
+
+
+
+<!-- Chart 5 -->
+
+<hr>
+<h4>Chart 5 - as 4 but also splits abandon by channel</h4>
+<div id="sankey_5" style="width: 1800px; height: 600px; padding: 70px 0px 100px 0px;"></div>
+
+<script type="text/javascript">
+  google.charts.load("current", {packages:["sankey"]});
+  google.charts.setOnLoadCallback(drawChart);
+   function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'From');
+    data.addColumn('string', 'To');
+    data.addColumn('number', 'Number of tx');
+    data.addRows([
+      [ 'Checkout start 3DS', 'Frictionless Authentication',	850000 ],
+      [ 'Checkout start 3DS', 'Challenged Authentication',	150000 ],
+      [ 'Frictionless Authentication', 'Abandoned in frictionless',	68000 ],
+      [ 'Frictionless Authentication', 'Authorisation post frictionless', 782000 ],
+      [ 'Challenged Authentication', 'Web flow',	75000 ],
+      [ 'Challenged Authentication', 'App flow', 75000 ],
+      [ 'Web flow', 'Abandoned in web flow',	11250 ],
+      [ 'Web flow', 'Authorisation post challenge', 63750 ],
+      [ 'App flow', 'Abandoned in app flow',	11250 ],
+      [ 'App flow', 'Authorisation post challenge', 63750 ],
+      [ 'Authorisation post frictionless', 'Declined post frictionless', 86020 ],
+      [ 'Authorisation post frictionless', 'Accepted post frictionless', 695980 ],
+      [ 'Authorisation post challenge', 'Declined post challenge', 11475 ],
+      [ 'Authorisation post challenge', 'Accepted post challenge', 116025 ],
+      [ 'Accepted post frictionless', 'Chargeback post frictionless', 835 ],
+      [ 'Accepted post challenge', 'Chargeback post challenge', 23 ]
+    ]);
+
+    // Set chart options
+    var options = {
+      width: 1200,
+      sankey: {
+        iterations: 200,  // affects layout. Set to 0 to control it, 32 to defautl, over for more attempts to optmise
+        node: {
+          label: {
+              fontName: 'Avenir',
+              fontSize: 13,
+              color: '#000',
+              bold: false,
+              italic: false
+                },
+          nodePadding: 80
+         },
+        link: { color: { stroke: 'd3d3d3', strokeWidth: 1 } }
+      },
+      tooltip:  {textStyle: {fontName: 'Avenir', fontSize: 13}, showColorCode: true}
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.Sankey(document.getElementById('sankey_5'));
+    chart.draw(data, options);
+   }
+</script>
 
 </body>
 </html>

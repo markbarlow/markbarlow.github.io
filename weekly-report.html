@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Product Update | Winter '26 Style</title>
+    <!-- HTML2Canvas Library for Image Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            /* Core Palette - Dark Renaissance */
+            --bg-body: #050505;
+            --bg-card: #121212;
+            --bg-card-hover: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            --accent-glow: rgba(59, 130, 246, 0.15); /* Subtle Blue/Purple AI glow */
+            --accent-border: #27272a;
+            --highlight-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            
+            /* Spacing */
+            --space-unit: 1rem;
+            --radius-card: 16px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Utility */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .gradient-text {
+            background: var(--highlight-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        /* Header Section */
+        header {
+            margin-bottom: 4rem;
+            text-align: left;
+            position: relative;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+        }
+
+        /* Control Bar (Copy Button) */
+        .controls {
+            margin-bottom: 4rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn-copy {
+            background: var(--text-primary);
+            color: var(--bg-body);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-copy.btn-outline {
+            background: transparent;
+            border: 1px solid var(--text-primary);
+            color: var(--text-primary);
+        }
+
+        .btn-copy:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-copy svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Bento Grid - Highlights */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: minmax(250px, auto);
+            gap: 1.5rem;
+            margin-bottom: 5rem;
+        }
+
+        .bento-card {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-border);
+            border-radius: var(--radius-card);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .bento-card:hover {
+            border-color: #3f3f46;
+        }
+
+        /* Grid Spans */
+        .card-large {
+            grid-column: span 12;
+        }
+        
+        .card-medium {
+            grid-column: span 6;
+        }
+
+        @media (min-width: 768px) {
+            .card-large { grid-column: span 12; }
+            .card-medium { grid-column: span 4; }
+        }
+
+        /* Card Content */
+        .bento-content {
+            z-index: 2;
+        }
+
+        .bento-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .bento-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .bento-visual {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.4;
+            pointer-events: none;
+            background: radial-gradient(circle at bottom right, var(--accent-glow), transparent 60%);
+        }
+
+        /* Changelog Section */
+        .changelog-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+        }
+
+        @media (min-width: 768px) {
+            .changelog-section {
+                grid-template-columns: 250px 1fr;
+            }
+        }
+
+        .changelog-nav {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .nav-title {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-list a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+            display: block;
+            padding: 4px 0;
+        }
+
+        .nav-list a:hover {
+            color: var(--text-primary);
+        }
+
+        .update-category {
+            margin-bottom: 4rem;
+            scroll-margin-top: 4rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--accent-border);
+        }
+
+        .category-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .update-list {
+            list-style: none;
+        }
+
+        .update-item {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .update-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .update-icon svg {
+            width: 12px;
+            height: 12px;
+            color: var(--text-secondary);
+        }
+
+        .update-content h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .update-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--accent-border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .bento-grid {
+                display: flex;
+                flex-direction: column;
+            }
+            .changelog-nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- Header -->
+    <header>
+        <div class="badge">Weekly Update</div>
+        <h1 style="margin-top: 1rem;"><span class="gradient-text">15 Dec'25</span> Edition</h1>
+        <p class="subtitle">Focusing on merchant-first AI tools, agentic workflows, and removing the boring parts of commerce.</p>
+    </header>
+
+    <!-- Bento Grid Highlights -->
+    <div class="bento-grid">
+        <!-- Big Highlight -->
+        <div class="bento-card card-large">
+            <div class="bento-content">
+                <div class="badge" style="margin-bottom: 1rem; background: var(--highlight-gradient);">Feature of the Week</div>
+                <h2 class="bento-title">Agentic Storefronts</h2>
+                <p class="bento-desc">Manage how your brand appears to millions of users shopping in AI chats. Your products are now discoverable right in ChatGPT, Copilot, and Perplexity.</p>
+            </div>
+            <div class="bento-visual"></div>
+        </div>
+    </div>
+
+    <!-- Changelog Section -->
+    <div class="changelog-section">
+        
+        <!-- Navigation Sidebar -->
+        <aside class="changelog-nav">
+            <div class="nav-title">Categories</div>
+            <ul class="nav-list">
+                <li><a href="#online">Online Store</a></li>
+                <li><a href="#retail">Retail & POS</a></li>
+                <li><a href="#ops">Operations</a></li>
+                <li><a href="#dev">Developer</a></li>
+            </ul>
+        </aside>
+
+        <!-- The List -->
+        <main>
+            <!-- Online Store -->
+            <div id="online" class="update-category">
+                <div class="category-header">
+                    <h2 class="category-title">Online Store</h2>
+                    <div class="badge">5 Updates</div>
+                </div>
+                <ul class="update-list">
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Theme Generation on Mobile</h3>
+                            <p>Design your store right from the mobile app by generating a theme, previewing it, and publishing on the go.</p>
+                        </div>
+                    </li>
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Studio-quality Photos</h3>
+                            <p>Prompt Sidekick to change image backgrounds, add elements, and expand canvas size instantly.</p>
+                        </div>
+                    </li>
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>New "Horizon" Theme Improvements</h3>
+                            <p>Over 250 updates including new animations, interactive sections, and faster performance.</p>
+                        </div>
+                    </li>
+                     <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>AI-Powered Domain Discovery</h3>
+                            <p>Get suggestions for unique and available domain names generated by AI (English only).</p>
+                        </div>
+                    </li>
+                     <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Customer Sign-in with Social</h3>
+                            <p>Let customers sign in to your store with Google or Facebook credentials.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Retail -->
+            <div id="retail" class="update-category">
+                <div class="category-header">
+                    <h2 class="category-title">Retail & POS</h2>
+                    <div class="badge">4 Updates</div>
+                </div>
+                <ul class="update-list">
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>POS Hub</h3>
+                            <p>New hardware giving reliability of wired connections with the processing power of a computer.</p>
+                        </div>
+                    </li>
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Same-day Delivery with Uber</h3>
+                            <p>Offer fast local delivery for online orders with live tracking using Uber Direct on POS.</p>
+                        </div>
+                    </li>
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>POS Customization Editor</h3>
+                            <p>Customize the customer display, smart grid, receipts, and lock screen in a single editor.</p>
+                        </div>
+                    </li>
+                     <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Refund Selections</h3>
+                            <p>Choose between original payment, gift card, or store credit on a dedicated refund screen.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Operations -->
+            <div id="ops" class="update-category">
+                <div class="category-header">
+                    <h2 class="category-title">Operations</h2>
+                    <div class="badge">4 Updates</div>
+                </div>
+                <ul class="update-list">
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Flexible Inventory Transfers</h3>
+                            <p>Receive items from unspecified locations and edit shipments in transit.</p>
+                        </div>
+                    </li>
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Heatmaps in Analytics</h3>
+                            <p>View data as a heatmap (e.g., sales by hour vs day) to spot trends faster.</p>
+                        </div>
+                    </li>
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Apple Watch Widgets</h3>
+                            <p>Monitor your store from your wrist with quick access to key metrics.</p>
+                        </div>
+                    </li>
+                     <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Password-free Login</h3>
+                            <p>Set up passkeys to access your store securely with fingerprint, face, or PIN.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+             <!-- Developer -->
+             <div id="dev" class="update-category">
+                <div class="category-header">
+                    <h2 class="category-title">Developer & Platform</h2>
+                    <div class="badge">3 Updates</div>
+                </div>
+                <ul class="update-list">
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>2048 Variants</h3>
+                            <p>Create products with up to 2048 variants to manage more diverse catalogs.</p>
+                        </div>
+                    </li>
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Unit Pricing for All</h3>
+                            <p>Display prices by weight, volume, length, or quantity globally.</p>
+                        </div>
+                    </li>
+                    <li class="update-item">
+                        <div class="update-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="update-content">
+                            <h3>Tinker App</h3>
+                            <p>A new app where entrepreneurs can play with the latest AI tools in a single place.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls" data-html2canvas-ignore="true">
+        <button class="btn-copy btn-outline" onclick="downloadImage()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Image
+        </button>
+        <button class="btn-copy" onclick="copyUpdate()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy Text for Slack
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Inspired by <a href="https://www.shopify.com/editions/winter2026" target="_blank">Shopify Editions Winter '26</a></p>
+        <p style="margin-top: 0.5rem; opacity: 0.6;">Weekly Product Update Template</p>
+    </footer>
+
+</div>
+
+<script>
+    function copyUpdate() {
+        // Collect text for clipboard
+        let text = "*Weekly Update | Winter '26 Edition*\n\n";
+        
+        // Get highlights
+        text += "*HIGHLIGHTS*\n";
+        document.querySelectorAll('.bento-card').forEach(card => {
+            const title = card.querySelector('.bento-title').innerText;
+            const desc = card.querySelector('.bento-desc').innerText;
+            text += `• ${title}: ${desc}\n`;
+        });
+        text += "\n";
+
+        // Get list items
+        document.querySelectorAll('.update-category').forEach(cat => {
+            const catTitle = cat.querySelector('.category-title').innerText;
+            text += `*${catTitle.toUpperCase()}*\n`;
+            
+            cat.querySelectorAll('.update-item').forEach(item => {
+                const title = item.querySelector('h3').innerText;
+                const desc = item.querySelector('p').innerText;
+                text += `• ${title}: ${desc}\n`;
+            });
+            text += "\n";
+        });
+
+        // Copy to clipboard
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+
+        // Feedback
+        const btn = document.querySelector('.btn-copy:not(.btn-outline)');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "Copied!";
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+        }, 2000);
+    }
+
+    function downloadImage() {
+        const btn = document.querySelector('.btn-outline');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "Generating...";
+
+        // Capture the entire body but ignore the controls via the data attribute
+        html2canvas(document.body, {
+            backgroundColor: "#050505", // Enforce dark background
+            windowWidth: 1200, // Simulate desktop width for consistent layout
+            height: document.documentElement.scrollHeight, // Capture full scroll height
+            windowHeight: document.documentElement.scrollHeight, // Ensure render window is tall enough
+            scrollY: 0, // Ignore current scroll position
+            y: 0, // Force start from top of document
+            x: 0
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'weekly-update.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            btn.innerHTML = originalText;
+        }).catch(err => {
+            console.error("Image generation failed:", err);
+            btn.innerHTML = "Error!";
+            setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>

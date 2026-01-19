@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard Fund Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --text-primary: #eaeaea;
+            --text-secondary: #a0a0a0;
+            --positive: #00d26a;
+            --negative: #ff6b6b;
+            --accent: #4361ee;
+            --border: #2a2a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .last-updated {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .period-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .period-btn {
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .period-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .period-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .fund-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .fund-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .fund-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .fund-name {
+            font-size: 1rem;
+            font-weight: 500;
+            max-width: 200px;
+        }
+
+        .fund-ticker {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .fund-change {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .fund-change.positive {
+            color: var(--positive);
+        }
+
+        .fund-change.negative {
+            color: var(--negative);
+        }
+
+        .fund-price {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .chart-container {
+            height: 80px;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px;
+            color: var(--negative);
+        }
+
+        @media (max-width: 480px) {
+            .fund-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .period-btn {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vanguard Fund Tracker</h1>
+            <div class="last-updated" id="lastUpdated">Loading...</div>
+        </header>
+
+        <div class="period-selector">
+            <button class="period-btn" data-period="1W">1 Week</button>
+            <button class="period-btn" data-period="1M">1 Month</button>
+            <button class="period-btn active" data-period="3M">3 Months</button>
+            <button class="period-btn" data-period="6M">6 Months</button>
+            <button class="period-btn" data-period="1Y">1 Year</button>
+        </div>
+
+        <div class="fund-grid" id="fundGrid">
+            <div class="loading">Loading fund data...</div>
+        </div>
+
+        <footer>
+            Data from Yahoo Finance via yfinance<br>
+            <a href="#" onclick="refreshData(); return false;">Refresh data</a> (requires Python)
+        </footer>
+    </div>
+
+    <script>
+        let fundData = null;
+        let charts = {};
+        let currentPeriod = '3M';
+
+        const periodDays = {
+            '1W': 7,
+            '1M': 30,
+            '3M': 90,
+            '6M': 180,
+            '1Y': 365
+        };
+
+        async function loadData() {
+            try {
+                const response = await fetch('data/fund_data.json');
+                if (!response.ok) {
+                    throw new Error('Data file not found. Run fetch_data.py first.');
+                }
+                fundData = await response.json();
+                updateLastUpdated();
+                renderFunds();
+            } catch (error) {
+                document.getElementById('fundGrid').innerHTML =
+                    `<div class="error">
+                        ${error.message}<br><br>
+                        Run: <code>python fetch_data.py</code>
+                    </div>`;
+            }
+        }
+
+        function updateLastUpdated() {
+            if (fundData && fundData.last_updated) {
+                const date = new Date(fundData.last_updated);
+                document.getElementById('lastUpdated').textContent =
+                    `Last updated: ${date.toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}`;
+            }
+        }
+
+        function filterByPeriod(prices, period) {
+            const days = periodDays[period];
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - days);
+
+            return prices.filter(p => new Date(p.date) >= cutoffDate);
+        }
+
+        function calculateChange(prices) {
+            if (prices.length < 2) return { percent: 0, startPrice: 0, endPrice: 0 };
+
+            const startPrice = prices[0].price;
+            const endPrice = prices[prices.length - 1].price;
+            const percent = ((endPrice - startPrice) / startPrice) * 100;
+
+            return { percent, startPrice, endPrice };
+        }
+
+        function renderFunds() {
+            const grid = document.getElementById('fundGrid');
+            grid.innerHTML = '';
+
+            // Destroy existing charts
+            Object.values(charts).forEach(chart => chart.destroy());
+            charts = {};
+
+            fundData.funds.forEach((fund, index) => {
+                const filteredPrices = filterByPeriod(fund.prices, currentPeriod);
+                const change = calculateChange(filteredPrices);
+                const isPositive = change.percent >= 0;
+
+                const card = document.createElement('div');
+                card.className = 'fund-card';
+                card.innerHTML = `
+                    <div class="fund-header">
+                        <div>
+                            <div class="fund-name">${fund.name}</div>
+                            <div class="fund-ticker">${fund.short}</div>
+                        </div>
+                        <div>
+                            <div class="fund-change ${isPositive ? 'positive' : 'negative'}">
+                                ${isPositive ? '+' : ''}${change.percent.toFixed(2)}%
+                            </div>
+                            <div class="fund-price">${fund.currency === 'GBP' ? '£' : ''}${change.endPrice.toFixed(2)}</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-${index}"></canvas>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+
+                // Create sparkline chart
+                const ctx = document.getElementById(`chart-${index}`).getContext('2d');
+                const chartColor = isPositive ? '#00d26a' : '#ff6b6b';
+
+                charts[index] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: filteredPrices.map(p => p.date),
+                        datasets: [{
+                            data: filteredPrices.map(p => p.price),
+                            borderColor: chartColor,
+                            backgroundColor: chartColor + '20',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: (items) => {
+                                        const date = new Date(items[0].label);
+                                        return date.toLocaleDateString('en-GB', {
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric'
+                                        });
+                                    },
+                                    label: (item) => `£${item.raw.toFixed(2)}`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            });
+        }
+
+        // Period selector
+        document.querySelectorAll('.period-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPeriod = btn.dataset.period;
+                if (fundData) renderFunds();
+            });
+        });
+
+        function refreshData() {
+            alert('To refresh data, run in terminal:\n\ncd vanguard-tracker\npython fetch_data.py\n\nThen reload this page.');
+        }
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>

@@ -80,6 +80,28 @@
             border-color: var(--accent);
         }
 
+        .sort-toggle {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .sort-option {
+            cursor: pointer;
+            transition: color 0.2s;
+            color: var(--accent);
+        }
+
+        .sort-option:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .sort-option.active {
+            color: var(--text-secondary);
+            cursor: default;
+        }
+
         .fund-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -191,11 +213,17 @@
         </header>
 
         <div class="period-selector">
+            <button class="period-btn" data-period="1D">1 Day</button>
             <button class="period-btn" data-period="1W">1 Week</button>
             <button class="period-btn" data-period="1M">1 Month</button>
             <button class="period-btn active" data-period="3M">3 Months</button>
             <button class="period-btn" data-period="6M">6 Months</button>
             <button class="period-btn" data-period="1Y">1 Year</button>
+        </div>
+
+        <div class="sort-toggle">
+            Sort: <span class="sort-option active" data-sort="alpha">A-Z</span> |
+            <span class="sort-option" data-sort="performance">% Change</span>
         </div>
 
         <div class="fund-grid" id="fundGrid">
@@ -212,8 +240,10 @@
         let fundData = null;
         let charts = {};
         let currentPeriod = '3M';
+        let currentSort = 'alpha'; // 'alpha' or 'performance'
 
         const periodDays = {
+            '1D': 1,
             '1W': 7,
             '1M': 30,
             '3M': 90,
@@ -254,6 +284,11 @@
         }
 
         function filterByPeriod(prices, period) {
+            // For 1 Day, return last 2 data points to show day-over-day change
+            if (period === '1D') {
+                return prices.slice(-2);
+            }
+
             const days = periodDays[period];
             const cutoffDate = new Date();
             cutoffDate.setDate(cutoffDate.getDate() - days);
@@ -279,7 +314,19 @@
             Object.values(charts).forEach(chart => chart.destroy());
             charts = {};
 
-            fundData.funds.forEach((fund, index) => {
+            // Create sorted copy of funds
+            const sortedFunds = [...fundData.funds].sort((a, b) => {
+                if (currentSort === 'alpha') {
+                    return a.name.localeCompare(b.name);
+                } else {
+                    // Sort by performance (high to low)
+                    const changeA = calculateChange(filterByPeriod(a.prices, currentPeriod)).percent;
+                    const changeB = calculateChange(filterByPeriod(b.prices, currentPeriod)).percent;
+                    return changeB - changeA;
+                }
+            });
+
+            sortedFunds.forEach((fund, index) => {
                 const filteredPrices = filterByPeriod(fund.prices, currentPeriod);
                 const change = calculateChange(filteredPrices);
                 const isPositive = change.percent >= 0;
@@ -366,8 +413,18 @@
             });
         });
 
+        // Sort toggle
+        document.querySelectorAll('.sort-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.sort-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                currentSort = opt.dataset.sort;
+                if (fundData) renderFunds();
+            });
+        });
+
         function refreshData() {
-            alert('To refresh data, run in terminal:\n\ncd vanguard-tracker\npython fetch_data.py\n\nThen reload this page.');
+            alert('To refresh data, run in terminal:\n\ncd vanguard-tracker\npython3 fetch_data.py\n\nThen reload this page.');
         }
 
         // Load data on page load

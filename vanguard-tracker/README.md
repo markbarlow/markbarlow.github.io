@@ -30,7 +30,7 @@ pip install yfinance
 ### Fetch latest data
 
 ```bash
-python fetch_data.py
+python3 fetch_data.py
 ```
 
 This downloads ~1 year of historical price data from Yahoo Finance and saves it to `data/fund_data.json`.
@@ -40,7 +40,7 @@ This downloads ~1 year of historical price data from Yahoo Finance and saves it 
 **Option 1: Local server (recommended)**
 
 ```bash
-python -m http.server 8080
+python3 -m http.server 8080
 # Open http://localhost:8080
 ```
 
@@ -68,4 +68,4 @@ vanguard-tracker/
 
 ## Maintenance
 
-Run `python fetch_data.py` weekly or whenever you want fresh prices. Takes ~10 seconds to update all funds.
+Run `python3 fetch_data.py` weekly or whenever you want fresh prices. Takes ~10 seconds to update all funds.

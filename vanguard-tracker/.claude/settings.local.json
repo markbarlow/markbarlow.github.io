@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.n8n.io)",
+      "WebSearch",
+      "Bash(git -C /Users/Mark/Github/markbarlow.github.io remote -v)",
+      "WebFetch(domain:n8n.io)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd GitHub Actions workflow for daily fund data updates\n\nRuns fetch_data.py at 6pm UTC on weekdays and pushes updated data.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
+    ]
+  }
+}

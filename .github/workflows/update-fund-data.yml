@@ -1,0 +1,27 @@
+name: Update Fund Data
+
+on:
+  schedule:
+    - cron: '0 18 * * 1-5' # 6pm UTC, weekdays only
+  workflow_dispatch: {} # manual trigger from GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install yfinance
+
+      - run: python vanguard-tracker/fetch_data.py
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add vanguard-tracker/data/fund_data.json
+          git diff --staged --quiet || (git commit -m "Update fund_data.json" && git push)

@@ -19,7 +19,7 @@ FUNDS = [
     {"name": "S&P 500 UCITS ETF", "ticker": "VUAG.L", "short": "VUAG"},
     {"name": "ESG Global All Cap", "ticker": "V3AB.L", "short": "V3AB"},
     {"name": "ESG Developed Asia Pacific", "ticker": "V3PB.L", "short": "V3PB"},
-    {"name": "ESG Emerging Markets", "ticker": "0P0001K1DR.L", "short": "0P0001K1DR"},
+    {"name": "ESG Emerging Markets", "ticker": "V3MB.L", "short": "V3MB"},
     {"name": "LifeStrategy 100%", "ticker": "0P0000TKZO.L", "short": "LS100"},
     {"name": "LifeStrategy 80%", "ticker": "0P0000TKZM.L", "short": "LS80"},
     {"name": "LifeStrategy 20%", "ticker": "0P0000TKZG.L", "short": "LS20"},

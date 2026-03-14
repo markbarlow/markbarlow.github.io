@@ -1,15 +1,11 @@
 {
-  "last_updated": "2026-03-13T18:33:23.054256",
+  "last_updated": "2026-03-14T16:47:06.880033",
   "funds": [
     {
       "name": "S&P 500 UCITS ETF",
       "ticker": "VUAG.L",
-      "short": "VUAG",
+      "short": "VUAG, 0.07%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 92.935
-        },
         {
           "date": "2025-02-07",
           "price": 92.75
@@ -1104,12 +1100,8 @@
     {
       "name": "ESG Global All Cap",
       "ticker": "V3AB.L",
-      "short": "V3AB",
+      "short": "V3AB, 0.24%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 5.389
-        },
         {
           "date": "2025-02-07",
           "price": 5.3625
@@ -2204,12 +2196,8 @@
     {
       "name": "ESG Developed Asia Pacific",
       "ticker": "V3PB.L",
-      "short": "V3PB",
+      "short": "V3PB, 0.17%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 5.502
-        },
         {
           "date": "2025-02-07",
           "price": 5.4665
@@ -3304,12 +3292,8 @@
     {
       "name": "ESG Emerging Markets",
       "ticker": "V3MB.L",
-      "short": "V3MB",
+      "short": "V3MB, 0.19%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 5.4485
-        },
         {
           "date": "2025-02-07",
           "price": 5.472
@@ -4404,12 +4388,8 @@
     {
       "name": "LifeStrategy 100%",
       "ticker": "0P0000TKZO.L",
-      "short": "LS100",
+      "short": "LS100, 0.20%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 396.6268
-        },
         {
           "date": "2025-02-07",
           "price": 393.7593
@@ -5513,6 +5493,10 @@
         {
           "date": "2026-03-11",
           "price": 446.6403
+        },
+        {
+          "date": "2026-03-12",
+          "price": 442.6194
         }
       ],
       "currency": "GBP"
@@ -5520,12 +5504,8 @@
     {
       "name": "LifeStrategy 80%",
       "ticker": "0P0000TKZM.L",
-      "short": "LS80",
+      "short": "LS800, 0.20%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 323.5397
-        },
         {
           "date": "2025-02-07",
           "price": 321.4595
@@ -6629,6 +6609,10 @@
         {
           "date": "2026-03-11",
           "price": 358.8372
+        },
+        {
+          "date": "2026-03-12",
+          "price": 355.9777
         }
       ],
       "currency": "GBP"
@@ -6636,12 +6620,8 @@
     {
       "name": "LifeStrategy 20%",
       "ticker": "0P0000TKZG.L",
-      "short": "LS20",
+      "short": "LS200, 0.20%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 168.8148
-        },
         {
           "date": "2025-02-07",
           "price": 168.219
@@ -7745,6 +7725,10 @@
         {
           "date": "2026-03-11",
           "price": 178.3581
+        },
+        {
+          "date": "2026-03-12",
+          "price": 177.5079
         }
       ],
       "currency": "GBP"
@@ -7752,12 +7736,8 @@
     {
       "name": "FTSE 100 Index",
       "ticker": "0P00018XAP.L",
-      "short": "FTSE100",
+      "short": "FTSE100, 0.06%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 174.343
-        },
         {
           "date": "2025-02-07",
           "price": 173.8056
@@ -8861,6 +8841,10 @@
         {
           "date": "2026-03-12",
           "price": 214.2493
+        },
+        {
+          "date": "2026-03-13",
+          "price": 212.3024
         }
       ],
       "currency": "GBP"
@@ -8868,12 +8852,8 @@
     {
       "name": "FTSE Dev Europe ex-UK",
       "ticker": "0P0000KSP8.L",
-      "short": "EU",
+      "short": "EU, 0.12%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 412.8486
-        },
         {
           "date": "2025-02-07",
           "price": 409.7339
@@ -9977,6 +9957,10 @@
         {
           "date": "2026-03-12",
           "price": 477.2969
+        },
+        {
+          "date": "2026-03-13",
+          "price": 475.588
         }
       ],
       "currency": "GBP"
@@ -9984,12 +9968,8 @@
     {
       "name": "Japan Stock Index",
       "ticker": "IE00B50MZ948.IR",
-      "short": "Japan",
+      "short": "Japan, 0.16%",
       "prices": [
-        {
-          "date": "2025-02-06",
-          "price": 329.7205
-        },
         {
           "date": "2025-02-07",
           "price": 328.3042
@@ -11097,6 +11077,10 @@
         {
           "date": "2026-03-11",
           "price": 397.1098
+        },
+        {
+          "date": "2026-03-12",
+          "price": 393.3069
         }
       ],
       "currency": "GBP"

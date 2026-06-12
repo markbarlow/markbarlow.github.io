@@ -1,0 +1,139 @@
+# Example course demonstrating every supported content type.
+# Build it with:  python build.py example-course.yaml example-course.html
+title: Coffee Brewing
+description: From bean to cup, the simple version
+
+modules:
+  - id: fundamentals
+    title: Brewing fundamentals
+    topics:
+      - id: what-is-extraction
+        title: What is extraction?
+        lesson: |
+          **Extraction** is the whole game in coffee. When hot water meets
+          ground coffee, it dissolves flavour compounds out of the grounds and
+          carries them into your cup. Get the balance right and the cup tastes
+          sweet and clear; get it wrong and it tastes sour or bitter.
+
+          Three things happen, roughly in order:
+
+          1. **Acids** dissolve first — too little extraction and the cup is sour.
+          2. **Sugars** dissolve next — this is the sweet spot you are aiming for.
+          3. **Bitter compounds** dissolve last — too much extraction and the cup
+             turns harsh.
+
+          > Think of it like steeping a teabag. Pull it out too early and the tea
+          > is weak and sharp; leave it in all day and it goes bitter. Coffee is
+          > the same idea, just faster and fussier.
+
+          ### The two dials you control
+
+          You are really only adjusting two things, and they trade off against
+          each other:
+
+          | Variable    | Turn it up to…              | Turn it down to…            |
+          | ----------- | --------------------------- | --------------------------- |
+          | Grind size  | extract more (finer grind)  | extract less (coarser grind)|
+          | Brew time   | extract more (longer)       | extract less (shorter)      |
+
+          Everything else — water temperature, agitation, ratio — is a smaller
+          nudge on top of these two.
+        model: >
+          Brewing is just <strong>controlled extraction</strong>: dissolve enough
+          flavour to be sweet, but stop before it turns bitter.
+        terms:
+          - term: Extraction
+            def: The process of dissolving flavour compounds out of coffee grounds into water.
+          - term: Under-extracted
+            def: Not enough was dissolved — the cup tastes sour, thin and salty.
+          - term: Over-extracted
+            def: Too much was dissolved — the cup tastes bitter, dry and harsh.
+        mistakes:
+          - title: Chasing strength with more time
+            detail: Brewing longer doesn't make coffee "stronger" so much as more bitter. Use a higher coffee-to-water ratio instead.
+          - title: Ignoring grind size
+            detail: Grind is the most powerful dial you have. If the cup is sour, grind finer before changing anything else.
+        cards:
+          - q: What does "extraction" mean in coffee?
+            a: Dissolving flavour compounds out of the grounds and into the water.
+          - q: A sour cup usually means what?
+            a: Under-extraction — grind finer or brew a little longer.
+        quiz:
+          - q: A friend's coffee tastes sharp and sour. What is the most likely cause?
+            correct: It is under-extracted
+            distractors:
+              - It is over-extracted
+              - The water was too hot
+              - The beans were too fresh
+            explain: Sourness is the classic sign of under-extraction — not enough flavour was dissolved, so acids dominate.
+          - q: Which dial is the most powerful for changing extraction?
+            correct: Grind size
+            distractors:
+              - The colour of the mug
+              - Stirring speed
+              - The brand of filter
+            explain: Grind size changes the surface area exposed to water, so it has the biggest single effect on extraction.
+        recap: >
+          Brewing is controlled extraction. Sour means too little, bitter means
+          too much, and grind size is your main steering wheel.
+
+      - id: ratios-and-water
+        title: Ratios and water
+        lesson: |
+          Once extraction makes sense, the next thing to nail down is the
+          **brew ratio** — how much coffee you use relative to water. This is what
+          actually controls *strength*, separately from extraction quality.
+
+          A common starting point is **1:16** — one gram of coffee for every
+          sixteen grams of water. From there:
+
+          - Want a **stronger** cup? Move toward 1:15 or 1:14.
+          - Want a **lighter** cup? Move toward 1:17 or 1:18.
+
+          ### Why water matters more than people think
+
+          Coffee is about 98% water, so the water itself is an ingredient. Very
+          soft (distilled) water extracts poorly and tastes flat; very hard water
+          can taste chalky and clog kit. Filtered tap water is usually the sweet
+          spot.
+
+          Temperature matters too: aim for water just off the boil, around
+          **92–96°C**. Boiling water scorches the grounds; cooler water
+          under-extracts.
+        model: >
+          <strong>Ratio sets strength, extraction sets taste.</strong> They are
+          two separate dials — adjust strength with the ratio, adjust balance with
+          grind and time.
+        terms:
+          - term: Brew ratio
+            def: The weight of coffee relative to the weight of water, e.g. 1:16.
+          - term: TDS
+            def: Total Dissolved Solids — a measure of how much coffee ended up in the cup, i.e. strength.
+        mistakes:
+          - title: Eyeballing instead of weighing
+            detail: Scoops vary wildly by grind and bean. A cheap kitchen scale is the single biggest upgrade to consistency.
+          - title: Using boiling water
+            detail: Water straight off a rolling boil scorches the grounds and adds bitterness. Let it rest 30 seconds.
+        cards:
+          - q: What does the brew ratio control?
+            a: Strength — how concentrated the cup is, separate from extraction balance.
+          - q: What's a good default water temperature?
+            a: Around 92–96°C — just off the boil, not boiling.
+        quiz:
+          - q: You want a stronger cup without making it bitter. What should you change?
+            correct: Use a higher coffee-to-water ratio
+            distractors:
+              - Brew for much longer
+              - Use boiling water
+              - Grind much finer
+            explain: Strength is set by the ratio. Brewing longer or grinding finer would over-extract and add bitterness instead.
+          - q: Why is filtered tap water usually better than distilled water?
+            correct: Distilled water extracts poorly and tastes flat
+            distractors:
+              - Distilled water is too hard
+              - Tap water is always boiling
+              - Filtered water has more caffeine
+            explain: Some mineral content helps extraction. Distilled water has almost none, so it pulls flavour poorly and tastes flat.
+        recap: >
+          Set strength with the ratio (start at 1:16), use clean filtered water
+          just off the boil, and weigh everything for consistency.

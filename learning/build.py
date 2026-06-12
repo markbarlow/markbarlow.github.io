@@ -77,7 +77,12 @@ def build_topic(raw: dict, rng: random.Random) -> dict:
     topic = {"id": raw["id"], "title": raw["title"]}
 
     if raw.get("lesson"):
-        topic["lesson"] = md_to_html(raw["lesson"])
+        # When a topic declares `lesson_format: html`, the lesson is already raw
+        # HTML and must pass through untouched. Otherwise treat it as markdown.
+        if raw.get("lesson_format") == "html":
+            topic["lesson"] = raw["lesson"]
+        else:
+            topic["lesson"] = md_to_html(raw["lesson"])
     if raw.get("model"):
         # model is a short inline string; strip trailing whitespace from YAML folding
         topic["model"] = raw["model"].strip()

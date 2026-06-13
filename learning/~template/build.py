@@ -104,7 +104,7 @@ def build_topic(raw: dict, rng: random.Random) -> dict:
 
 def build_course(data: dict, rng: random.Random) -> dict:
     """Transform the full parsed YAML into the COURSE_DATA object."""
-    return {
+    course: dict = {
         "title": data.get("title", "Course"),
         "description": data.get("description", ""),
         "modules": [
@@ -116,6 +116,9 @@ def build_course(data: dict, rng: random.Random) -> dict:
             for m in data.get("modules", [])
         ],
     }
+    if data.get("brand"):
+        course["brand"] = data["brand"]
+    return course
 
 
 def inject(template: str, course: dict) -> str:

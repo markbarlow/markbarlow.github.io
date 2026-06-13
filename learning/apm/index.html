@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Course</title>
+<style>
+  /* ============================================================
+     THEME TOKENS
+     light  = "Calm & academic"  (warm paper, serif headings)
+     dark   = "Focused & dark"   (high-contrast, distraction-free)
+     ============================================================ */
+  :root {
+    --accent: #1f6feb;
+    --accent-soft: color-mix(in oklch, var(--accent) 14%, transparent);
+    --accent-line: color-mix(in oklch, var(--accent) 32%, transparent);
+
+    --font-head: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: "Iowan Old Style", Georgia, "Times New Roman", serif;
+    --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+    /* density (roomy default) */
+    --pad: 1;
+    --read: 1.78;
+    --fs-body: 18px;
+
+    --radius: 12px;
+    --radius-sm: 8px;
+    --maxw: 760px;
+  }
+
+  html[data-density="compact"] {
+    --pad: 0.72;
+    --read: 1.62;
+    --fs-body: 16.5px;
+  }
+
+  /* ---- LIGHT: Calm & academic ---- */
+  html[data-theme="light"] {
+    --bg: #faf7f0;
+    --bg-elev: #fffdf8;
+    --bg-side: #f3efe5;
+    --bg-code: #f4f0e6;
+    --text: #2b2722;
+    --text-soft: #5c554b;
+    --text-mute: #8a8276;
+    --border: #e5ded0;
+    --border-strong: #d8cfbc;
+    --shadow: 0 1px 2px rgba(60,48,30,.05), 0 8px 28px rgba(60,48,30,.06);
+    --card-tint: #fbf8f1;
+    color-scheme: light;
+  }
+
+  /* ---- DARK: Focused & dark ---- */
+  html[data-theme="dark"] {
+    --bg: #131519;
+    --bg-elev: #1a1d23;
+    --bg-side: #16181d;
+    --bg-code: #0f1115;
+    --text: #e7e9ee;
+    --text-soft: #aeb3bd;
+    --text-mute: #6f7681;
+    --border: #272b33;
+    --border-strong: #353b45;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 30px rgba(0,0,0,.35);
+    --card-tint: #1c2027;
+    --font-head: var(--font-ui);
+    --font-body: var(--font-ui);
+    color-scheme: dark;
+  }
+
+  /* font pairing overrides (set by JS via data-font) */
+  html[data-font="sans"]  { --font-head: var(--font-ui); --font-body: var(--font-ui); }
+  html[data-font="mixed"] { --font-head: "Iowan Old Style", Georgia, serif; --font-body: var(--font-ui); }
+  /* serif = default tokens; in dark we still allow serif if user picks it */
+  html[data-theme="dark"][data-font="serif"] { --font-head: "Iowan Old Style", Georgia, serif; --font-body: "Iowan Old Style", Georgia, serif; }
+  html[data-theme="dark"][data-font="mixed"] { --font-head: "Iowan Old Style", Georgia, serif; --font-body: var(--font-ui); }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    line-height: var(--read);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--accent-soft); }
+
+  /* ============================================================ LAYOUT */
+  .app { display: grid; grid-template-columns: 320px 1fr; height: 100vh; }
+
+  /* ---------- SIDEBAR ---------- */
+  .side {
+    background: var(--bg-side);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    min-height: 0;
+  }
+  .side-head { padding: calc(20px*var(--pad)) 20px calc(14px*var(--pad)); border-bottom: 1px solid var(--border); }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    min-width: 30px; height: 30px; padding: 0 8px; border-radius: 8px; flex: none;
+    background: var(--accent); color: #fff;
+    display: grid; place-items: center; font-family: var(--font-ui);
+    font-weight: 700; font-size: 14px; letter-spacing: -.5px;
+  }
+  .brand-title { font-family: var(--font-ui); font-weight: 650; font-size: 15px; line-height: 1.2; letter-spacing: -.2px; }
+  .brand-sub { font-family: var(--font-ui); font-size: 11.5px; color: var(--text-mute); letter-spacing: .02em; }
+
+  .overall { margin-top: 14px; }
+  .overall-row { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--font-ui); margin-bottom: 6px; }
+  .overall-row b { font-size: 12px; font-weight: 600; color: var(--text-soft); letter-spacing: .04em; text-transform: uppercase; }
+  .overall-row span { font-size: 12px; color: var(--text-mute); font-variant-numeric: tabular-nums; }
+  .bar { height: 7px; border-radius: 99px; background: var(--border); overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; border-radius: 99px; background: var(--accent); transition: width .5s cubic-bezier(.2,.7,.3,1); }
+
+  .search-wrap { padding: 12px 16px; }
+  .search {
+    width: 100%; font-family: var(--font-ui); font-size: 13.5px;
+    background: var(--bg-elev); color: var(--text);
+    border: 1px solid var(--border); border-radius: 9px;
+    padding: 9px 11px 9px 32px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%238a8276' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: 10px center;
+    outline: none;
+  }
+  .search:focus { border-color: var(--accent-line); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  .nav { flex: 1; overflow-y: auto; padding: 4px 10px 30px; min-height: 0; }
+  .mod { margin-bottom: 2px; }
+  .mod-head {
+    width: 100%; text-align: left; cursor: pointer;
+    background: none; border: 0; color: inherit;
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 8px; border-radius: 8px;
+    font-family: var(--font-ui);
+  }
+  .mod-head:hover { background: var(--accent-soft); }
+  .mod-chev { width: 14px; height: 14px; flex: none; color: var(--text-mute); transition: transform .2s; }
+  .mod.collapsed .mod-chev { transform: rotate(-90deg); }
+  .mod-name { flex: 1; font-size: 12.5px; font-weight: 650; letter-spacing: .02em; }
+  .mod-frac { font-size: 11px; color: var(--text-mute); font-variant-numeric: tabular-nums; font-family: var(--font-ui); }
+  .mod-ring { width: 16px; height: 16px; flex: none; }
+  .mod-ring circle { fill: none; stroke-width: 3; }
+  .mod-ring .trk { stroke: var(--border-strong); }
+  .mod-ring .val { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .4s; transform: rotate(-90deg); transform-origin: center; }
+
+  .topics { list-style: none; margin: 0 0 8px; padding: 2px 0 2px 6px; }
+  .mod.collapsed .topics { display: none; }
+  .topic {
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 9px; margin: 1px 0; border-radius: 7px;
+    cursor: pointer; font-family: var(--font-ui); font-size: 13px;
+    color: var(--text-soft); border: 0; background: none; width: 100%; text-align: left;
+    line-height: 1.35;
+  }
+  .topic:hover { background: var(--accent-soft); color: var(--text); }
+  .topic.active { background: var(--accent); color: #fff; font-weight: 550; }
+  .topic.active .tdot { border-color: rgba(255,255,255,.6); }
+  .tdot { width: 15px; height: 15px; flex: none; border-radius: 50%; border: 1.5px solid var(--border-strong); display: grid; place-items: center; }
+  .topic.done .tdot { background: var(--accent); border-color: var(--accent); }
+  .topic.active.done .tdot { background: #fff; border-color: #fff; }
+  .tdot svg { width: 9px; height: 9px; color: #fff; opacity: 0; }
+  .topic.done .tdot svg { opacity: 1; }
+  .topic.active.done .tdot svg { color: var(--accent); }
+  .tname { flex: 1; }
+  .topic.hidden, .mod.hidden { display: none; }
+
+  /* ---------- MAIN ---------- */
+  .main { overflow-y: auto; min-height: 0; position: relative; }
+  .topbar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 28px; background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-ui);
+  }
+  .crumb { flex: 1; font-size: 12.5px; color: var(--text-mute); letter-spacing: .02em; min-width: 0; }
+  .crumb b { color: var(--text-soft); font-weight: 600; }
+  .iconbtn {
+    width: 36px; height: 36px; flex: none; border-radius: 9px;
+    background: var(--bg-elev); border: 1px solid var(--border); color: var(--text-soft);
+    display: grid; place-items: center; cursor: pointer;
+  }
+  .iconbtn:hover { color: var(--text); border-color: var(--border-strong); }
+  .iconbtn svg { width: 17px; height: 17px; }
+
+  .reading { max-width: var(--maxw); margin: 0 auto; padding: 40px 28px 140px; }
+  .t-kicker { font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .t-title { font-family: var(--font-head); font-weight: 600; font-size: clamp(30px, 4vw, 40px); line-height: 1.12; letter-spacing: -.015em; margin: 0 0 28px; }
+
+  .lesson { }
+  .lesson p { margin: 0 0 1.05em; color: var(--text); }
+  .lesson h2 { font-family: var(--font-head); font-weight: 600; font-size: 1.5em; letter-spacing: -.01em; margin: 1.6em 0 .6em; }
+  .lesson h3 { font-family: var(--font-ui); font-weight: 650; font-size: 15px; letter-spacing: .01em; margin: 1.9em 0 .7em; color: var(--text); }
+  .lesson strong { font-weight: 650; }
+  .lesson em { font-style: italic; color: var(--text-soft); }
+  .lesson ul, .lesson ol { margin: 0 0 1.1em; padding-left: 1.25em; }
+  .lesson li { margin: .35em 0; }
+  .lesson code { font-family: var(--font-mono); font-size: .86em; background: var(--bg-code); border: 1px solid var(--border); border-radius: 5px; padding: .1em .4em; }
+  .lesson pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; overflow-x: auto; margin: 0 0 1.3em; line-height: 1.55; }
+  .lesson pre code { background: none; border: 0; padding: 0; font-size: 13.5px; color: var(--text); }
+  .lesson blockquote, .analogy { border-left: 3px solid var(--accent-line); background: var(--accent-soft); padding: 4px 18px; border-radius: 0 8px 8px 0; margin: 0 0 1.3em; }
+  .lesson blockquote p:last-child, .analogy p:last-child { margin-bottom: 0; }
+  /* markdown tables + explicit compare tables share styling */
+  .lesson table, .compare { width: 100%; border-collapse: collapse; margin: 0 0 1.4em; font-size: .92em; font-family: var(--font-ui); }
+  .lesson th, .lesson td, .compare th, .compare td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  .lesson th, .compare th { background: var(--card-tint); font-weight: 650; font-size: 12.5px; }
+
+  /* section cards */
+  .card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin: 22px 0; overflow: hidden; }
+  .card-h { display: flex; align-items: center; gap: 10px; padding: 16px 20px; font-family: var(--font-ui); }
+  .card-h .ic { width: 20px; height: 20px; color: var(--accent); flex: none; }
+  .card-h b { font-size: 14.5px; font-weight: 650; letter-spacing: .01em; }
+  .card-b { padding: 0 20px 18px; }
+  .card-b > :first-child { margin-top: 0; }
+
+  .model-card { background: var(--accent-soft); border-color: var(--accent-line); }
+  .model-card .card-b p { font-family: var(--font-head); font-size: 1.12em; line-height: 1.5; color: var(--text); margin: 0; }
+
+  .mistakes li { margin: 0 0 12px; padding-left: 4px; list-style: none; display: grid; grid-template-columns: 20px 1fr; gap: 11px; }
+  .mistakes { padding: 0; margin: 0; }
+  .mistakes .x { width: 19px; height: 19px; color: #d6643c; margin-top: 2px; }
+  html[data-theme="dark"] .mistakes .x { color: #f0855e; }
+  .mistakes b { font-weight: 650; }
+  .mistakes small { display: block; color: var(--text-soft); font-size: .92em; margin-top: 2px; }
+
+  .terms { display: grid; gap: 12px; }
+  .term { }
+  .term dt { font-family: var(--font-ui); font-weight: 650; font-size: 13.5px; color: var(--text); }
+  .term dd { margin: 2px 0 0; color: var(--text-soft); font-size: .95em; }
+
+  /* quiz */
+  .q { margin: 0 0 22px; }
+  .q:last-child { margin-bottom: 0; }
+  .q-stem { font-weight: 600; margin: 0 0 12px; }
+  .q-stem .n { color: var(--accent); font-family: var(--font-ui); font-size: .8em; font-weight: 700; margin-right: 8px; }
+  .opts { display: grid; gap: 8px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 11px; text-align: left;
+    background: var(--card-tint); border: 1px solid var(--border); border-radius: 9px;
+    padding: 11px 14px; cursor: pointer; font-family: var(--font-ui); font-size: 14px; color: var(--text);
+    transition: border-color .15s, background .15s;
+  }
+  .opt:hover { border-color: var(--border-strong); }
+  .opt .mk { width: 19px; height: 19px; flex: none; border-radius: 50%; border: 1.5px solid var(--border-strong); display: grid; place-items: center; margin-top: 1px; }
+  .opt .mk svg { width: 11px; height: 11px; opacity: 0; }
+  .opt.correct { border-color: #2f9e63; background: color-mix(in oklch, #2f9e63 12%, transparent); }
+  .opt.correct .mk { background: #2f9e63; border-color: #2f9e63; }
+  .opt.correct .mk svg { opacity: 1; color: #fff; }
+  .opt.wrong { border-color: #d6643c; background: color-mix(in oklch, #d6643c 12%, transparent); }
+  .opt.wrong .mk { background: #d6643c; border-color: #d6643c; }
+  .opt.wrong .mk svg { opacity: 1; color: #fff; }
+  .opt.locked { cursor: default; }
+  .q-explain { margin: 10px 0 0; font-size: .92em; color: var(--text-soft); padding-left: 2px; display: none; }
+  .q-explain.show { display: block; }
+  .q-explain b { color: var(--accent); font-family: var(--font-ui); font-size: .82em; text-transform: uppercase; letter-spacing: .06em; }
+
+  /* flashcards */
+  .fc-stage { perspective: 1400px; }
+  .fc {
+    position: relative; min-height: 150px; cursor: pointer;
+    transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.7,.3,1);
+  }
+  .fc.flipped { transform: rotateY(180deg); }
+  .fc-face {
+    position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: var(--radius); border: 1px solid var(--border); background: var(--card-tint);
+    display: grid; place-items: center; text-align: center; padding: 26px 30px;
+  }
+  .fc-face .lab { position: absolute; top: 12px; left: 16px; font-family: var(--font-ui); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-mute); }
+  .fc-front .txt { font-family: var(--font-head); font-size: 1.32em; font-weight: 600; }
+  .fc-back { transform: rotateY(180deg); background: var(--accent-soft); border-color: var(--accent-line); }
+  .fc-back .txt { font-size: .98em; color: var(--text); line-height: 1.55; }
+  .fc-tap { position: absolute; bottom: 12px; right: 16px; font-family: var(--font-ui); font-size: 11px; color: var(--text-mute); }
+  .fc-foot { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-family: var(--font-ui); }
+  .fc-count { font-size: 12.5px; color: var(--text-mute); font-variant-numeric: tabular-nums; }
+  .fc-rate { display: flex; gap: 8px; margin-left: auto; }
+  .rate-btn { font-family: var(--font-ui); font-size: 12.5px; font-weight: 550; padding: 7px 13px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-elev); color: var(--text-soft); cursor: pointer; }
+  .rate-btn:hover { border-color: var(--border-strong); color: var(--text); }
+  .rate-btn.again:hover { border-color: #d6643c; color: #d6643c; }
+  .rate-btn.good:hover { border-color: #2f9e63; color: #2f9e63; }
+  .fc-prev, .fc-next { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-elev); color: var(--text-soft); cursor: pointer; display: grid; place-items: center; }
+  .fc-prev:hover, .fc-next:hover { color: var(--text); border-color: var(--border-strong); }
+  .fc-prev svg, .fc-next svg { width: 15px; height: 15px; }
+
+  /* recap callout */
+  .recap { border-radius: var(--radius); border: 1px dashed var(--accent-line); background: var(--accent-soft); padding: 18px 22px; margin: 26px 0; }
+  .recap .rh { font-family: var(--font-ui); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+  .recap .rh svg { width: 15px; height: 15px; }
+  .recap p { margin: 0; font-family: var(--font-head); font-size: 1.08em; line-height: 1.55; }
+
+  /* footer nav + complete */
+  .foot { display: flex; align-items: center; gap: 14px; margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--border); font-family: var(--font-ui); }
+  .pgbtn { display: flex; align-items: center; gap: 8px; padding: 11px 15px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-elev); color: var(--text-soft); cursor: pointer; font-size: 13px; font-weight: 550; max-width: 44%; }
+  .pgbtn:hover { color: var(--text); border-color: var(--border-strong); }
+  .pgbtn:disabled { opacity: .4; cursor: default; }
+  .pgbtn svg { width: 15px; height: 15px; flex: none; }
+  .pgbtn .lab { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+  .pgbtn .lab small { font-size: 10.5px; color: var(--text-mute); letter-spacing: .04em; text-transform: uppercase; }
+  .pgbtn .lab span { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pgbtn.next { margin-left: auto; text-align: right; }
+  .pgbtn.next .lab { align-items: flex-end; }
+  .complete-btn {
+    margin: 0 auto; display: flex; align-items: center; gap: 9px;
+    padding: 12px 22px; border-radius: 10px; border: 1.5px solid var(--accent); background: var(--accent); color: #fff;
+    cursor: pointer; font-size: 14px; font-weight: 600;
+  }
+  .complete-btn:hover { filter: brightness(1.06); }
+  .complete-btn.is-done { background: transparent; color: var(--accent); }
+  .complete-btn svg { width: 17px; height: 17px; }
+
+  /* empty/draft state */
+  .draft { text-align: center; color: var(--text-mute); font-family: var(--font-ui); font-size: 13.5px; border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 30px; margin: 24px 0; }
+
+  /* ---------- SETTINGS PANEL ---------- */
+  .scrim { position: fixed; inset: 0; background: rgba(10,8,4,.34); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 40; }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .panel {
+    position: fixed; top: 0; right: 0; height: 100%; width: 340px; max-width: 88vw; z-index: 50;
+    background: var(--bg-elev); border-left: 1px solid var(--border); box-shadow: var(--shadow);
+    transform: translateX(100%); transition: transform .26s cubic-bezier(.3,.8,.3,1);
+    display: flex; flex-direction: column; font-family: var(--font-ui);
+  }
+  .panel.open { transform: none; }
+  .panel-h { display: flex; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--border); }
+  .panel-h b { font-size: 15px; font-weight: 650; flex: 1; }
+  .panel-body { padding: 20px; overflow-y: auto; display: grid; gap: 24px; }
+  .set-group > .lab { font-size: 11px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--text-mute); margin-bottom: 11px; }
+  .swatches { display: flex; gap: 10px; }
+  .sw { width: 30px; height: 30px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; outline: 1px solid var(--border); }
+  .sw.sel { border-color: var(--bg-elev); outline: 2px solid var(--text); }
+  .seg { display: flex; gap: 6px; background: var(--bg-side); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+  .seg button { flex: 1; border: 0; background: none; color: var(--text-soft); font-family: var(--font-ui); font-size: 12.5px; font-weight: 550; padding: 8px 6px; border-radius: 7px; cursor: pointer; }
+  .seg button.sel { background: var(--accent); color: #fff; }
+  .danger { font-size: 12.5px; font-weight: 550; color: #d6643c; background: none; border: 1px solid color-mix(in oklch,#d6643c 40%, var(--border)); border-radius: 9px; padding: 10px; cursor: pointer; width: 100%; }
+  .danger:hover { background: color-mix(in oklch,#d6643c 10%, transparent); }
+  .set-note { font-size: 11.5px; color: var(--text-mute); line-height: 1.5; }
+
+  /* toast */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 16px); z-index: 60; background: var(--text); color: var(--bg); font-family: var(--font-ui); font-size: 13px; font-weight: 550; padding: 11px 18px; border-radius: 10px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* mobile */
+  .menu-btn { display: none; }
+  @media (max-width: 880px) {
+    .app { grid-template-columns: 1fr; }
+    /* z-index 45 keeps the sidebar above the scrim (40) so topics stay clickable */
+    .side { position: fixed; z-index: 45; width: 300px; height: 100%; transform: translateX(-100%); transition: transform .26s; }
+    .side.open { transform: none; }
+    .menu-btn { display: grid; }
+    .reading { padding: 28px 20px 120px; }
+  }
+
+  /* keyboard hint */
+  kbd { font-family: var(--font-ui); font-size: 11px; background: var(--bg-code); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; color: var(--text-soft); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="side" id="side">
+    <div class="side-head">
+      <div class="brand">
+        <div class="brand-mark" id="brandMark">•</div>
+        <div>
+          <div class="brand-title" id="courseTitle">Course</div>
+          <div class="brand-sub" id="courseSub"></div>
+        </div>
+      </div>
+      <div class="overall">
+        <div class="overall-row"><b>Your progress</b><span id="overallPct">0%</span></div>
+        <div class="bar"><i id="overallBar"></i></div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <input class="search" id="search" type="search" placeholder="Search topics…" autocomplete="off">
+    </div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main">
+    <div class="topbar">
+      <button class="iconbtn menu-btn" id="menuBtn" title="Topics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+      </button>
+      <div class="crumb" id="crumb"></div>
+      <button class="iconbtn" id="themeBtn" title="Toggle theme (T)"></button>
+      <button class="iconbtn" id="setBtn" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
+    </div>
+    <article class="reading" id="reading"></article>
+  </main>
+</div>
+
+<!-- SETTINGS -->
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel">
+  <div class="panel-h">
+    <b>Settings</b>
+    <button class="iconbtn" id="setClose" title="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+    </button>
+  </div>
+  <div class="panel-body">
+    <div class="set-group">
+      <div class="lab">Accent color</div>
+      <div class="swatches" id="swatches"></div>
+    </div>
+    <div class="set-group">
+      <div class="lab">Typeface</div>
+      <div class="seg" id="segFont">
+        <button data-v="serif">Serif</button>
+        <button data-v="sans">Sans</button>
+      </div>
+    </div>
+    <div class="set-group">
+      <div class="lab">Density</div>
+      <div class="seg" id="segDensity">
+        <button data-v="roomy">Roomy</button>
+        <button data-v="compact">Compact</button>
+      </div>
+    </div>
+    <div class="set-group">
+      <div class="lab">Progress</div>
+      <button class="danger" id="resetBtn">Reset all progress</button>
+      <p class="set-note">Everything is saved on this device only. Keyboard: <kbd>←</kbd> <kbd>→</kbd> change topic, <kbd>T</kbd> theme, <kbd>/</kbd> search.</p>
+    </div>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============================================================ COURSE DATA -->
+<!-- window.COURSE_DATA is injected by build.py; this fallback keeps the
+     bare template viewable on its own. -->
+<script id="course-data">
+window.COURSE_DATA = {
+  "title": "APMs Overview",
+  "description": "",
+  "modules": [
+    {
+      "id": "digital-wallets",
+      "title": "Digital Wallets & Apps",
+      "topics": [
+        {
+          "id": "ewallet-overview",
+          "title": "Digital wallets and eWallets",
+          "lesson": "<h3>What is a digital wallet?<\u002Fh3>\n<p>A digital wallet is software — usually on a phone or in a browser — that stores your payment details so you can pay without typing a card number every time. Think of it like a physical wallet sitting in your pocket, except it can hold many different payment methods at once, and it never falls out of your jeans.<\u002Fp>\n<p>The word \"wallet\" covers very different things in practice, and the distinction matters enormously for fraud.<\u002Fp>\n<h3>Three types of wallet (and why they behave differently)<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Type<\u002Fth>\n<th>How it works<\u002Fth>\n<th>Examples<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td><strong>Pass-through<\u002Fstrong><\u002Ftd>\n<td>Stores a token for your card. The card network does the actual payment. No money is held in the wallet.<\u002Ftd>\n<td>Apple Pay, Google Pay, Samsung Pay<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td><strong>Staged<\u002Fstrong><\u002Ftd>\n<td>You send money to the wallet first, then spend from it. Two separate transactions happen.<\u002Ftd>\n<td>PayPal, Alipay<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td><strong>Stored value<\u002Fstrong><\u002Ftd>\n<td>The wallet holds a real balance, like a prepaid card. You top it up, then spend it down.<\u002Ftd>\n<td>GrabPay credits, Paytm wallet<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> A pass-through wallet is like handing your physical card to someone to tap for you — the card is still doing the work. A stored-value wallet is more like a gift card — the money is actually sitting there.<\u002Fp>\n<\u002Fblockquote>\n<h3>Key properties (fraud perspective)<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Depends on the type. Card-backed pass-through wallets can be charged back like cards. Stored-value transfers are often irreversible.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low for large wallets (KYC required above certain thresholds). Higher for small-value wallets in some markets.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Near-instant to the recipient.<\u002Fli>\n<li><strong>Data available:<\u002Fstrong> Pass-through wallets expose rich device signals, network tokens, and PAR (a stable cross-merchant card identity). App-based wallets (Alipay, WeChat) expose very little externally — often just an account ID.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Account takeover (ATO)<\u002Fstrong> is the primary risk. If a fraudster gets into your wallet account, they immediately have access to your balance, your linked cards, and your saved addresses. Unlike a stolen card, a compromised wallet account can be used anywhere the wallet is accepted globally.<\u002Fp>\n<p><strong>Stored-value theft<\u002Fstrong> is essentially the same as draining a prepaid card. Once a stored balance is spent, recovery is very difficult — it functions like cash.<\u002Fp>\n<p><strong>Device provisioning fraud<\u002Fstrong> applies to pass-through wallets. Apple Pay and Google Pay use a device-based trust model: when you add a card to the wallet, the phone is part of the authentication. Fraudsters attempt to provision stolen card details onto new devices.<\u002Fp>\n<p><strong>Friendly fraud<\u002Fstrong> (\"I didn't authorise this\") is also common, because wallet payments can look unfamiliar on bank statements.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li><strong>Pass-through wallets:<\u002Fstrong> Device fingerprint, network token (changes if the card is re-provisioned), PAR (stays stable across devices), biometric authentication flag.<\u002Fli>\n<li><strong>App wallets (Alipay, WeChat Pay, GrabPay):<\u002Fstrong> Very limited external signal. Typically only the wallet account ID and email hash are available to a fraud API.<\u002Fli>\n<li><strong>ATO signals:<\u002Fstrong> Device change + new provision of the same card, new device in new geography, high velocity of logins before a large transaction.<\u002Fli>\n<\u002Ful>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>Apple Pay \u002F Google Pay<\u002Fstrong> — pass-through, card-backed, widely accepted globally<\u002Fli>\n<li><strong>PayPal<\u002Fstrong> — staged wallet, large global footprint, strong buyer protection (which means high dispute volume)<\u002Fli>\n<li><strong>Alipay \u002F WeChat Pay<\u002Fstrong> — staged + stored value, dominant in China, expanding internationally<\u002Fli>\n<li><strong>GrabPay<\u002Fstrong> — multi-type (stored value + card-backed), dominant in Southeast Asia<\u002Fli>\n<\u002Ful>",
+          "model": "A wallet is just a <strong>container for payment credentials<\u002Fstrong>. The fraud risk is determined by what's inside it — a card token (follow card fraud patterns), a stored balance (treat like cash), or both.",
+          "terms": [
+            {
+              "term": "Pass-through wallet",
+              "def": "A wallet that stores a token for an underlying card. The card network still processes the payment — the wallet just presents the credentials."
+            },
+            {
+              "term": "Staged wallet",
+              "def": "A wallet where funds are moved into the wallet first, then spent. Two separate money movements occur."
+            },
+            {
+              "term": "Stored value",
+              "def": "An actual balance held inside the wallet — like a digital prepaid card."
+            },
+            {
+              "term": "Network token",
+              "def": "A substitute card number issued by the card scheme specifically for digital wallet use. Changes if the card is re-provisioned to a new device."
+            },
+            {
+              "term": "PAR (Payment Account Reference)",
+              "def": "A stable identifier linked to a physical card account, shared across all tokens and devices. Useful for cross-device card identity."
+            },
+            {
+              "term": "ATO (Account Takeover)",
+              "def": "When a fraudster gains access to a victim's account — here, their wallet account — and uses it to make fraudulent payments."
+            },
+            {
+              "term": "Provisioning",
+              "def": "The process of adding a card to a digital wallet. Involves identity verification by the issuer."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Treating all wallets the same",
+              "detail": "Pass-through wallets (Apple Pay) behave like cards — use card fraud models. Stored-value wallets behave like cash — ATO drains them instantly. Mixing the two leads to wrong risk signals."
+            },
+            {
+              "title": "Assuming rich data from app wallets",
+              "detail": "App-based wallets like Alipay or WeChat Pay share almost no transaction-level data externally. Don't expect card-level signals — you'll typically only see an account ID."
+            },
+            {
+              "title": "Ignoring provisioning as a fraud vector",
+              "detail": "The moment a stolen card is added to a new Apple Pay or Google Pay wallet is a high-risk signal — the fraudster is preparing to spend. Device trust and provision velocity matter."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is the main fraud risk for stored-value wallets?",
+              "a": "Account takeover — once the balance is drained it functions like stolen cash and is hard to recover."
+            },
+            {
+              "q": "What does a pass-through wallet actually store?",
+              "a": "A token representing an underlying card. The card network processes the actual payment."
+            },
+            {
+              "q": "What is PAR, and why is it useful?",
+              "a": "Payment Account Reference — a stable ID tied to a card account that persists across devices and tokens. Useful for cross-device identity."
+            },
+            {
+              "q": "Why do app wallets (Alipay, WeChat) give less fraud signal than Apple Pay?",
+              "a": "They share minimal external data — typically just an account ID. Apple Pay exposes device, token, and biometric signals."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A customer uses Google Pay to pay. Which of these best describes what happens?",
+              "options": [
+                "The customer's bank balance is debited directly, bypassing card networks",
+                "A network token for their underlying card is used — the card network processes the payment",
+                "Google Pay creates a new virtual card number for every transaction",
+                "Google holds the payment and settles it to the merchant weekly"
+              ],
+              "answer": 1,
+              "explain": "Google Pay is a pass-through wallet. It tokenises the card and presents the token to the card network — the payment is processed just like a card transaction, with device signals added."
+            },
+            {
+              "q": "Which signal is most useful for detecting ATO on a pass-through wallet?",
+              "options": [
+                "A card being provisioned to a new device in a new geography, shortly before a large transaction",
+                "The cardholder using the same device they always use",
+                "The wallet account being three years old",
+                "A transaction in a familiar merchant category"
+              ],
+              "answer": 0,
+              "explain": "Device change + re-provisioning is a classic ATO signal. The fraudster has the card credentials and is setting up a new device to spend before the victim notices."
+            },
+            {
+              "q": "Why is friendly fraud higher for wallet payments?",
+              "options": [
+                "Wallet providers always side with the customer in disputes",
+                "Wallet payment names on bank statements can look unfamiliar, making it easy to dispute a legitimate charge",
+                "Wallets do not require any authentication",
+                "Wallet refunds are automatic and merchants cannot contest them"
+              ],
+              "answer": 1,
+              "explain": "When a charge appears as \"Apple Pay\" or \"PayPal\" rather than the merchant name, cardholders may not recognise it and dispute it — even if the purchase was legitimate."
+            }
+          ],
+          "recap": "Three wallet types — pass-through, staged, stored-value — each carry different fraud profiles. Pass-through follows card patterns; stored-value is cash-like (ATO drains it instantly). Rich device signals come from card-backed wallets; app wallets (Alipay, WeChat) share almost none."
+        },
+        {
+          "id": "p2p-apps",
+          "title": "P2P payment apps",
+          "lesson": "<h3>What is a P2P payment app?<\u002Fh3>\n<p>P2P stands for \"peer-to-peer\" — person to person. These are apps designed to send money between individuals, not to merchants. Splitting a restaurant bill, paying rent to a flatmate, gifting money for a birthday.<\u002Fp>\n<p>The defining characteristic is that the payer initiates the transfer directly to another person's account. There's no merchant involved, no card network processing the transaction — it's a direct digital transfer.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Handing someone a £20 note, but on your phone. Once the money has changed hands, getting it back requires asking nicely — or a legal process.<\u002Fp>\n<\u002Fblockquote>\n<h3>How it works<\u002Fh3>\n<ol>\n<li>Payer opens the app, enters the recipient's phone number, username, or email<\u002Fli>\n<li>Payer confirms the amount and approves the transfer<\u002Fli>\n<li>Funds move — usually instantly, sometimes with a short delay<\u002Fli>\n<li>Recipient sees the money in their P2P app balance, which they can spend or withdraw<\u002Fli>\n<\u002Fol>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Generally <strong>not reversible<\u002Fstrong> once sent. Unlike a card payment, there is no automatic chargeback mechanism. Banks and P2P providers may help in fraud cases but cannot guarantee recovery.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low for the sender (authenticated in app), but recipients can be harder to trace in some markets.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Near-instant in most cases.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> Varies widely. US apps (Zelle, Venmo) require bank-linked accounts. Some apps in developing markets have lighter KYC at low transaction values.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Authorised Push Payment (APP) fraud<\u002Fstrong> is the dominant risk — and one of the fastest-growing fraud types globally. The victim is tricked into sending money willingly. Because the payment is technically authorised by the victim, it sits outside the standard chargeback framework.<\u002Fp>\n<p>Common APP fraud scenarios:\n- <strong>Romance scam:<\u002Fstrong> Fraudster builds trust over weeks, then requests money for an \"emergency\"\n- <strong>Impersonation:<\u002Fstrong> Pretends to be a bank, HMRC, or a known contact needing urgent payment\n- <strong>Fake invoice:<\u002Fstrong> Intercepts a legitimate payment (e.g. conveyancer solicitor fraud) and changes the bank details<\u002Fp>\n<p><strong>Mule account activity<\u002Fstrong> is the other major pattern. Fraudsters need to move money through intermediary accounts to obscure its origin. P2P apps are fast and cheap, making them attractive for onward transfers. A mule account receives funds, quickly transfers them on, and is then abandoned.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li><strong>First-time recipient:<\u002Fstrong> Sending to someone you've never paid before is a key risk signal, especially combined with a large amount<\u002Fli>\n<li><strong>Speed of onward transfer:<\u002Fstrong> Money received and immediately forwarded is a mule signal<\u002Fli>\n<li><strong>Account age:<\u002Fstrong> Newly created recipient accounts combined with unusual inbound volumes<\u002Fli>\n<li><strong>Behavioural anomaly:<\u002Fstrong> Large transfer at unusual time, new device, new location<\u002Fli>\n<\u002Ful>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>Zelle (USA):<\u002Fstrong> Bank-consortium operated, instant, bank-account linked. High APP fraud rate.<\u002Fli>\n<li><strong>Venmo (USA):<\u002Fstrong> PayPal-owned, popular with younger users. Has a social feed (fraud visibility risk).<\u002Fli>\n<li><strong>Swish (Sweden):<\u002Fstrong> Linked to BankID, one of the most mature P2P systems with strong identity.<\u002Fli>\n<li><strong>Blik (Poland):<\u002Fstrong> Hybrid — P2P and wallet payments via a 6-digit one-time code.<\u002Fli>\n<\u002Ful>",
+          "model": "P2P payments are <strong>digital cash<\u002Fstrong>. Once sent, they are very hard to recover. The key fraud risk is APP fraud — the victim does the sending.",
+          "terms": [
+            {
+              "term": "APP fraud (Authorised Push Payment fraud)",
+              "def": "Fraud where the victim is tricked into willingly authorising a payment to a fraudster. The payment is \"authorised\" so it falls outside standard chargeback protections."
+            },
+            {
+              "term": "Mule account",
+              "def": "A bank or payment account used to receive and quickly forward fraudulent funds, obscuring the money trail."
+            },
+            {
+              "term": "Push payment",
+              "def": "A payment initiated by the sender (payer). The payer \"pushes\" money out. Contrast with a pull payment, where the payee initiates (e.g. direct debit)."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Assuming APP fraud is the victim's fault",
+              "detail": "Regulators (especially in the UK) now hold banks and payment providers partially responsible for APP fraud losses. \"They authorised it\" is no longer a complete defence."
+            },
+            {
+              "title": "Overlooking mule account patterns on the receiving side",
+              "detail": "Fraud teams often focus on the sender. The recipient side — account age, velocity of inbound transfers, speed of onward transfer — is where mule detection lives."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is APP fraud?",
+              "a": "Fraud where the victim is tricked into willingly authorising a transfer. Technically authorised, so no automatic chargeback."
+            },
+            {
+              "q": "What makes P2P transfers attractive for money mules?",
+              "a": "They are fast, cheap, and the recipient can immediately forward funds — making it easy to layer money through multiple accounts quickly."
+            },
+            {
+              "q": "What is a first-time recipient signal?",
+              "a": "The sender has never paid this recipient before — especially significant when combined with a large or urgent transfer."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A customer calls their bank saying they were tricked into sending £3,000 via Zelle to a \"HMRC agent\". What type of fraud is this?",
+              "options": [
+                "Identity fraud — someone opened an account in the customer's name",
+                "APP fraud — the customer willingly authorised the payment after being deceived",
+                "Card fraud — a stolen card was used without the customer's knowledge",
+                "Chargeback fraud — the customer is falsely claiming they didn't make the payment"
+              ],
+              "answer": 1,
+              "explain": "APP fraud means the victim authorised the transfer themselves, under false pretences. No card was stolen — the fraudster used social engineering instead."
+            },
+            {
+              "q": "An account receives 12 transfers from different senders within 2 hours, then immediately sends all the funds to a single overseas account. What does this pattern suggest?",
+              "options": [
+                "An account testing a new payment feature",
+                "A mule account being used to layer fraudulent funds",
+                "A legitimate business collecting payments from customers",
+                "A rewards programme paying out bonuses"
+              ],
+              "answer": 1,
+              "explain": "Rapid aggregation from multiple senders followed by a single outbound transfer is a classic money mule pattern — collecting fraud proceeds and moving them on before detection."
+            }
+          ],
+          "recap": "P2P payments are digital cash — fast, direct, and hard to reverse. APP fraud (tricking victims into sending) is the dominant risk. On the recipient side, watch for mule patterns: funds in, funds immediately out."
+        },
+        {
+          "id": "super-apps",
+          "title": "Super apps and embedded payments",
+          "lesson": "<h3>What is a super app?<\u002Fh3>\n<p>A super app is a single application that bundles many services — messaging, ride-hailing, food delivery, shopping, insurance, and payments — all in one place. Instead of having ten separate apps, you have one.<\u002Fp>\n<p>Payments in a super app are <strong>embedded<\u002Fstrong> — you don't go to a separate payment step. You order food, you tap confirm, payment happens silently in the background. The payment is part of the experience, not a separate transaction.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Imagine if Amazon, WhatsApp, Uber, your bank, and your insurance provider were all one app. That's WeChat in China. You can pay your electricity bill, split dinner with friends, and buy a flight — without leaving the app.<\u002Fp>\n<\u002Fblockquote>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Varies by sub-service. In-app purchases tend to follow the super app's own dispute process, not external card chargeback rules.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — super apps require comprehensive identity verification because they hold financial accounts.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Instant within the ecosystem.<\u002Fli>\n<li><strong>Data sharing:<\u002Fstrong> Very limited externally. Super apps are closed ecosystems — transaction data stays inside.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>ATO is amplified<\u002Fstrong> — because one account gives access to multiple services and a stored balance, a compromised super app account is significantly more valuable to a fraudster than a compromised single-purpose app.<\u002Fp>\n<p><strong>Ecosystem lock-in<\u002Fstrong> creates a monitoring blind spot. A payment made within WeChat's ecosystem doesn't appear as a card transaction that your fraud system can see. The merchant may only see \"WeChat Pay\" with minimal metadata.<\u002Fp>\n<p><strong>Return and refund fraud<\u002Fstrong> is elevated in commerce-heavy super apps, because the victim can use the app's own dispute system, which may be more lenient than card dispute rules.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Limited external signals are the central challenge. From a Ravelin or PSP perspective, a super app transaction typically only surfaces a wallet account ID, possibly an email, and a transaction amount. There is no device fingerprint, no card BIN, no network token.<\u002Fp>\n<p>Detection therefore relies on:\n- Account-level velocity (frequency, amount patterns)\n- Geographic inconsistency (account registered in China, transaction in Brazil)\n- Merchant-side signals (device, session, behavioural) paired with the payment event<\u002Fp>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>WeChat Pay (China):<\u002Fstrong> The original super app payment. 1+ billion users, used for everything from street food to mortgage repayments.<\u002Fli>\n<li><strong>Alipay (China):<\u002Fstrong> Ant Group's super app, with financial services (credit, investment) embedded.<\u002Fli>\n<li><strong>Grab (Southeast Asia):<\u002Fstrong> Started as ride-hailing, now covers payments, food, grocery, insurance across six countries.<\u002Fli>\n<li><strong>Gojek \u002F GoTo (Indonesia):<\u002Fstrong> Similar to Grab — rides, food, payments, financial services.<\u002Fli>\n<\u002Ful>",
+          "model": "A super app is a <strong>closed financial ecosystem<\u002Fstrong>. One account, many services. For fraud teams, the risk is amplified ATO value and very limited external data.",
+          "terms": [
+            {
+              "term": "Super app",
+              "def": "A single app combining many services (messaging, payments, commerce, financial services) in one place. Dominant in Asia."
+            },
+            {
+              "term": "Embedded payment",
+              "def": "A payment that happens silently within an app experience — the user doesn't visit a separate checkout page."
+            },
+            {
+              "term": "Closed ecosystem",
+              "def": "A platform where transactions stay within the platform's own infrastructure. External fraud systems receive minimal data."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Expecting card-level signals from super app transactions",
+              "detail": "Super apps share almost no transaction metadata externally. A WeChat Pay transaction surfaces as a single event with an account ID — not a rich data feed."
+            },
+            {
+              "title": "Treating super app ATO like a regular wallet ATO",
+              "detail": "Super app ATO is more severe because one compromised account gives access to banking, shopping, messaging, and travel bookings simultaneously."
+            }
+          ],
+          "cards": [
+            {
+              "q": "Why is an ATO on a super app account more damaging than ATO on a single-purpose wallet?",
+              "a": "One account gives access to multiple services — stored balance, linked bank, saved addresses, purchase history, messaging. More value in one breach."
+            },
+            {
+              "q": "What is the main detection challenge with super app payments?",
+              "a": "Minimal external data. Typically only a wallet account ID and amount — no device, card, or network signals."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A merchant sees a sudden spike in orders paid via WeChat Pay from accounts created in the last 48 hours. What is the most likely fraud pattern?",
+              "options": [
+                "Normal behaviour — WeChat Pay users create new accounts frequently",
+                "Card testing — fraudsters checking if stolen card numbers work",
+                "A genuine marketing promotion driving new user sign-ups",
+                "Newly created accounts being used for fraud — possibly compromised or synthetic identities exploiting the merchant"
+              ],
+              "answer": 3,
+              "explain": "Account age is a key signal. Newly created accounts transacting immediately at volume is a red flag, especially when it's a sudden spike. WeChat Pay users don't routinely create fresh accounts to shop."
+            },
+            {
+              "q": "Which signal is typically NOT available from a super app payment?",
+              "options": [
+                "The device fingerprint of the customer's phone",
+                "The wallet account identifier",
+                "The currency of the transaction",
+                "The transaction amount"
+              ],
+              "answer": 0,
+              "explain": "Super apps are closed ecosystems. Device fingerprint, network token, card BIN — none of these cross the boundary. The external system sees amount, currency, and an account ID."
+            }
+          ],
+          "recap": "Super apps embed payments inside closed ecosystems. Rich user data stays inside the platform. For external fraud systems, signals are thin. ATO is the primary risk, and one compromised account unlocks everything."
+        }
+      ]
+    },
+    {
+      "id": "bank-based-payments",
+      "title": "Bank-Based Payments",
+      "topics": [
+        {
+          "id": "push-bank-transfer",
+          "title": "Push bank transfers and online banking redirects",
+          "lesson": "<h3>What is a push bank transfer?<\u002Fh3>\n<p>A push bank transfer is when the <strong>payer logs into their bank and sends money out<\u002Fstrong>. They are the one doing the pushing. The recipient has no control over when or whether it happens — they just receive the funds.<\u002Fp>\n<p>Compare this to a card payment, where you hand your card details to a merchant and they \"pull\" the money. With a push transfer, the direction is reversed — the payer initiates everything.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> A push bank transfer is like writing a cheque and posting it. A card payment is like giving someone your bank card and letting them take what they're owed. One you control; one you give control to.<\u002Fp>\n<\u002Fblockquote>\n<h3>Online banking redirects — push transfers at checkout<\u002Fh3>\n<p>Many countries have a specific payment method where, at checkout, you are <strong>redirected to your bank's login page<\u002Fstrong>, you approve the payment there, and then you come back to the merchant. This is a push bank transfer with a checkout-friendly wrapper around it.<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>Method<\u002Fth>\n<th>Country<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>iDEAL<\u002Ftd>\n<td>Netherlands<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Bancontact<\u002Ftd>\n<td>Belgium<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>EPS<\u002Ftd>\n<td>Austria<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Przelewy24 (P24)<\u002Ftd>\n<td>Poland<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>MyBank<\u002Ftd>\n<td>Italy<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Sofort \u002F Klarna Sofort<\u002Ftd>\n<td>Germany, Austria, Switzerland<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<p>These methods all share the same underlying structure: the payer authenticates with their own bank and authorises the transfer. The merchant never sees bank credentials.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> <strong>Generally irrevocable.<\u002Fstrong> Once a push transfer clears, the only way to get money back is to ask the recipient to return it, or pursue legal action. There is no chargeback mechanism equivalent to cards.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — the payer must authenticate with their bank.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Varies. Traditional bank transfers settle within hours or next day. Real-time rails (next topic) settle in seconds.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> High — bank accounts require ID verification.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>APP fraud<\u002Fstrong> (Authorised Push Payment fraud) is the primary risk — the victim is deceived into initiating the transfer themselves. Because the transfer is authorised by the account holder, there is no \"unauthorised transaction\" claim to make.<\u002Fp>\n<p>Common vectors:\n- <strong>Invoice fraud:<\u002Fstrong> A supplier's email is compromised. The attacker swaps the bank details on a real invoice. The victim pays the fraudster thinking they're paying a legitimate supplier.\n- <strong>Impersonation of banks or government bodies:<\u002Fstrong> \"Your account has been compromised, move your money to this safe account immediately.\"<\u002Fp>\n<p><strong>Mule account onward transfers<\u002Fstrong> — money received by a mule is quickly forwarded via push transfer, making tracing harder.<\u002Fp>\n<p><strong>Redirect interception<\u002Fstrong> is rare but exists — malware redirecting the bank login redirect to a phishing page at the moment of payment.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Push bank transfers provide <strong>less real-time signal<\u002Fstrong> than cards:\n- No BIN, no network token, no card scheme data\n- IBAN (account number) is the primary identifier — useful for velocity and blocklisting\n- Account holder name can be matched against known mule lists\n- For redirect methods (iDEAL etc.), the issuing bank is known and can be a risk signal<\u002Fp>\n<p><strong>Ravelin note:<\u002Fstrong> The Enterprise API has deprecated <code>banktransfer<\u002Fcode> in favour of <code>bankaccount<\u002Fcode> with <code>transferType: push<\u002Fcode>. The deprecated type carried scheme-level detail (iDEAL, Bancontact etc.); the replacement currently lacks per-scheme fields.<\u002Fp>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>iDEAL (Netherlands):<\u002Fstrong> Covers ~70% of Dutch ecommerce. Low fraud rate due to strong bank authentication.<\u002Fli>\n<li><strong>Sofort (Germany):<\u002Fstrong> Real-time account verification, available across Europe.<\u002Fli>\n<li><strong>Faster Payments (UK):<\u002Fstrong> Underlying infrastructure for most UK bank transfers.<\u002Fli>\n<li><strong>SPEI (Mexico):<\u002Fstrong> Mexico's primary interbank transfer system.<\u002Fli>\n<\u002Ful>",
+          "model": "Push transfers put the <strong>payer in control<\u002Fstrong>. That's also what makes APP fraud work — the payer was tricked into pushing the money themselves, so it's technically \"authorised\".",
+          "terms": [
+            {
+              "term": "Push payment",
+              "def": "A payment where the payer initiates the transfer. They \"push\" money from their account to the recipient."
+            },
+            {
+              "term": "IBAN",
+              "def": "International Bank Account Number — the standardised format for identifying a bank account in Europe and many other markets."
+            },
+            {
+              "term": "Online banking redirect",
+              "def": "A checkout payment method that sends the customer to their bank's own login page to authorise a push transfer."
+            },
+            {
+              "term": "APP fraud",
+              "def": "Authorised Push Payment fraud — the victim willingly sends money under false pretences. No card is stolen; the victim is manipulated into initiating the transfer."
+            },
+            {
+              "term": "Invoice fraud",
+              "def": "A specific APP fraud type where the attacker intercepts a legitimate invoice and changes the bank details so the victim pays the fraudster."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Assuming push transfers can be charged back like cards",
+              "detail": "They cannot. There is no chargeback mechanism for push bank transfers. Once sent, recovery depends on the recipient voluntarily returning funds or legal action."
+            },
+            {
+              "title": "Treating all online banking redirects as the same risk level",
+              "detail": "iDEAL (Netherlands) has very low fraud rates due to strong bank-side authentication. Sofort has historically had higher rates. Scheme matters."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What makes APP fraud so hard to recover from?",
+              "a": "The victim authorised the payment themselves. There is no \"unauthorised transaction\" to dispute, and push transfers have no chargeback mechanism."
+            },
+            {
+              "q": "What is invoice fraud?",
+              "a": "The attacker intercepts a legitimate invoice and swaps the bank details. The victim pays the fraudster believing they are settling a real invoice."
+            },
+            {
+              "q": "What is the primary identifier available in a push bank transfer (not a card)?",
+              "a": "The IBAN — the bank account number. Useful for velocity checks and blocklisting known mule accounts."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A UK business pays what it thinks is a supplier invoice for £45,000. The money goes to a fraudster who intercepted the email and changed the bank details. Can the business get the money back via chargeback?",
+              "options": [
+                "Yes — all payments in the UK are covered by the Payment Services Regulations chargeback rules",
+                "Yes — iDEAL has a buyer protection scheme that applies here",
+                "Yes — the bank must refund within 24 hours under APP fraud rules",
+                "No — push bank transfers have no chargeback mechanism"
+              ],
+              "answer": 3,
+              "explain": "Push bank transfers don't have chargeback. The business must rely on the bank's APP fraud recovery process (voluntary, not guaranteed) or legal action. The UK's PSR mandated reimbursement scheme covers consumer APP fraud but rules vary for businesses."
+            },
+            {
+              "q": "At checkout, a Dutch customer is redirected to their bank's login page to approve a payment. Which method is this most likely to be?",
+              "options": [
+                "Paysafecard",
+                "Apple Pay",
+                "iDEAL",
+                "Klarna"
+              ],
+              "answer": 2,
+              "explain": "iDEAL is the Netherlands' dominant online banking redirect method. The customer authenticates with their own bank and authorises the push transfer there."
+            }
+          ],
+          "recap": "Push bank transfers are payer-initiated and largely irrevocable. APP fraud — where the victim sends money willingly under false pretences — is the dominant risk. Online banking redirects (iDEAL, Sofort) are the checkout-friendly version of the same underlying mechanism."
+        },
+        {
+          "id": "real-time-payments",
+          "title": "Real-time payments",
+          "lesson": "<h3>What is a real-time payment?<\u002Fh3>\n<p>A real-time payment (RTP) is a push bank transfer where the money arrives in <strong>seconds<\u002Fstrong>, 24 hours a day, 7 days a week, including bank holidays. Traditional bank transfers can take hours or days. RTP rails remove that delay entirely.<\u002Fp>\n<p>The name is sometimes interchangeable with \"instant payments\" — they mean the same thing.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Traditional bank transfers are like sending a letter. Real-time payments are like sending a WhatsApp message — it arrives immediately, and the recipient can act on it at once.<\u002Fp>\n<\u002Fblockquote>\n<h3>Key RTP rails by market<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Rail<\u002Fth>\n<th>Market<\u002Fth>\n<th>Notes<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>Pix<\u002Ftd>\n<td>Brazil<\u002Ftd>\n<td>Launched 2020, now processes more transactions than cards<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>UPI<\u002Ftd>\n<td>India<\u002Ftd>\n<td>14+ billion transactions\u002Fmonth<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Faster Payments<\u002Ftd>\n<td>UK<\u002Ftd>\n<td>Since 2008 — one of the world's oldest RTP systems<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>FedNow<\u002Ftd>\n<td>USA<\u002Ftd>\n<td>Launched 2023, still growing adoption<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>RTP (The Clearing House)<\u002Ftd>\n<td>USA<\u002Ftd>\n<td>Private sector, since 2017<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PayNow<\u002Ftd>\n<td>Singapore<\u002Ftd>\n<td>Bank-linked, uses phone\u002FNRIC as identifier<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PromptPay<\u002Ftd>\n<td>Thailand<\u002Ftd>\n<td>80%+ of Thai payments volume<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PayID \u002F NPP<\u002Ftd>\n<td>Australia<\u002Ftd>\n<td>Uses phone or email as a payment address<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility: None.<\u002Fstrong> Real-time payments settle instantly and are final. There is no recall window. This is the single most important property for fraud teams.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — payments are linked to verified bank accounts.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Seconds, 24\u002F7.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> High — tied to bank accounts.<\u002Fli>\n<li><strong>Availability:<\u002Fstrong> Most RTP systems operate outside business hours. Fraud teams need 24\u002F7 coverage.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Irrevocability<\u002Fstrong> is the core risk amplifier. Once a fraudulent RTP payment completes, there is no mechanism to pull the funds back. Every other fraud type gives you some recovery window (chargebacks, holds, reversals). RTP gives you none.<\u002Fp>\n<p><strong>APP fraud via RTP<\u002Fstrong> — many real-time payment systems were originally built for P2P transfers and carry no buyer protection. Fraudsters pressure victims to pay immediately (\"this offer expires in 10 minutes\") knowing that once the victim authorises the payment, it cannot be reversed.<\u002Fp>\n<p><strong>Low fraud rates historically — but growing.<\u002Fstrong> RTP systems have historically had lower absolute fraud rates than cards, partly because of strong bank authentication. But as volume grows, absolute fraud amounts grow with it. Brazil's Pix saw significant fraud growth in its first two years.<\u002Fp>\n<p><strong>24\u002F7 operation<\u002Fstrong> means fraud that goes undetected overnight can be multiplied many times before morning.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li>Account-level signals: IBAN \u002F account number, account age, account history<\u002Fli>\n<li>Payment metadata: time of day (3am transfers are riskier), transaction amount vs typical range<\u002Fli>\n<li>Recipient signals: first-time payee, newly opened account<\u002Fli>\n<li>Some RTP systems (Pix) expose a recipient key (phone number, CPF\u002Ftax ID, email, random key) — valuable for linking to known fraud actors<\u002Fli>\n<\u002Ful>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>Pix (Brazil):<\u002Fstrong> Uses a \"Pix key\" (phone, CPF, email, or random key) as the payment address. QR code variants also exist.<\u002Fli>\n<li><strong>UPI (India):<\u002Fstrong> VPA (Virtual Payment Address) like yourname@bankname. Also powers QR payments.<\u002Fli>\n<li><strong>Faster Payments (UK):<\u002Fstrong> The backbone of UK bank transfers — most online banking \"send money\" flows use this.<\u002Fli>\n<\u002Ful>",
+          "model": "Real-time payments are <strong>instant and irrevocable<\u002Fstrong>. That's great for legitimate commerce and terrible for fraud recovery — there is no window to intervene once the payment clears.",
+          "terms": [
+            {
+              "term": "Real-time payment (RTP)",
+              "def": "A bank transfer that settles in seconds, 24\u002F7, with immediate finality. Also called instant payment."
+            },
+            {
+              "term": "Finality",
+              "def": "Once a payment is final, it cannot be reversed by any party — not the sender, not the bank, not the scheme."
+            },
+            {
+              "term": "Pix key",
+              "def": "Brazil's Pix identifier for receiving payments — can be a phone number, CPF (tax ID), email, or a randomly generated code."
+            },
+            {
+              "term": "VPA (Virtual Payment Address)",
+              "def": "The UPI identifier format — an email-like address (name@bank) that maps to a bank account."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Treating RTP fraud like card fraud with chargebacks",
+              "detail": "There is no chargeback for RTP. Fraud prevention must happen before the payment, not after. Post-payment recovery is very limited."
+            },
+            {
+              "title": "Assuming low historical fraud rates mean low risk",
+              "detail": "RTP fraud rates are low as a percentage, but as volumes grow (Pix processes billions per month) the absolute fraud value grows proportionally. Do not underestimate based on percentages alone."
+            }
+          ],
+          "cards": [
+            {
+              "q": "Why is irrevocability the central fraud concern for RTP?",
+              "a": "Once the payment settles (seconds), there is no mechanism to pull funds back. All fraud recovery must happen before the payment, not after."
+            },
+            {
+              "q": "What is a Pix key?",
+              "a": "An identifier used to receive Pix payments in Brazil — a phone number, CPF, email, or random code. One person can have multiple Pix keys."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A fraudster calls a victim, pretends to be their bank, and tells them to immediately transfer their savings via Faster Payments to a \"safe account\". Why is recovery especially difficult?",
+              "options": [
+                "Faster Payments requires the recipient's consent before funds can be recovered",
+                "Faster Payments settles instantly and is irrevocable — there is no chargeback or recall window",
+                "Faster Payments only operates during business hours so the bank cannot act",
+                "The bank must prove the payment was unauthorised before it can reverse it"
+              ],
+              "answer": 1,
+              "explain": "Irrevocability is the key property. Once the victim authorises and the payment settles — which takes seconds on Faster Payments — no automatic reversal is possible. Recovery depends on the receiving bank freezing funds voluntarily."
+            },
+            {
+              "q": "Which real-time payment rail processes the largest volume of transactions by count?",
+              "options": [
+                "Pix (Brazil)",
+                "FedNow (USA)",
+                "UPI (India) — over 14 billion transactions per month",
+                "Faster Payments (UK)"
+              ],
+              "answer": 2,
+              "explain": "UPI in India is one of the world's highest-volume payment systems by transaction count, driven by India's large population and rapid digital payments adoption since the 2016 demonetisation."
+            }
+          ],
+          "recap": "RTP = instant and final. No recall window. APP fraud via RTP is especially damaging because the fraudster knows the money is gone the moment the victim taps confirm. Prevention must happen before the payment authorisation."
+        },
+        {
+          "id": "direct-debit",
+          "title": "Direct debit and pull bank transfers",
+          "lesson": "<h3>What is a direct debit?<\u002Fh3>\n<p>A direct debit is the opposite of a push transfer — it's a <strong>pull payment<\u002Fstrong>. The merchant (payee) initiates the collection. The customer gives permission in advance (called a mandate), and then the merchant pulls money from the customer's account on an agreed schedule.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Your Netflix subscription. You don't log in and \"pay\" every month — Netflix automatically collects from your account. You agreed to the mandate when you signed up.<\u002Fp>\n<\u002Fblockquote>\n<h3>How mandates work<\u002Fh3>\n<p>A mandate is the customer's permission for the merchant to collect. It specifies who can collect, how much (or up to a cap), and how often. This mandate is registered with the bank, and the bank honours future collection requests that match it.<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>Scheme<\u002Fth>\n<th>Market<\u002Fth>\n<th>Common use<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>SEPA Direct Debit<\u002Ftd>\n<td>Eurozone<\u002Ftd>\n<td>Subscriptions, utilities, B2B<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Bacs Direct Debit<\u002Ftd>\n<td>UK<\u002Ftd>\n<td>The most common UK bill payment method<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>ACH (Automated Clearing House)<\u002Ftd>\n<td>USA<\u002Ftd>\n<td>Payroll, bill pay, B2B<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>BECS<\u002Ftd>\n<td>Australia<\u002Ftd>\n<td>Recurring billing<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>NACH<\u002Ftd>\n<td>India<\u002Ftd>\n<td>Loan repayments, insurance<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility: High — the payer can reverse.<\u002Fstrong> Most direct debit schemes give consumers a right to claim a refund — sometimes up to 13 months in SEPA. This is very different from push transfers.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — tied to verified bank accounts.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Slow. Direct debit typically takes 2–5 business days to clear.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> High — bank accounts with mandate registration.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Mandate fraud<\u002Fstrong> — someone sets up a direct debit against a victim's account without their consent. Especially possible where mandate setup relies only on account number and sort code (easily obtainable).<\u002Fp>\n<p><strong>Chargeback abuse<\u002Fstrong> — because consumers have strong reversal rights, friendly fraud is common. A customer authorises a payment, receives goods, then claims the direct debit was \"unauthorised\" and reverses it.<\u002Fp>\n<p><strong>Unauthorised collections<\u002Fstrong> — a merchant (or fraudster posing as a merchant) collects more than the agreed mandate, or collects after cancellation.<\u002Fp>\n<p><strong>B2B direct debit fraud<\u002Fstrong> — in some schemes, B2B mandates have weaker consumer protections. Fraudsters targeting businesses can exploit this.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li>IBAN velocity: the same IBAN being used to set up mandates at multiple merchants in a short window<\u002Fli>\n<li>Mandate age: a mandate set up and used within hours is unusual<\u002Fli>\n<li>Account holder name mismatch: IBAN belongs to a different name than the one given at checkout<\u002Fli>\n<li>High refusal\u002Freturn rates: a merchant seeing many returns on direct debit collections is a fraud signal<\u002Fli>\n<\u002Ful>",
+          "model": "Direct debit is the merchant <strong>pulling money<\u002Fstrong> with the customer's pre-authorised mandate. The chargeback right runs the other direction — customers can reclaim for months.",
+          "terms": [
+            {
+              "term": "Mandate",
+              "def": "Written or digital authorisation from a payer allowing a named merchant to collect payments from their account."
+            },
+            {
+              "term": "Direct debit return",
+              "def": "When a collected payment bounces back — either because of insufficient funds, a cancelled mandate, or a dispute claim."
+            },
+            {
+              "term": "SEPA Direct Debit",
+              "def": "The European standard for cross-border direct debit within the Single Euro Payments Area. Consumers can reverse up to 8 weeks after collection (no-questions-asked), or up to 13 months for unauthorised claims."
+            },
+            {
+              "term": "Pull payment",
+              "def": "A payment initiated by the payee (recipient), not the payer. The payee \"pulls\" funds out of the payer's account."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Assuming direct debit is low fraud because it's slow",
+              "detail": "Settlement speed does not equal fraud risk. Mandate fraud and chargeback abuse are both significant, despite slow settlement."
+            },
+            {
+              "title": "Ignoring mandate verification",
+              "detail": "In some markets, mandate setup requires only an account number. Without confirming the person setting up the mandate owns the account, mandate fraud is easy."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is a direct debit mandate?",
+              "a": "The customer's permission for a merchant to collect payments from their account — like a standing authorisation."
+            },
+            {
+              "q": "How long does a SEPA consumer have to reverse an unauthorised direct debit claim?",
+              "a": "Up to 13 months for an unauthorised transaction claim (8 weeks no-questions-asked for authorised ones)."
+            },
+            {
+              "q": "What is mandate fraud?",
+              "a": "Setting up a direct debit against someone else's account without their consent — possible where mandate setup requires only account details, not account ownership verification."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A customer sees a direct debit on their bank statement they don't recognise. They are in Germany, using SEPA Direct Debit. What are their options?",
+              "options": [
+                "They have 24 hours to dispute, after which the collection is final",
+                "SEPA Direct Debit has no consumer refund rights — it is merchant-initiated only",
+                "They can claim a refund for up to 13 months if the collection was unauthorised",
+                "They must contact the merchant directly and the bank cannot help"
+              ],
+              "answer": 2,
+              "explain": "SEPA Direct Debit gives strong consumer protections. No-questions-asked reversal is available for 8 weeks; unauthorised claims can be made for up to 13 months."
+            },
+            {
+              "q": "What fraud type exploits the strong consumer reversal rights of direct debit?",
+              "options": [
+                "SIM swap — fraudster takes over the customer's phone number",
+                "QR substitution — fraudster replaces a legitimate QR code with their own",
+                "Friendly fraud — customer receives goods then reverses the direct debit claiming it was unauthorised",
+                "Card testing — fraudster checks if a card number is valid"
+              ],
+              "answer": 2,
+              "explain": "The right to reverse is designed to protect consumers but can be abused. A customer receives goods, then claims the direct debit was set up without their consent — resulting in a reversal while they keep the goods."
+            }
+          ],
+          "recap": "Direct debit is pull-based — the merchant collects with a pre-authorised mandate. Consumers have strong reversal rights (especially in SEPA), creating friendly fraud risk. Mandate fraud (setting up debits against someone else's account) is the other key vector."
+        },
+        {
+          "id": "open-banking",
+          "title": "Open banking payments",
+          "lesson": "<h3>What is open banking?<\u002Fh3>\n<p>Open banking is a regulatory framework that requires banks to share customer account data (with consent) with authorised third parties via standardised APIs. In Europe, this is driven by PSD2 (Second Payment Services Directive). In the UK, Open Banking was mandated separately.<\u002Fp>\n<p>For payments, open banking enables <strong>third-party providers to initiate push bank transfers on behalf of a customer<\u002Fstrong> — without the customer needing to log into their bank directly.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Normally, to transfer money, you log into your bank. Open banking lets an authorised app (like a checkout page) do it for you — but you still explicitly consent, using your bank's authentication.<\u002Fp>\n<\u002Fblockquote>\n<h3>How an open banking payment works<\u002Fh3>\n<ol>\n<li>At checkout, customer selects \"Pay by Bank\" (or similar)<\u002Fli>\n<li>They choose their bank from a list<\u002Fli>\n<li>They are redirected to their bank's authentication screen<\u002Fli>\n<li>They approve the payment using their bank's app or credentials<\u002Fli>\n<li>A push transfer is initiated directly from their bank account<\u002Fli>\n<li>They return to the merchant — payment done<\u002Fli>\n<\u002Fol>\n<p>This is similar to an online banking redirect (iDEAL etc.) but uses a standardised open banking API rather than each bank's proprietary integration.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Same as push bank transfers — generally irrevocable once cleared.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — requires full bank authentication.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Depends on the underlying rail. In the UK, uses Faster Payments (seconds). In Europe, uses SEPA SCT Inst where available.<\u002Fli>\n<li><strong>Data richness:<\u002Fstrong> High. Open banking APIs can surface account holder name, account number, balance confirmation — valuable for fraud assessment.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Lower fraud rate than cards<\u002Fstrong> — because open banking payments require strong bank authentication (biometric or multi-factor), they are harder to initiate fraudulently than card payments.<\u002Fp>\n<p><strong>ATO on the bank account<\u002Fstrong> — if a fraudster has taken over the victim's bank account or mobile banking app, they can authorise open banking payments just as a legitimate user would.<\u002Fp>\n<p><strong>Consent manipulation<\u002Fstrong> — in open banking, consent is central. Attackers have attempted to display misleading consent screens to trick users into approving payments they did not intend.<\u002Fp>\n<p><strong>VRP (Variable Recurring Payments)<\u002Fstrong> — a newer open banking variant in the UK allows merchants to initiate a series of variable-amount payments under a single consent (the customer approves once, payments follow). This is more powerful and, if the consent is compromised, allows repeated collections.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Open banking is one of the <strong>richest sources of fraud signal<\u002Fstrong> among bank-based payment methods:\n- Account holder name confirmation: verify the name matches who you think you're dealing with\n- Account existence and ownership confirmation pre-payment\n- Balance check (with consent): confirm funds exist before initiating collection\n- Account transaction history (with consent): establish behavioural baseline<\u002Fp>",
+          "model": "Open banking is <strong>bank authentication as a service<\u002Fstrong>. The customer authenticates with their own bank; a third party initiates the transfer. Strong auth = low fraud, but ATO of the bank account itself bypasses all of it.",
+          "terms": [
+            {
+              "term": "PSD2",
+              "def": "The EU's Second Payment Services Directive — the regulation that created open banking in Europe, requiring banks to open APIs to authorised third parties."
+            },
+            {
+              "term": "PISP (Payment Initiation Service Provider)",
+              "def": "A company authorised to initiate payments from a customer's bank account via open banking APIs, on the customer's behalf."
+            },
+            {
+              "term": "VRP (Variable Recurring Payments)",
+              "def": "An open banking mechanism (currently UK-specific) allowing a merchant to initiate a series of payments under a single customer consent, with variable amounts up to an agreed cap."
+            },
+            {
+              "term": "Strong Customer Authentication (SCA)",
+              "def": "A regulatory requirement (under PSD2) for at least two factors — something you know (PIN\u002Fpassword), something you have (phone\u002Fdevice), or something you are (biometric)."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Treating open banking as \"just another redirect method\"",
+              "detail": "Open banking APIs can expose rich account data (name, ownership, balance) that redirect methods (iDEAL, Sofort) cannot. That data richness is a significant fraud detection advantage."
+            },
+            {
+              "title": "Assuming strong authentication eliminates fraud",
+              "detail": "SCA prevents unauthorised card-not-present fraud but does not protect against ATO. If the fraudster has already taken over the victim's banking app, they can pass SCA."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What makes open banking payments lower fraud risk than cards by default?",
+              "a": "They require strong bank authentication (biometric\u002FMFA) to initiate — much harder to spoof than card credentials."
+            },
+            {
+              "q": "What additional data can open banking expose that a card payment cannot?",
+              "a": "Account holder name, ownership confirmation, balance confirmation, and transaction history — all with customer consent."
+            },
+            {
+              "q": "What is a VRP in open banking?",
+              "a": "Variable Recurring Payment — a single consent allows a merchant to collect multiple future payments of varying amounts up to an agreed cap."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A customer's mobile banking app is compromised in an ATO. What does this mean for open banking payments?",
+              "options": [
+                "The fraudster can now initiate open banking payments that will pass SCA — the authentication is with the bank app, which they now control",
+                "The bank will always send a secondary SMS code to the customer's original phone number",
+                "Open banking payments are blocked automatically if a new device is detected",
+                "Open banking requires in-branch verification so remote ATO is impossible"
+              ],
+              "answer": 0,
+              "explain": "SCA is only as strong as the authentication method. If the fraudster controls the device and banking app, they can pass biometric or PIN authentication exactly as the legitimate user would."
+            },
+            {
+              "q": "An open banking API can confirm the account holder's name before a payment is sent. Why is this valuable for fraud detection?",
+              "options": [
+                "It automatically reverses the payment if a name mismatch is found",
+                "It lets the payee verify the recipient account belongs to who they expect — helping detect mule accounts registered in different names",
+                "It allows the payee to block payments to certain nationalities",
+                "It gives the payee access to the recipient's full transaction history"
+              ],
+              "answer": 1,
+              "explain": "Name confirmation catches cases where the account being paid belongs to someone other than the intended recipient — a common mule account signal."
+            }
+          ],
+          "recap": "Open banking uses bank authentication to initiate push transfers. Lower fraud rate than cards due to strong auth, but rich data (name, ownership, balance) is the bigger prize for fraud teams. ATO on the bank account bypasses all the auth controls."
+        }
+      ]
+    },
+    {
+      "id": "bnpl",
+      "title": "Buy Now Pay Later",
+      "topics": [
+        {
+          "id": "consumer-bnpl",
+          "title": "Consumer BNPL",
+          "lesson": "<h3>What is BNPL?<\u002Fh3>\n<p>Buy Now Pay Later (BNPL) lets a customer complete a purchase today and pay for it in instalments — typically three or four equal payments, spread over 6–8 weeks, with no interest if paid on time.<\u002Fp>\n<p>The BNPL provider pays the merchant upfront in full. The customer repays the BNPL provider. The merchant gets their money immediately; the customer gets deferred payment.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> The old-fashioned catalogue purchase — \"get it now, pay over time\" — but instant, online, and usually interest-free.<\u002Fp>\n<\u002Fblockquote>\n<h3>How it works at checkout<\u002Fh3>\n<ol>\n<li>Customer selects Klarna \u002F Afterpay \u002F Affirm etc. at checkout<\u002Fli>\n<li>BNPL provider performs a soft credit check (usually instant, often just email + date of birth)<\u002Fli>\n<li>Approval is given (or declined) in seconds<\u002Fli>\n<li>Merchant receives full payment from the BNPL provider<\u002Fli>\n<li>Customer repays the BNPL provider in instalments (often via direct debit)<\u002Fli>\n<\u002Fol>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Customer has return\u002Frefund rights, but these go through the BNPL provider, not a card chargeback. Rules vary by provider.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — requires name, email, date of birth, often address. But identity verification is lighter than a bank account.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Merchant is paid immediately or within 1–2 days. Customer repays over weeks.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> Light compared to banks. Many BNPL providers rely on soft credit checks, not full identity verification.<\u002Fli>\n<li><strong>Regulation:<\u002Fstrong> Rapidly increasing. UK and EU are introducing mandatory credit checks and Consumer Duty requirements.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Identity fraud<\u002Fstrong> — using a stolen identity to open a BNPL account and take goods without any intention of repaying. Because KYC is lighter than a bank, BNPL is attractive for this.<\u002Fp>\n<p><strong>Credit stacking<\u002Fstrong> — a fraudster (or someone in financial distress) opens multiple BNPL accounts across different providers simultaneously, taking out credit from each. Providers cannot see each other's exposure in real time, so the total credit extended is invisible to any single provider.<\u002Fp>\n<p><strong>Return fraud<\u002Fstrong> — customer buys expensive goods on BNPL, returns empty boxes or counterfeit items, and gets refunded while the genuine goods have been sold on.<\u002Fp>\n<p><strong>Triangulation fraud<\u002Fstrong> — fraudster uses stolen card details to order real goods via a legitimate BNPL account, then sells the goods. The BNPL provider takes the credit risk; the card issuer gets a chargeback.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li>Email age and history: newly created email at checkout is a risk signal<\u002Fli>\n<li>Address velocity: same delivery address used with multiple BNPL accounts<\u002Fli>\n<li>Device fingerprint: same device appearing across multiple customer accounts<\u002Fli>\n<li>Return rate: customer with high return rates combined with high order values<\u002Fli>\n<li>Name\u002Faddress mismatch between billing and delivery<\u002Fli>\n<\u002Ful>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>Klarna (Sweden):<\u002Fstrong> Largest European BNPL, available in 45+ markets<\u002Fli>\n<li><strong>Afterpay \u002F Clearpay (Australia \u002F UK):<\u002Fstrong> 4 fortnightly payments, no interest<\u002Fli>\n<li><strong>Affirm (USA):<\u002Fstrong> Longer-term financing options alongside instalment plans<\u002Fli>\n<li><strong>Tabby \u002F Tamara (MENA):<\u002Fstrong> Dominant BNPL providers in Gulf markets<\u002Fli>\n<\u002Ful>",
+          "model": "BNPL is <strong>instant unsecured credit<\u002Fstrong> at checkout, with light KYC. The fraud risk is front-loaded — take goods, never repay, and providers can't see each other's exposure.",
+          "terms": [
+            {
+              "term": "Soft credit check",
+              "def": "A credit inquiry that does not leave a mark on the applicant's credit file. Used by most BNPL providers at checkout — much lighter than a full credit check."
+            },
+            {
+              "term": "Credit stacking",
+              "def": "Taking out credit from multiple BNPL providers simultaneously. Each provider sees only their own exposure; combined debt is invisible to any individual provider."
+            },
+            {
+              "term": "BNPL chargeback",
+              "def": "Unlike cards, BNPL disputes go through the BNPL provider's own process. Rules and timescales vary by provider and country."
+            },
+            {
+              "term": "Triangulation fraud",
+              "def": "A fraud pattern where a fraudster uses stolen payment credentials to buy real goods from a legitimate merchant (via BNPL), then resells the goods."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Assuming BNPL fraud looks like card fraud",
+              "detail": "BNPL fraud is often identity-led and credit-stacking-based. The fraudster's goal is to get goods without paying, not to use stolen card credentials. Different signals, different models."
+            },
+            {
+              "title": "Overlooking return fraud",
+              "detail": "Return fraud in BNPL is easy to miss because the return looks legitimate. High-value items, low-quality returns, and customers with history of returns on BNPL should all be flagged."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is credit stacking in BNPL?",
+              "a": "Opening accounts with multiple BNPL providers at the same time to obtain more credit than any single provider would approve. Each provider sees only their own exposure."
+            },
+            {
+              "q": "Why is BNPL identity fraud easier than bank fraud?",
+              "a": "BNPL KYC is much lighter than a bank account. Often only name, email, date of birth, and address are needed — data that is easy to obtain."
+            },
+            {
+              "q": "What is triangulation fraud?",
+              "a": "Using stolen payment details to buy genuine goods via a legitimate BNPL account, then reselling the goods for cash."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A fraudster opens BNPL accounts with Klarna, Afterpay, and Affirm on the same day, each time using the same identity but different email addresses. What is this called?",
+              "options": [
+                "Credit stacking — taking simultaneous credit from multiple providers who cannot see each other's exposure",
+                "Mandate fraud — setting up direct debits without consent",
+                "APP fraud — tricking victims into sending money",
+                "Card testing — checking if stolen card numbers are valid"
+              ],
+              "answer": 0,
+              "explain": "Credit stacking exploits the lack of real-time data sharing between BNPL providers. Each provider approves the credit in isolation, unaware the same person is obtaining multiple lines simultaneously."
+            },
+            {
+              "q": "Which characteristic makes BNPL more attractive for identity fraud than a credit card application?",
+              "options": [
+                "BNPL is always free so there is no financial gain for the fraudster",
+                "BNPL providers never check the delivery address",
+                "Much lighter KYC — often only name, email, date of birth, and address required, with only a soft credit check",
+                "BNPL has no fraud monitoring at all"
+              ],
+              "answer": 2,
+              "explain": "Credit card applications typically require full identity verification and a hard credit check. BNPL soft-checks mean a fraudster with basic personal data can often get approved."
+            }
+          ],
+          "recap": "BNPL is fast, light-KYC credit at checkout. Key fraud types: identity fraud (steal goods, never repay), credit stacking (exploit multi-provider opacity), and return fraud. Regulation is tightening but KYC remains lighter than traditional credit."
+        },
+        {
+          "id": "b2b-bnpl",
+          "title": "B2B BNPL and trade credit",
+          "lesson": "<h3>What is B2B BNPL?<\u002Fh3>\n<p>B2B BNPL extends the \"buy now, pay later\" concept to businesses purchasing from suppliers. Instead of a consumer buying a jacket and paying in 4 instalments, a small business orders stock and pays in 30, 60, or 90 days — or in instalments over several months.<\u002Fp>\n<p>This has always existed as \"trade credit\" — suppliers giving buyers credit terms. B2B BNPL providers are digitising and scaling this, inserting themselves as the credit provider (they pay the supplier upfront and take on the collection risk from the buyer business).<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Limited buyer protection compared to consumer BNPL. B2B transactions often lack the consumer protection rules that constrain B2C BNPL.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — business verification required (company registration, director IDs).<\u002Fli>\n<li><strong>Settlement:<\u002Fstrong> Supplier paid immediately; buyer has extended terms.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> More extensive than consumer BNPL (business verification), but business identity fraud remains possible.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Business identity fraud<\u002Fstrong> — using a legitimate company's registration details to impersonate the business and obtain goods on trade credit. Company registration data is often publicly available (Companies House in the UK).<\u002Fp>\n<p><strong>Invoice fraud \u002F trade credit abuse<\u002Fstrong> — fraudster obtains goods using a real business identity, disappears before the payment is due.<\u002Fp>\n<p><strong>Director impersonation<\u002Fstrong> — specifically targeting the director verification step by using stolen or synthetic director identities.<\u002Fp>\n<p><strong>Lower consumer protection = less recourse<\u002Fstrong> — if a B2B buyer disputes a BNPL charge, the protections are weaker than consumer law provides. This creates an asymmetric risk.<\u002Fp>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>Billie (Germany):<\u002Fstrong> B2B BNPL for European businesses<\u002Fli>\n<li><strong>Two (UK \u002F Nordics):<\u002Fstrong> Revenue-based trade credit<\u002Fli>\n<li><strong>Hokodo (Europe):<\u002Fstrong> B2B BNPL with trade credit insurance<\u002Fli>\n<\u002Ful>",
+          "model": "B2B BNPL is trade credit, digitised. The fraud risk shifts from individual identity theft to <strong>business impersonation<\u002Fstrong> — using publicly available company data to fraudulently obtain goods on account.",
+          "terms": [
+            {
+              "term": "Trade credit",
+              "def": "An arrangement where a supplier provides goods or services and allows the buyer to pay later — typically 30, 60, or 90 days. The original form of \"buy now, pay later\" for businesses."
+            },
+            {
+              "term": "Business identity fraud",
+              "def": "Using a legitimate company's registration details (or creating a convincing fake) to impersonate the business and obtain goods or credit."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Assuming business verification eliminates fraud",
+              "detail": "Company registration data is publicly available in most markets. Knowing a company's registration number, VAT number, and registered address is not proof of identity — it's just data."
+            }
+          ],
+          "cards": [
+            {
+              "q": "Why is business identity fraud easier than it might seem in B2B BNPL?",
+              "a": "Company registration data (registration number, address, director names) is publicly available. A fraudster can impersonate a real business using data from Companies House or equivalent."
+            },
+            {
+              "q": "What is the key structural difference between B2B BNPL and consumer BNPL in terms of fraud recourse?",
+              "a": "B2B transactions have weaker buyer protection under consumer law. Disputes are governed by commercial terms, not consumer protection regulations."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A fraudster orders £50,000 of electronics from a supplier using the genuine Companies House details of a legitimate UK business, then disappears. What type of fraud is this?",
+              "options": [
+                "Friendly fraud — the business received goods and is falsely disputing the charge",
+                "Mandate fraud — setting up an unauthorised direct debit",
+                "Business identity fraud — impersonating a real company to obtain trade credit",
+                "Card testing — checking stolen card details on small purchases"
+              ],
+              "answer": 2,
+              "explain": "The fraudster used real company data (publicly available from Companies House) to impersonate a legitimate business and obtain goods on trade credit with no intention of paying."
+            }
+          ],
+          "recap": "B2B BNPL digitises trade credit. The primary fraud risk is business impersonation — using public company registration data to fraudulently obtain goods. Consumer protection rules are weaker in B2B, so recourse is harder."
+        }
+      ]
+    },
+    {
+      "id": "mobile-money-carrier",
+      "title": "Mobile Money and Carrier Billing",
+      "topics": [
+        {
+          "id": "mobile-money",
+          "title": "Mobile money",
+          "lesson": "<h3>What is mobile money?<\u002Fh3>\n<p>Mobile money is a financial service operated by a <strong>mobile network operator (telco)<\u002Fstrong> — your phone company — rather than a bank. It lets people send, receive, and store money using a basic mobile phone, with a SIM card as the account.<\u002Fp>\n<p>This is not a smartphone wallet like Apple Pay. Mobile money works on basic feature phones via SMS and USSD codes — which is why it has become critical infrastructure in markets where banking is limited but mobile phone ownership is widespread.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Your SIM card becomes your bank account. Instead of a sort code and account number, your mobile phone number is your financial identity. Instead of an ATM, you use a local agent.<\u002Fp>\n<\u002Fblockquote>\n<h3>Where it matters most<\u002Fh3>\n<p>Mobile money is dominant in sub-Saharan Africa, with growing presence in South Asia and Southeast Asia.<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>Provider<\u002Fth>\n<th>Markets<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>M-Pesa<\u002Ftd>\n<td>Kenya, Tanzania, Mozambique, DRC, Ghana, Egypt<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>MTN MoMo<\u002Ftd>\n<td>West, East, Central Africa (16+ countries)<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Airtel Money<\u002Ftd>\n<td>Multi-country Africa<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>bKash<\u002Ftd>\n<td>Bangladesh<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>JazzCash \u002F Easypaisa<\u002Ftd>\n<td>Pakistan<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Wave<\u002Ftd>\n<td>Senegal, Côte d'Ivoire<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<p>M-Pesa in Kenya processes more transactions than the Kenyan banking system — it is not a niche product in its market.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Generally not reversible. Mobile money transfers are treated like cash.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Varies significantly by market and KYC regime. In some markets, SIM registration is rigorous; in others, it is weak.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Instant.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> Range from basic (phone number + ID document) to minimal in some regions.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>SIM swap fraud<\u002Fstrong> — the fraudster convinces a mobile operator's customer service to port the victim's phone number to a new SIM (one the fraudster controls). They then receive all SMS one-time passwords and can access the mobile money account.<\u002Fp>\n<p><strong>Agent fraud<\u002Fstrong> — mobile money relies on a network of physical agents for cash-in and cash-out. Agents have privileged access and can be bribed or compromised.<\u002Fp>\n<p><strong>Social engineering<\u002Fstrong> — sending fraudulent \"wrong transfer\" SMS messages to convince victims to return money that was never actually received.<\u002Fp>\n<p><strong>Fake merchant QR codes<\u002Fstrong> — in markets where mobile money uses QR for merchant payments, QR substitution attacks occur (covered in the QR topic).<\u002Fp>\n<p><strong>Limited external visibility<\u002Fstrong> — transactions within the mobile money ecosystem are often not visible to external fraud systems. If a customer's funds end up in an M-Pesa account, a bank-based fraud system may not detect it.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Monitoring is harder than card or bank fraud:\n- SIM swap events should trigger account suspension or step-up authentication\n- Agent transaction velocity — unusually high cash-out volumes at a single agent\n- Geographic inconsistency — mobile money account registered in Nairobi, cash-out attempted in Mombasa within minutes\n- Device change — accessing account from a new IMEI (device identifier)<\u002Fp>",
+          "model": "Mobile money is <strong>banking via your SIM card<\u002Fstrong>. The phone number is the account. The biggest fraud risk is SIM swap — steal the number, steal the account.",
+          "terms": [
+            {
+              "term": "USSD",
+              "def": "Unstructured Supplementary Service Data — a protocol that works on basic feature phones, enabling menu-driven interactions (like mobile banking) without internet."
+            },
+            {
+              "term": "SIM swap",
+              "def": "Convincing a mobile operator to transfer a phone number to a new SIM. Gives the attacker control of SMS authentication and any service linked to that number."
+            },
+            {
+              "term": "Mobile money agent",
+              "def": "A third-party individual or shop that handles cash-in and cash-out on behalf of the mobile money provider. Often the only \"branch\" in rural areas."
+            },
+            {
+              "term": "IMEI",
+              "def": "International Mobile Equipment Identity — a unique hardware identifier for a mobile device. A change in IMEI signals a device change."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Assuming mobile money is a wallet",
+              "detail": "Mobile money is a separate account system operated by the telco — not a wallet layered on top of a bank account. The telco IS the financial institution."
+            },
+            {
+              "title": "Underestimating the agent fraud risk",
+              "detail": "Agents are the human layer of the system. Agent fraud (bribed, compromised, or colluding agents) is significant and hard to detect remotely."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is SIM swap fraud in the context of mobile money?",
+              "a": "Convincing the telco to transfer the victim's phone number to an attacker-controlled SIM. The attacker then has full control of the mobile money account tied to that number."
+            },
+            {
+              "q": "Why is mobile money especially important in sub-Saharan Africa?",
+              "a": "In many markets, mobile phone penetration is high but bank account penetration is low. Mobile money provides financial services (send, receive, save, pay) to people without bank accounts."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "An M-Pesa user reports they suddenly cannot receive calls or SMS, and shortly after discovers their account has been drained. What most likely happened?",
+              "options": [
+                "Agent fraud — an M-Pesa agent accessed the account directly",
+                "A SIM swap — the attacker transferred the victim's number to a new SIM, intercepted OTPs, and accessed the account",
+                "The account was suspended for inactivity",
+                "A software bug caused the funds to be deleted"
+              ],
+              "answer": 1,
+              "explain": "The sudden loss of phone service is the classic early sign of a SIM swap. The attacker ports the number and immediately begins draining the account before the victim can react."
+            }
+          ],
+          "recap": "Mobile money uses the SIM card as a bank account — critical in markets with low banking access. SIM swap is the primary fraud vector; agent fraud and limited external visibility make monitoring harder than card or bank systems."
+        },
+        {
+          "id": "carrier-billing",
+          "title": "Carrier and operator billing",
+          "lesson": "<h3>What is carrier billing?<\u002Fh3>\n<p>Carrier billing (also called direct carrier billing or DCB) lets you charge a purchase directly to your <strong>mobile phone bill<\u002Fstrong> — or deduct it from your prepaid credit. You don't need a card or bank account. The payment is collected by your telco with your next bill.<\u002Fp>\n<p>It is widely used for:\n- Digital content (app purchases, ringtones, games, subscriptions)\n- In-app purchases on Android in markets where Google Play's card payment penetration is low\n- Charitable donations (text-to-donate)<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Putting something on a hotel room tab. The cost doesn't come out of your wallet now — it goes on a running total that you settle at the end. Here, your mobile contract is the tab.<\u002Fp>\n<\u002Fblockquote>\n<h3>How it works<\u002Fh3>\n<ol>\n<li>User selects \"Pay via mobile\" or \"Charge to phone bill\"<\u002Fli>\n<li>Their phone number (MSISDN) is identified — either from the mobile network directly, or by the user entering it<\u002Fli>\n<li>A one-time PIN is sent to the phone for confirmation (in most regulated markets)<\u002Fli>\n<li>Charge is approved; telco collects payment in the next billing cycle<\u002Fli>\n<li>Merchant receives funds (minus the telco's revenue share — often 30–40%)<\u002Fli>\n<\u002Fol>\n<p>Key intermediaries: <strong>Boku<\u002Fstrong> and <strong>Fortumo<\u002Fstrong> (now merged) are the dominant global carrier billing aggregators, connecting merchants to multiple telcos.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Limited — varies by telco and market. Chargebacks are not standard.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Moderate. The telco knows who you are (your account). But externally, the only identifier shared may be a tokenised or hashed MSISDN — the actual phone number is often not exposed.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Merchant receives funds on a billing-cycle lag (monthly).<\u002Fli>\n<li><strong>Fraud API coverage:<\u002Fstrong> Almost none externally. <strong>No major fraud API (Stripe, Adyen, Worldpay, Ravelin) natively supports carrier billing.<\u002Fstrong> Boku is the only specialist platform.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Cramming<\u002Fstrong> — adding unauthorised charges to a phone bill, often by a fraudulent merchant claiming the user signed up for a subscription they did not. The user only notices when reviewing their bill.<\u002Fp>\n<p><strong>Subscription fraud<\u002Fstrong> — a fraudster uses someone else's phone number to sign up for premium subscriptions, which are charged to the victim's account.<\u002Fp>\n<p><strong>Limited consumer awareness<\u002Fstrong> — users often don't notice small charges on a complex mobile bill until months have passed.<\u002Fp>\n<p><strong>Telco customer service exploitation<\u002Fstrong> — some attacks involve social engineering telco support staff to redirect billing or change account details.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Carrier billing offers the <strong>least external fraud signal<\u002Fstrong> of any payment method:\n- The MSISDN (phone number) is usually tokenised or not shared externally at all\n- No card data, no bank data, no network tokens\n- Fraud detection relies on the telco's own systems and Boku's internal risk scoring\n- External fraud systems (like Ravelin) currently have <strong>no native carrier billing support<\u002Fstrong> — clients are forced to use <code>wallet<\u002Fcode> or deprecated <code>other<\u002Fcode> types as workarounds<\u002Fp>\n<p>This is an identified gap: carrier billing fraud is effectively invisible to most fraud APIs.<\u002Fp>",
+          "model": "Carrier billing puts the <strong>telco between the merchant and the customer's money<\u002Fstrong>. Fraud signals are almost entirely inside the telco's system — external fraud APIs see almost nothing.",
+          "terms": [
+            {
+              "term": "MSISDN",
+              "def": "Mobile Station Integrated Services Digital Network — the technical name for a mobile phone number. The primary identifier in carrier billing."
+            },
+            {
+              "term": "Cramming",
+              "def": "Adding unauthorised or deceptive charges to a phone bill, typically for a subscription the user did not knowingly sign up for."
+            },
+            {
+              "term": "Direct carrier billing (DCB)",
+              "def": "Charging a purchase directly to the user's mobile phone account (prepaid credit or monthly bill) rather than to a card or bank account."
+            },
+            {
+              "term": "Revenue share",
+              "def": "The portion of each transaction kept by the telco. Typically 30–40% for carrier billing — significantly higher than card or bank transfer fees."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Assuming carrier billing is low risk because it is not commonly used in Western markets",
+              "detail": "In markets like Indonesia, India, and parts of Africa, carrier billing is a primary payment method for digital content. Risk teams with global scope need to understand it."
+            },
+            {
+              "title": "Expecting carrier billing data from standard fraud APIs",
+              "detail": "No major fraud API natively supports carrier billing. If your merchants accept carrier billing, the fraud signals live inside Boku's systems — not in your main fraud platform."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is cramming in carrier billing?",
+              "a": "Adding unauthorised charges to a phone bill — typically for subscriptions the user didn't knowingly sign up for."
+            },
+            {
+              "q": "Why is carrier billing almost invisible to external fraud APIs?",
+              "a": "The telco retains most data. The MSISDN is tokenised or not shared. No card or bank data is involved. Most fraud platforms have no native carrier billing type."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A merchant wants to send carrier billing transaction data to Ravelin for fraud scoring. What is the current limitation?",
+              "options": [
+                "Ravelin has no native carrier billing type — the merchant would need to use wallet or the deprecated other type as a workaround",
+                "Carrier billing is blocked by PSD2 regulations in Europe",
+                "Carrier billing transactions are automatically scored by the telco before reaching Ravelin",
+                "Boku provides a real-time fraud API that Ravelin can query directly"
+              ],
+              "answer": 0,
+              "explain": "As identified in Ravelin's API coverage review, carrier billing has no dedicated type. This is a gap — clients currently use wallet or other as workarounds, with no typed fields."
+            }
+          ],
+          "recap": "Carrier billing charges purchases to the phone bill. Cramming (unauthorised subscriptions) is the dominant fraud type. External visibility is near-zero — signals stay inside the telco and Boku's systems. A significant coverage gap for most fraud platforms."
+        }
+      ]
+    },
+    {
+      "id": "qr-payments",
+      "title": "QR Code Payments",
+      "topics": [
+        {
+          "id": "qr-overview",
+          "title": "QR code payments",
+          "lesson": "<h3>What is a QR code payment?<\u002Fh3>\n<p>A QR code payment is a way of <strong>initiating<\u002Fstrong> a payment by scanning a code, rather than tapping a card or entering details. The QR code itself is not a payment method — it's an interface. The underlying payment is typically a bank transfer, a mobile wallet, or a real-time payment.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> A QR code is like a link. Clicking a link doesn't tell you whether you're going to a website, a video, or a payment. The QR code just triggers the payment — what happens next depends on the underlying method.<\u002Fp>\n<\u002Fblockquote>\n<h3>Two QR models<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Model<\u002Fth>\n<th>How it works<\u002Fth>\n<th>Examples<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td><strong>Merchant QR (static)<\u002Fstrong><\u002Ftd>\n<td>Merchant displays a fixed QR code. Customer scans it and enters the amount.<\u002Ftd>\n<td>Small traders, markets, informal businesses<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td><strong>Customer QR (dynamic)<\u002Fstrong><\u002Ftd>\n<td>Customer shows a QR code from their app. Merchant scans it.<\u002Ftd>\n<td>Supermarkets, convenience stores<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<p>Dynamic QR codes are generated per-transaction and are more secure. Static QR codes are simpler but more vulnerable to substitution fraud.<\u002Fp>\n<h3>National QR standards<\u002Fh3>\n<p>Many countries have created interoperable QR standards — so any bank's app can scan any merchant's QR code within the country:<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>Standard<\u002Fth>\n<th>Country<\u002Fth>\n<th>Underlying rail<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>QRIS<\u002Ftd>\n<td>Indonesia<\u002Ftd>\n<td>Multiple (GoPay, OVO, DANA, bank transfer)<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>QR Ph<\u002Ftd>\n<td>Philippines<\u002Ftd>\n<td>InstaPay<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>UPI QR<\u002Ftd>\n<td>India<\u002Ftd>\n<td>UPI<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Pix QR<\u002Ftd>\n<td>Brazil<\u002Ftd>\n<td>Pix<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PromptPay QR<\u002Ftd>\n<td>Thailand<\u002Ftd>\n<td>PromptPay<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>DuitNow QR<\u002Ftd>\n<td>Malaysia<\u002Ftd>\n<td>DuitNow<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>WeChat QR \u002F Alipay QR<\u002Ftd>\n<td>China<\u002Ftd>\n<td>WeChat Pay \u002F Alipay<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Depends on the underlying method. Pix QR = RTP, irrevocable. WeChat QR = wallet payment.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Varies. UPI QR payments expose a VPA (Virtual Payment Address) — low anonymity. Cash equivalent QR methods can be harder to trace.<\u002Fli>\n<li><strong>Fraud properties:<\u002Fstrong> Mostly inherited from the underlying payment type.<\u002Fli>\n<\u002Ful>\n<h3>QR-specific fraud risks<\u002Fh3>\n<p>Most QR fraud is about the <strong>initiation layer<\u002Fstrong>, not the underlying payment:<\u002Fp>\n<p><strong>QR substitution<\u002Fstrong> — in physical environments, a fraudster places their own QR code sticker over the merchant's legitimate code. Customers scan and pay the fraudster instead. This particularly affects static merchant QR codes.<\u002Fp>\n<p><strong>Social engineering via QR<\u002Fstrong> — fraudsters send QR codes (in emails, messages, printouts) and instruct victims to scan them, triggering a payment or phishing page. \"QR phishing\" (quishing) is a growing vector.<\u002Fp>\n<p><strong>Malicious merchant QR<\u002Fstrong> — in informal markets, a merchant displays a QR code that routes to a fraudster's account. Hard for the customer to verify before scanning.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li>QR fraud detection is largely the merchant's responsibility (verify their QR code is intact, not substituted)<\u002Fli>\n<li>For digital QR fraud, signals come from the underlying payment method being triggered<\u002Fli>\n<li>Unusual recipient accounts (mule accounts) paired with QR initiation<\u002Fli>\n<li>Volume anomalies at specific physical locations (static QR substitution leaves a trace in refund\u002Fdispute patterns)<\u002Fli>\n<\u002Ful>",
+          "model": "A QR code is just a <strong>trigger<\u002Fstrong>. The fraud risk is at the initiation layer (substitution, social engineering) and at whatever the underlying payment method is.",
+          "terms": [
+            {
+              "term": "Static QR",
+              "def": "A fixed QR code that always routes to the same recipient. The customer typically enters the amount. More vulnerable to substitution fraud."
+            },
+            {
+              "term": "Dynamic QR",
+              "def": "A QR code generated uniquely per transaction, typically by the merchant's system. More secure — expires after one use."
+            },
+            {
+              "term": "QR substitution fraud",
+              "def": "Placing a fraudulent QR code over a legitimate merchant's code. Customers scan and pay the fraudster instead."
+            },
+            {
+              "term": "Quishing",
+              "def": "QR code phishing — sending QR codes that, when scanned, route to phishing pages or trigger fraudulent payment initiations."
+            },
+            {
+              "term": "QRIS",
+              "def": "Quick Response Code Indonesian Standard — Indonesia's national interoperable QR standard, enabling any wallet or bank app to pay any merchant."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Treating QR payments as a separate payment category",
+              "detail": "QR is an interface, not a payment type. The fraud profile is mostly inherited from the underlying method (RTP, wallet, A2A). Understand the underlying method first."
+            },
+            {
+              "title": "Assuming dynamic QR is fraud-proof",
+              "detail": "Dynamic QR prevents substitution (it expires after one transaction). But social engineering attacks — sending a malicious dynamic QR to a victim — still work."
+            }
+          ],
+          "cards": [
+            {
+              "q": "Why is QR substitution fraud more effective against static QR codes?",
+              "a": "Static QR codes always route to the same recipient and don't expire. A fraudster's sticker placed over the code can collect many payments before anyone notices."
+            },
+            {
+              "q": "What is quishing?",
+              "a": "QR phishing — using a QR code to route victims to a phishing page or trigger a fraudulent payment, instead of or in place of the expected destination."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A market stall accepts UPI QR payments. A fraudster places their own QR sticker over the stall's code. Three customers pay before the fraud is discovered. What type of fraud is this?",
+              "options": [
+                "Mandate fraud — an unauthorised direct debit was set up",
+                "QR substitution fraud — the legitimate QR was physically replaced",
+                "APP fraud — the merchant was tricked into authorising a transfer",
+                "SIM swap fraud — the fraudster took over the merchant's phone number"
+              ],
+              "answer": 1,
+              "explain": "The fraudster physically replaced the merchant's QR code with their own. Every customer who scanned paid the fraudster's account instead. A classic static QR substitution attack."
+            },
+            {
+              "q": "A customer receives an email with a QR code claiming to be from their bank, asking them to \"verify their account\" by scanning. What is this most likely?",
+              "options": [
+                "A mobile money registration code",
+                "A standard account verification process",
+                "A legitimate open banking consent request",
+                "Quishing — QR phishing designed to capture credentials or trigger a fraudulent payment"
+              ],
+              "answer": 3,
+              "explain": "Legitimate banks do not send QR codes via email to verify accounts. This is a quishing attack — the QR routes to a phishing page designed to steal credentials."
+            }
+          ],
+          "recap": "QR codes are triggers, not payment methods. Fraud is at the initiation layer (substitution of static codes, quishing via email) or inherited from the underlying payment type. Dynamic QR is safer than static, but neither is immune to social engineering."
+        }
+      ]
+    },
+    {
+      "id": "cash-vouchers",
+      "title": "Cash and Vouchers",
+      "topics": [
+        {
+          "id": "cash-based",
+          "title": "Cash-based and convenience store payments",
+          "lesson": "<h3>What is a cash-based payment method?<\u002Fh3>\n<p>Online shoppers in some markets prefer not to (or cannot) pay with a card or bank account. Cash-based payment methods bridge this gap: the customer completes an online order, receives a payment reference or barcode, then walks into a physical location (a convenience store, pharmacy, or ATM) and pays cash. The payment is confirmed to the merchant once cash is received.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> It's like an \"order online, pay in store\" model — but the \"store\" is a 7-Eleven or a pharmacy counter, and \"in store\" just means handing over cash.<\u002Fp>\n<\u002Fblockquote>\n<h3>Key markets and methods<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Method<\u002Fth>\n<th>Market<\u002Fth>\n<th>Network<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>Boleto Bancário<\u002Ftd>\n<td>Brazil<\u002Ftd>\n<td>Issued by banks, payable at any bank branch or ATM<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>OXXO<\u002Ftd>\n<td>Mexico<\u002Ftd>\n<td>20,000+ OXXO convenience stores<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Konbini<\u002Ftd>\n<td>Japan<\u002Ftd>\n<td>7-Eleven, Lawson, FamilyMart<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PagoEfectivo<\u002Ftd>\n<td>Peru<\u002Ftd>\n<td>Banks and convenience outlets<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Efecty<\u002Ftd>\n<td>Colombia<\u002Ftd>\n<td>Cash payment network<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Alfamart \u002F Indomaret<\u002Ftd>\n<td>Indonesia<\u002Ftd>\n<td>Convenience store chains<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility: Almost none.<\u002Fstrong> Cash payments are final. There is no chargeback — the customer paid cash.<\u002Fli>\n<li><strong>Anonymity: High.<\u002Fstrong> The payer is anonymous at the point of cash payment. The only link to the online order is the reference code.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Delayed — typically 1–3 days after the cash payment.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> None at the point of cash payment.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Money laundering<\u002Fstrong> — cash-based payment methods are attractive for money laundering because cash is anonymous. Generating a payment reference online and then \"paying\" it with cash converts illicit cash into a traceable digital credit.<\u002Fp>\n<p><strong>False dispute claims<\u002Fstrong> — once cash is paid, the customer cannot chargeback (there's no card). But some methods have dispute mechanisms that can be exploited.<\u002Fp>\n<p><strong>Non-delivery fraud<\u002Fstrong> — merchant receives payment confirmation, ships goods. But because the cash payment happens after the order, the order was placed with false details. Rare, because payment is usually required before shipment.<\u002Fp>\n<p><strong>Boleto fraud (Brazil)<\u002Fstrong> — a significant historical fraud type: malware intercepts the barcode on a legitimate Boleto and replaces it with a fraudster's barcode. The customer scans and pays the fraudster. The merchant's payment confirmation never arrives. PIX has significantly reduced Boleto's dominance.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li>No card or bank account data — the only identifier is typically an email address or CPF (Brazil)<\u002Fli>\n<li>Device fingerprint and behavioural signals at order time are the primary levers — the cash payment is opaque<\u002Fli>\n<li>Orders never followed by a cash payment (abandoned) can be a signal of probing or testing<\u002Fli>\n<li>Email age, device, IP, and order contents are the fraud features — there's nothing to analyse in the payment itself<\u002Fli>\n<\u002Ful>",
+          "model": "Cash-based payments bridge online commerce and physical cash. For fraud teams, <strong>the order event is where you intervene<\u002Fstrong> — by the time cash is paid, it's too late and too anonymous.",
+          "terms": [
+            {
+              "term": "Boleto Bancário",
+              "def": "Brazil's paper-based (and increasingly digital) payment voucher. Generated online, payable at banks, ATMs, and convenience stores."
+            },
+            {
+              "term": "Konbini",
+              "def": "Japanese convenience store (7-Eleven, Lawson, FamilyMart). Also the payment method name — paying for online orders at the counter."
+            },
+            {
+              "term": "Payment reference",
+              "def": "The unique code generated at checkout that links the online order to the subsequent cash payment at a physical location."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Trying to do fraud detection at the cash payment stage",
+              "detail": "The cash payment is anonymous and opaque — you cannot gather signal there. All fraud detection for cash-based methods must happen at the time of the online order."
+            },
+            {
+              "title": "Underestimating money laundering risk",
+              "detail": "Cash payment networks convert physical cash into digital credit, potentially with no KYC. This is a significant laundering vector, especially in high-cash markets."
+            }
+          ],
+          "cards": [
+            {
+              "q": "Why must fraud detection for Boleto or OXXO payments happen at the online order stage?",
+              "a": "The cash payment is anonymous — only an email or reference code links it to the order. By the time cash is paid, there's no fraud signal to act on."
+            },
+            {
+              "q": "What was \"Boleto fraud\" in Brazil?",
+              "a": "Malware that replaced the barcode on a legitimate Boleto with the fraudster's barcode. The customer paid the fraudster; the merchant never received confirmation."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A fraudster creates accounts at an online merchant in Brazil, generates Boleto payment references for high-value orders, but never pays them. What are they likely doing?",
+              "options": [
+                "Laundering money — converting illicit cash into digital credits",
+                "Card testing — checking if stolen card numbers work",
+                "Probing or testing — gathering merchant system information, or preparing for a larger fraud that doesn't require payment (e.g. using the order record for social engineering)",
+                "QR substitution — replacing the merchant's QR code"
+              ],
+              "answer": 2,
+              "explain": "Orders generated but never paid are a probing signal — the fraudster is exploring the system without committing. It can also precede social engineering attacks using \"pending order\" references."
+            }
+          ],
+          "recap": "Cash-based payment methods let online shoppers pay with physical cash at convenience stores. They are anonymous, irrevocable, and opaque — all fraud detection must happen at the order stage. Money laundering is the major structural risk."
+        },
+        {
+          "id": "prepaid-vouchers",
+          "title": "Prepaid vouchers and PIN-based payments",
+          "lesson": "<h3>What is a prepaid voucher?<\u002Fh3>\n<p>A prepaid voucher is a physical or digital voucher with a PIN or code, sold at newsagents, convenience stores, and online. You scratch or copy the code, enter it at checkout, and the face value is applied to your purchase.<\u002Fp>\n<p>Think of it as a <strong>gift card for online payments<\u002Fstrong> — bought with cash, used online, with no card or bank account required.<\u002Fp>\n<h3>Key methods<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Method<\u002Fth>\n<th>Key markets<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>Paysafecard<\u002Ftd>\n<td>Europe, Canada, Australia<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Neosurf<\u002Ftd>\n<td>France, Belgium, Africa<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>AstroPay<\u002Ftd>\n<td>Latin America, global<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>CASHlib<\u002Ftd>\n<td>France<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility: None.<\u002Fstrong> A voucher code is effectively cash. Once redeemed, the value is gone.<\u002Fli>\n<li><strong>Anonymity: High.<\u002Fstrong> Bought with cash from a shop — no identity linked to the voucher.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> None at point of purchase for small-value vouchers.<\u002Fli>\n<li><strong>Settlement:<\u002Fstrong> Instant on redemption.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Scam payment instrument<\u002Fstrong> — prepaid vouchers are frequently demanded by scammers as the payment method of choice. \"Pay with Paysafecard codes\" is a red flag in romance scams, tech support scams, and fake prize schemes. The voucher is untraceable, irreversible, and instantly redeemable.<\u002Fp>\n<p><strong>Money laundering<\u002Fstrong> — buying vouchers with illicit cash and redeeming them online converts cash to digital value with no paper trail.<\u002Fp>\n<p><strong>PIN theft<\u002Fstrong> — malware, phishing, and shoulder-surfing to steal unused PIN codes from purchased vouchers.<\u002Fp>\n<p><strong>Resale fraud<\u002Fstrong> — using stolen card details to buy large volumes of digital vouchers (low friction, high value, instantly redeemable), then reselling the codes for cash.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li>Prepaid vouchers used for high-value purchases are inherently suspicious — they're designed for small, anonymous spending<\u002Fli>\n<li>Multiple voucher codes in a single transaction (customer has bought many vouchers) is a red flag<\u002Fli>\n<li>Merchant category: voucher payments on gambling, adult, or high-risk merchant sites are expected; on mainstream e-commerce, they are unusual<\u002Fli>\n<li>Ravelin currently maps prepaid vouchers through the <code>cash<\u002Fcode> type with a <code>scheme<\u002Fcode> field (e.g. <code>paysafecard<\u002Fcode>)<\u002Fli>\n<\u002Ful>",
+          "model": "Prepaid vouchers are <strong>anonymous digital cash<\u002Fstrong>. They are the scammer's preferred payment method — irreversible, untraceable, and sold at every corner shop.",
+          "terms": [
+            {
+              "term": "Prepaid voucher",
+              "def": "A voucher containing a PIN or code with a face value, bought with cash and redeemable online. No identity or bank account required."
+            },
+            {
+              "term": "Resale fraud",
+              "def": "Using stolen payment credentials to buy digital goods (including vouchers) at scale, then converting them to cash by reselling."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Treating prepaid voucher payments as normal",
+              "detail": "Prepaid vouchers are heavily used in scam payments. A customer paying for anything significant with Paysafecard codes is unusual and worth reviewing."
+            },
+            {
+              "title": "Assuming the issuer has identity data",
+              "detail": "Small-value prepaid vouchers are sold at corner shops for cash. The issuer has no identity information linked to the specific voucher. It is as anonymous as cash."
+            }
+          ],
+          "cards": [
+            {
+              "q": "Why do scammers prefer to demand Paysafecard or Neosurf codes as payment?",
+              "a": "Voucher codes are anonymous, irreversible, instantly redeemable, and untraceable. Once the code is received, there is no way to reverse the payment."
+            },
+            {
+              "q": "What is resale fraud in the context of prepaid vouchers?",
+              "a": "Using stolen card details to buy digital vouchers at scale, then reselling the codes for cash — a way to liquidate stolen card credentials into untraceable value."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A customer contacts a merchant's support, saying they won a prize but need to pay a \"processing fee\" using Paysafecard codes. What should this trigger?",
+              "options": [
+                "A routine customer service request",
+                "A potential affiliate marketing payment",
+                "A scam alert — this is a textbook prize scam demanding anonymous, irreversible payment",
+                "A B2B trade credit application"
+              ],
+              "answer": 2,
+              "explain": "Requests to pay fees (for prizes, taxes, insurance, customs) using prepaid voucher codes are a classic scam indicator. No legitimate organisation requires payment this way."
+            }
+          ],
+          "recap": "Prepaid vouchers are anonymous, irrevocable, and favoured by scammers. The fraud team's role is to recognise the pattern: large values, multiple codes in one transaction, or demand to pay in voucher codes is a red flag in almost any context."
+        }
+      ]
+    },
+    {
+      "id": "crypto",
+      "title": "Cryptocurrency and Digital Currencies",
+      "topics": [
+        {
+          "id": "cryptocurrency",
+          "title": "Cryptocurrency",
+          "lesson": "<h3>What is cryptocurrency?<\u002Fh3>\n<p>Cryptocurrency is a digital currency that operates on a <strong>decentralised network<\u002Fstrong> — a blockchain — rather than being issued or controlled by any government or central bank. There is no \"bank\" in the middle. Transactions are verified by participants in the network and recorded on a public ledger.<\u002Fp>\n<p>The key properties for fraud teams are not about the technology — they are about what the technology produces: <strong>irreversibility, pseudonymity, and global accessibility<\u002Fstrong>.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Imagine sending cash in an envelope internationally, instantly, with no bank involved, and no way to recall it once sent. The envelope is tracked on a public notice board, but the names on the envelopes are pseudonyms.<\u002Fp>\n<\u002Fblockquote>\n<h3>Key cryptocurrencies used for payments<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Currency<\u002Fth>\n<th>Notes<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>Bitcoin (BTC)<\u002Ftd>\n<td>Original, largest market cap, slower settlement<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Ethereum (ETH)<\u002Ftd>\n<td>Faster, also supports smart contracts<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>XRP \u002F Ripple<\u002Ftd>\n<td>Designed for fast cross-border settlement<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Monero (XMR)<\u002Ftd>\n<td>Privacy-focused — transactions are not publicly visible<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Litecoin (LTC)<\u002Ftd>\n<td>Faster Bitcoin variant<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility: None.<\u002Fstrong> Once confirmed on the blockchain, a transaction cannot be reversed. No chargeback, no recall.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Pseudonymous, not anonymous. Bitcoin transactions are publicly visible on the blockchain — but linked to wallet addresses, not names. Tracing requires analysis (blockchain analytics).<\u002Fli>\n<li><strong>Monero:<\u002Fstrong> True privacy — transaction amounts and participants are cryptographically hidden. Essentially untraceable.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Bitcoin: 10–60 minutes. ETH: seconds to minutes. XRP: 3–5 seconds.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> Exchanges (Coinbase, Binance) require KYC. Peer-to-peer transfers require none.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Money laundering<\u002Fstrong> is the primary macro risk. Cryptocurrency allows large value movements internationally with minimal intermediaries, and can be mixed\u002Ftumbled to obscure origins.<\u002Fp>\n<p><strong>Mixers and tumblers<\u002Fstrong> — services that pool many users' cryptocurrency together, shuffle it, and return equivalent amounts minus a fee. The goal is to break the transaction chain so blockchain analytics cannot trace the funds.<\u002Fp>\n<p><strong>Irreversibility exploited in fraud payments<\u002Fstrong> — a fraudster persuades a victim to send cryptocurrency, citing speed and \"lower fees\". Once sent, it's gone.<\u002Fp>\n<p><strong>Ransomware payment demands<\u002Fstrong> — ransomware attacks almost universally demand payment in cryptocurrency specifically because of its irreversibility and pseudonymity.<\u002Fp>\n<p><strong>Crypto payment processor fraud<\u002Fstrong> — merchants accepting crypto via processors (BitPay, Coinbase Commerce) face some familiar patterns: stolen wallets, fraudulent chargebacks on the fiat side if the processor offers them.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li><strong>Blockchain analytics:<\u002Fstrong> Chainalysis, Elliptic, and TRM Labs can trace fund flows and flag wallets associated with known fraud, exchanges, or mixers<\u002Fli>\n<li><strong>Wallet age and transaction history:<\u002Fstrong> New wallets with no history are higher risk<\u002Fli>\n<li><strong>Receiving from a mixing service:<\u002Fstrong> Funds arriving via a mixer are a significant red flag<\u002Fli>\n<li><strong>Privacy coin use:<\u002Fstrong> XMR transactions are essentially unmonitorable — treat as very high risk<\u002Fli>\n<li>External fraud APIs (Ravelin) have limited native crypto support — currently mapped to <code>other<\u002Fcode> (deprecated) or a <code>crypto<\u002Fcode> type<\u002Fli>\n<\u002Ful>",
+          "model": "Crypto is <strong>irreversible pseudonymous value transfer<\u002Fstrong>. For fraud teams, the key risks are: can you see the blockchain trail, and has it been deliberately broken by a mixer?",
+          "terms": [
+            {
+              "term": "Blockchain",
+              "def": "A distributed public ledger recording every cryptocurrency transaction. Immutable — once added, a record cannot be changed."
+            },
+            {
+              "term": "Wallet address",
+              "def": "A cryptographic identifier — like an account number — for receiving and sending cryptocurrency. Not directly linked to a real identity."
+            },
+            {
+              "term": "Mixer \u002F tumbler",
+              "def": "A service that pools crypto from many wallets, shuffles it, and returns equivalent amounts, breaking the transaction chain to defeat blockchain tracing."
+            },
+            {
+              "term": "Blockchain analytics",
+              "def": "The practice of tracing cryptocurrency flows on a public blockchain. Companies like Chainalysis build tools to flag wallets linked to fraud, exchanges, or crime."
+            },
+            {
+              "term": "Privacy coin",
+              "def": "A cryptocurrency (notably Monero) where transaction amounts and participants are cryptographically hidden, making blockchain analysis impossible."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Treating all crypto as equally anonymous",
+              "detail": "Bitcoin transactions are publicly visible. With blockchain analytics, flows can often be traced. Monero is the exception — it is genuinely private and much harder to trace."
+            },
+            {
+              "title": "Assuming crypto fraud is always sophisticated",
+              "detail": "Many crypto fraud schemes use simple social engineering — romance scams, \"investment opportunity\" scams, fake customer support. The sophistication is in the payment method, not the fraud technique."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is a mixer or tumbler in cryptocurrency?",
+              "a": "A service that pools crypto from many wallets and returns equivalent amounts, breaking the transaction trail to defeat blockchain tracing."
+            },
+            {
+              "q": "Why is Monero different from Bitcoin for fraud tracing?",
+              "a": "Bitcoin transactions are publicly visible (pseudonymous). Monero uses cryptographic privacy — amounts and participants are hidden, making blockchain analysis essentially impossible."
+            },
+            {
+              "q": "Why do ransomware attacks demand payment in cryptocurrency?",
+              "a": "Irreversibility (can't be clawed back), pseudonymity (hard to trace to a person), and global accessibility (payable from anywhere without bank involvement)."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A blockchain analytics tool flags that funds arriving in a merchant's crypto wallet originated from a known mixer. What does this indicate?",
+              "options": [
+                "The mixer flag is routine — most crypto users use mixers for privacy",
+                "The sender deliberately broke the transaction trail — a strong signal of attempting to obscure the source of funds",
+                "The transaction is definitely fraudulent and should be auto-declined",
+                "The funds originated from a legitimate exchange"
+              ],
+              "answer": 1,
+              "explain": "Mixer use is not proof of fraud, but it's a significant risk signal. Legitimate users don't typically route funds through mixers. Combined with other signals, it warrants investigation."
+            }
+          ],
+          "recap": "Crypto is irreversible and pseudonymous. Bitcoin is traceable with analytics; Monero is not. Key risks: money laundering (especially with mixers), ransomware demands, and social engineering. Blockchain analytics is the primary detection tool."
+        },
+        {
+          "id": "stablecoins",
+          "title": "Stablecoins",
+          "lesson": "<h3>What is a stablecoin?<\u002Fh3>\n<p>A stablecoin is a cryptocurrency <strong>pegged to the value of a real-world asset<\u002Fstrong> — usually the US dollar. One USDT or USDC is designed to always be worth $1. This removes the price volatility that makes Bitcoin and Ethereum impractical for everyday commerce.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> A stablecoin is like a poker chip — it's a token that represents a fixed dollar value, can be transferred easily around the table, and can be cashed out at the end. The chip itself isn't money, but it tracks it exactly.<\u002Fp>\n<\u002Fblockquote>\n<h3>Main stablecoins<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Name<\u002Fth>\n<th>Issuer<\u002Fth>\n<th>Peg<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>USDT (Tether)<\u002Ftd>\n<td>Tether<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>USDC<\u002Ftd>\n<td>Circle<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PYUSD<\u002Ftd>\n<td>PayPal<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>EUROC<\u002Ftd>\n<td>Circle<\u002Ftd>\n<td>EUR<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>DAI<\u002Ftd>\n<td>MakerDAO<\u002Ftd>\n<td>USD (algorithmic)<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Same as crypto — none. Once sent on-chain, irreversible.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Pseudonymous, same as other crypto. More accessible to blockchain analytics than privacy coins.<\u002Fli>\n<li><strong>Price stability:<\u002Fstrong> Fixed to the peg (usually $1). Removes the \"I sent $100 but it's worth $80 when they receive it\" problem.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Seconds to minutes depending on the blockchain.<\u002Fli>\n<\u002Ful>\n<h3>Use cases and fraud context<\u002Fh3>\n<p>Stablecoins are growing in:\n- <strong>B2B cross-border payments:<\u002Fstrong> Faster and cheaper than SWIFT for international supplier payments\n- <strong>Remittances:<\u002Fstrong> Sending money home without bank intermediaries\n- <strong>Crypto-backed debit cards:<\u002Fstrong> Spend stablecoin balances via Visa\u002FMastercard card<\u002Fp>\n<p><strong>Fraud risks:<\u002Fstrong>\n- Same as crypto — irreversible transfers, no chargeback\n- <strong>USDT (Tether) is the dominant currency in crypto-enabled scam payments<\u002Fstrong> — its price stability makes it practical for large fraudulent transfers\n- Stablecoin bridges and smart contract exploits (more relevant to DeFi than payments)\n- Counterfeit stablecoins on less-established blockchains<\u002Fp>\n<p>Stablecoins are increasingly <strong>visible to regulators<\u002Fstrong> — USDC and PYUSD are issued by regulated entities and cooperate with law enforcement freeze requests. USDT has also frozen wallets on request, though with more friction.<\u002Fp>",
+          "model": "Stablecoins are <strong>crypto without the volatility<\u002Fstrong>. They combine crypto's irreversibility and pseudonymity with price stability — making them practical for larger fraudulent transfers.",
+          "terms": [
+            {
+              "term": "Stablecoin",
+              "def": "A cryptocurrency pegged to a stable real-world asset (usually USD). Designed to maintain a fixed value, unlike Bitcoin or Ethereum."
+            },
+            {
+              "term": "Peg",
+              "def": "The fixed relationship between a stablecoin and its reference asset. One USDC should always equal one US dollar."
+            },
+            {
+              "term": "USDT (Tether)",
+              "def": "The largest stablecoin by market cap. Widely used in crypto trading and, unfortunately, in large-scale scam payments."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Assuming stablecoins are safer than crypto because they are pegged",
+              "detail": "Price-stable does not mean fraud-safe. Stablecoins share crypto's irreversibility and pseudonymity — they're arguably more useful for fraud because their value is predictable."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What advantage do stablecoins have over Bitcoin for large fraudulent transfers?",
+              "a": "Price stability — $1m in USDT arrives as $1m. $1m in BTC might arrive as $800k due to volatility. Stablecoins make large value transfers more reliable."
+            },
+            {
+              "q": "Can USDC transactions be reversed by law enforcement?",
+              "a": "In some cases yes — Circle (USDC issuer) and Tether have frozen wallet balances on law enforcement request. This is more feasible than with decentralised crypto."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A fraud scheme demands payment in USDT rather than Bitcoin. What is the likely reason?",
+              "options": [
+                "USDT cannot be traced by blockchain analytics firms",
+                "USDT is fully anonymous with no blockchain record",
+                "Bitcoin is slower than USDT to send",
+                "USDT is price-stable — the fraudster knows exactly what value they will receive, unlike Bitcoin which can fluctuate significantly"
+              ],
+              "answer": 3,
+              "explain": "Stablecoins are favoured for large fraudulent demands because the value is predictable. Crypto price swings create uncertainty — $100k demanded in BTC might arrive as $90k if the price drops during transfer."
+            }
+          ],
+          "recap": "Stablecoins bring price stability to crypto. For fraud, this makes them practical for large-value transfers — you know exactly what arrives. Irreversibility and pseudonymity remain. Regulated issuers (Circle, PayPal) can freeze wallets; decentralised stablecoins cannot."
+        },
+        {
+          "id": "cbdcs",
+          "title": "Central Bank Digital Currencies (CBDCs)",
+          "lesson": "<h3>What is a CBDC?<\u002Fh3>\n<p>A Central Bank Digital Currency is <strong>digital money issued directly by a government's central bank<\u002Fstrong>. Unlike cryptocurrency (decentralised, no issuer) or a stablecoin (private issuer), a CBDC is the digital equivalent of banknotes — backed by the government, legal tender.<\u002Fp>\n<p>CBDCs are still mostly in pilot or development phase globally.<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>CBDC<\u002Fth>\n<th>Country<\u002Fth>\n<th>Status<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>e-CNY (Digital Yuan)<\u002Ftd>\n<td>China<\u002Ftd>\n<td>Live, expanding<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Digital Rupee<\u002Ftd>\n<td>India<\u002Ftd>\n<td>Pilot<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Sand Dollar<\u002Ftd>\n<td>Bahamas<\u002Ftd>\n<td>Live<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Digital Euro<\u002Ftd>\n<td>EU<\u002Ftd>\n<td>In development<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>eNaira<\u002Ftd>\n<td>Nigeria<\u002Ftd>\n<td>Live but low adoption<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Government-controlled — potentially programmable. Reversibility rules would be set by the issuing central bank.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Varies by design. Retail CBDCs (for consumers) typically have some privacy; wholesale CBDCs (for banks) are fully tracked.<\u002Fli>\n<li><strong>Settlement:<\u002Fstrong> Instant and final (as designed).<\u002Fli>\n<li><strong>Programmability:<\u002Fstrong> A key feature being explored — CBDCs could have spending restrictions (only usable for specific goods), expiry dates, or automatic tax deductions.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risk profile<\u002Fh3>\n<p><strong>Lower than private crypto<\u002Fstrong> — CBDCs are government-issued, centrally controlled, and auditable. The central bank can freeze or reverse transactions, unlike decentralised crypto.<\u002Fp>\n<p><strong>New risks from programmability<\u002Fstrong> — if CBDCs are programmable (conditional spending), new social engineering attacks may emerge around those conditions.<\u002Fp>\n<p><strong>e-CNY adoption is being watched closely<\u002Fstrong> — China's digital yuan is the furthest developed large-economy CBDC. Early fraud patterns include scam apps pretending to be the official e-CNY wallet.<\u002Fp>\n<p>CBDCs are still early-stage from a fraud perspective — patterns are forming rather than established.<\u002Fp>",
+          "model": "A CBDC is a <strong>government-issued digital banknote<\u002Fstrong>. Lower fraud risk than private crypto (central bank can intervene), but programmability introduces new attack surfaces as the technology matures.",
+          "terms": [
+            {
+              "term": "CBDC",
+              "def": "Central Bank Digital Currency — digital money issued and controlled directly by a country's central bank. The digital equivalent of physical banknotes."
+            },
+            {
+              "term": "Retail CBDC",
+              "def": "A CBDC designed for general consumer use — the digital equivalent of cash in your pocket."
+            },
+            {
+              "term": "Wholesale CBDC",
+              "def": "A CBDC for use between financial institutions only — for interbank settlement, not consumer payments."
+            },
+            {
+              "term": "Programmable money",
+              "def": "Currency with embedded rules — e.g. can only be spent on food, expires on a date, or triggers automatic tax collection."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is the key fraud advantage CBDCs have over decentralised cryptocurrency?",
+              "a": "The central bank can intervene — freeze wallets, reverse transactions, and audit flows. Decentralised crypto has no central authority to do this."
+            },
+            {
+              "q": "What is programmable money?",
+              "a": "Digital currency with embedded conditional rules — such as spending restrictions, expiry dates, or automatic deductions. A potential feature of CBDCs."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "Why are CBDCs considered lower fraud risk than Bitcoin?",
+              "options": [
+                "CBDCs are anonymous so fraudsters cannot target users",
+                "CBDCs use stronger cryptography than Bitcoin",
+                "They are centrally issued and controlled — the central bank can freeze wallets and reverse transactions if needed",
+                "CBDCs have chargeback protections identical to card payments"
+              ],
+              "answer": 2,
+              "explain": "The central authority is the key difference. Bitcoin is decentralised — no one can freeze a wallet or reverse a transaction. A central bank issuing a CBDC retains these powers by design."
+            }
+          ],
+          "recap": "CBDCs are government-issued digital cash — mostly in pilot stage. Lower fraud risk than decentralised crypto because a central authority can intervene. Still early; watch for e-CNY patterns as the furthest-developed large-scale example."
+        }
+      ]
+    },
+    {
+      "id": "emerging",
+      "title": "Specialist and Emerging Methods",
+      "topics": [
+        {
+          "id": "emerging-methods",
+          "title": "Emerging payment methods",
+          "lesson": "<h3>Why this matters<\u002Fh3>\n<p>The payments landscape is not static. New methods emerge regularly — some from regulatory change, some from technology, some from consumer behaviour shifts. For fraud teams, emerging methods present a consistent challenge: <strong>fraud patterns emerge only after volume does<\u002Fstrong>.<\u002Fp>\n<p>This topic briefly covers the most relevant emerging methods. Most have thin fraud data — treat them as areas to monitor rather than settled risk categories.<\u002Fp>\n<h3>Variable Recurring Payments (VRP)<\u002Fh3>\n<p>A UK-specific open banking innovation. A consumer gives consent once for a merchant to collect multiple future payments, with variable amounts up to an agreed cap. Unlike direct debit, the consumer sees each collection before it happens (in theory).<\u002Fp>\n<p><strong>Fraud angle:<\u002Fstrong> If the consent is set up fraudulently (ATO on the bank account), the attacker can make repeated collections within the cap. Compared to a one-time payment, VRP gives sustained access rather than a single hit.<\u002Fp>\n<h3>Biometric payments<\u002Fh3>\n<p>Paying with a fingerprint, palm print, or face scan, linked to a registered payment method.<\u002Fp>\n<p>Examples: <strong>Amazon One<\u002Fstrong> (palm scan at Amazon Go \u002F Whole Foods), <strong>Mastercard Biometric Checkout Programme<\u002Fstrong>.<\u002Fp>\n<p><strong>Fraud angle:<\u002Fstrong> Biometrics are used for authentication, not as the payment instrument. The fraud risk is at registration (linking a stolen identity to biometrics) and in spoofing (fake fingerprints, printed faces). Presentation attacks against biometric systems are a growing research area.<\u002Fp>\n<h3>Wearable and IoT payments<\u002Fh3>\n<p>NFC payments from watches (Apple Watch, Garmin Pay), rings (McLear), and connected devices (smart car, EV charger paying automatically).<\u002Fp>\n<p><strong>Fraud angle:<\u002Fstrong> Wearable payments extend card fraud to new form factors — a stolen watch can be used to pay contactless, similar to a stolen card. IoT\u002FM2M payments (car paying for fuel, smart meter paying the energy company) have almost no established fraud pattern yet.<\u002Fp>\n<h3>Loyalty points as payment<\u002Fh3>\n<p>Using airline miles, hotel points, or credit card reward points to pay at checkout. Examples: Avios, Qantas Points, Chase Ultimate Rewards.<\u002Fp>\n<p><strong>Fraud angle:<\u002Fstrong> Points accounts are targets for ATO — stolen points can be cashed out at checkout or transferred. Points have real monetary value but often weaker account security than banking apps.<\u002Fp>\n<h3>Social commerce payments<\u002Fh3>\n<p>Buying and paying within a social media platform without leaving the app. Examples: <strong>TikTok Shop<\u002Fstrong>, <strong>Instagram Checkout<\u002Fstrong>, <strong>Pinterest Shopping<\u002Fstrong>.<\u002Fp>\n<p><strong>Fraud angle:<\u002Fstrong> Marketplace-style fraud (counterfeit goods, non-delivery), identity fraud for seller accounts, and refund abuse. The speed of impulse purchases reduces scrutiny.<\u002Fp>",
+          "model": "Emerging methods share a common problem: <strong>fraud patterns lag behind adoption<\u002Fstrong>. By the time a new method has enough volume to see clear fraud patterns, it has already scaled. Monitor early.",
+          "terms": [
+            {
+              "term": "VRP (Variable Recurring Payments)",
+              "def": "An open banking mechanism allowing a merchant to initiate a series of variable-amount payments under a single customer consent, within an agreed cap."
+            },
+            {
+              "term": "Presentation attack",
+              "def": "Attempting to defeat a biometric system using a fake copy of the biometric — e.g. a printed photo to fool a face scanner, or a silicone fingerprint."
+            },
+            {
+              "term": "M2M payment (Machine-to-Machine)",
+              "def": "A payment initiated automatically by a device — e.g. a connected car paying for fuel or parking without human interaction."
+            },
+            {
+              "term": "Loyalty fraud",
+              "def": "Stealing or misusing loyalty points — typically through ATO on a points account, then redeeming or transferring the points before the victim notices."
+            }
+          ],
+          "mistakes": [
+            {
+              "title": "Waiting for fraud data before building detection",
+              "detail": "By the time fraud patterns are established on a new payment method, fraudsters have already optimised their attacks. Treat new payment method adoption as a trigger to design controls proactively."
+            }
+          ],
+          "cards": [
+            {
+              "q": "What is the fraud risk specific to VRP compared to a one-off payment?",
+              "a": "A fraudulent VRP consent gives repeated access to funds (multiple collections over time), not just a single theft. Higher sustained exposure."
+            },
+            {
+              "q": "Why are loyalty points accounts high-value ATO targets?",
+              "a": "Points have real monetary value but often have weaker security than banking apps. A large points balance can be redeemed or transferred quickly once an account is compromised."
+            }
+          ],
+          "quiz": [
+            {
+              "q": "A customer's frequent flyer account is compromised. The attacker immediately redeems 200,000 Avios for flights. What type of fraud is this?",
+              "options": [
+                "Card testing — checking stolen card details",
+                "Loyalty fraud via ATO — points account takeover, immediately liquidated",
+                "Mandate fraud — unauthorised direct debit",
+                "QR substitution — replacing a payment QR code"
+              ],
+              "answer": 1,
+              "explain": "Loyalty accounts are ATO targets because points have real value but security is often weaker than bank accounts. The attacker redeems quickly before the victim can freeze the account."
+            },
+            {
+              "q": "VRP gives a merchant repeated collection rights under a single consent. What makes this riskier than a standard one-off open banking payment if the consent is compromised?",
+              "options": [
+                "VRP is only available to criminal enterprises with banking licences",
+                "VRP has no authentication step and is therefore completely unprotected",
+                "VRP payments cannot be traced because they use open banking",
+                "The attacker can make multiple collections up to the cap — not just a single theft"
+              ],
+              "answer": 3,
+              "explain": "A compromised VRP consent is worse than a compromised one-off payment. The attacker has a recurring mandate — they can collect repeatedly until the consent is revoked or the cap is hit."
+            }
+          ],
+          "recap": "Emerging methods — VRP, biometrics, wearables, loyalty, social commerce — share one fraud characteristic: thin data and evolving patterns. Monitor adoption curves closely. The biggest risk is being caught unprepared when a new method scales quickly."
+        }
+      ]
+    },
+    {
+      "id": "reference",
+      "title": "Reference",
+      "topics": [
+        {
+          "id": "scheme-reference",
+          "title": "APM scheme reference list",
+          "lesson": "<p>This is a reference list of payment schemes and methods by category. It is not exhaustive — the landscape has 300+ named methods globally — but covers the most commonly encountered schemes in fraud and risk work.<\u002Fp>\n<p>For full context on any category, refer to the relevant course topic.<\u002Fp>\n<hr \u002F>\n<h3>Cards — international schemes<\u002Fh3>\n<p>Visa, Mastercard, American Express, Discover \u002F Diners Club, JCB, UnionPay<\u002Fp>\n<h3>Domestic card schemes<\u002Fh3>\n<p>RuPay (India), Mada (Saudi Arabia), Elo \u002F Hipercard (Brazil), Cabal (Argentina), Troy (Turkey), MIR (Russia), Dankort (Denmark), Girocard (Germany), Carte Bancaire \u002F CB (France), Bancontact (Belgium), KNET (Kuwait), Meeza (Egypt)<\u002Fp>\n<hr \u002F>\n<h3>Digital wallets — global<\u002Fh3>\n<p>Apple Pay, Google Pay, Samsung Pay, PayPal, Amazon Pay<\u002Fp>\n<h3>Digital wallets — China<\u002Fh3>\n<p>Alipay, WeChat Pay, UnionPay QuickPass, JD Pay<\u002Fp>\n<h3>Digital wallets — Southeast Asia<\u002Fh3>\n<p>GrabPay, ShopeePay, GoPay\u002FGoTo, OVO, DANA, GCash, Maya, TrueMoney, Touch 'n Go, Boost, MoMo, ZaloPay, VNPay<\u002Fp>\n<h3>Digital wallets — India<\u002Fh3>\n<p>PhonePe, Paytm, CRED, MobiKwik, WhatsApp Pay<\u002Fp>\n<h3>Digital wallets — Japan<\u002Fh3>\n<p>PayPay, LINE Pay, Rakuten Pay, d-Barai, au PAY, Merpay, FamiPay, Suica\u002FPASMO, iD\u002FQUICPay<\u002Fp>\n<h3>Digital wallets — South Korea<\u002Fh3>\n<p>KakaoPay, Naver Pay, Toss, Payco<\u002Fp>\n<h3>Digital wallets — Europe<\u002Fh3>\n<p>Wero (France\u002FGermany\u002FBelgium), Twint (Switzerland), Vipps\u002FMobilePay (Norway\u002FDenmark), Satispay (Italy), Bizum (Spain), MB Way (Portugal), Blik (Poland), Payconiq (Belgium\u002FNL)<\u002Fp>\n<h3>Digital wallets — Latin America<\u002Fh3>\n<p>Mercado Pago, PicPay, Nubank, Yape (Peru), Nequi (Colombia), Daviplata (Colombia), MODO (Argentina), Ualá (Argentina)<\u002Fp>\n<h3>Digital wallets — MENA<\u002Fh3>\n<p>STC Pay (Saudi Arabia), Fawry (Egypt), Vodafone Cash (Egypt), Tabby Wallet, Tamara<\u002Fp>\n<h3>Digital wallets — North America<\u002Fh3>\n<p>Venmo, Cash App, Zelle, Apple Cash, Interac e-Transfer (Canada)<\u002Fp>\n<hr \u002F>\n<h3>Real-time payment rails<\u002Fh3>\n<p>Pix (Brazil), UPI (India), Faster Payments (UK), FedNow \u002F RTP (USA), PayNow (Singapore), PromptPay (Thailand), PayID\u002FNPP\u002FOsko (Australia), PayTo (Australia), SPEI (Mexico), DuitNow (Malaysia), InstaPay (Philippines), Swish (Sweden), Wero (France\u002FGermany\u002FBelgium)<\u002Fp>\n<h3>Online banking redirects<\u002Fh3>\n<p>iDEAL (Netherlands), Bancontact (Belgium), Sofort\u002FKlarna Sofort, EPS (Austria), MyBank (Italy), Przelewy24 (Poland), Trustly (pan-European), POLi (AU\u002FNZ), PSE (Colombia), Dragonpay (Philippines), Multibanco (Portugal), KNET (Kuwait), BENEFIT (Bahrain)<\u002Fp>\n<h3>Direct debit schemes<\u002Fh3>\n<p>SEPA Direct Debit \u002F SEPA Credit Transfer \u002F SEPA Instant (EU), ACH (USA), Bacs \u002F CHAPS (UK), BECS (Australia), Betalingsservice (Denmark), Autogiro (Sweden), NACH \u002F IMPS \u002F NEFT \u002F RTGS (India)<\u002Fp>\n<h3>Open banking infrastructure<\u002Fh3>\n<p>TrueLayer, Yapily, Tink (Visa), Volt, GoCardless, Plaid (US), Dwolla (US)<\u002Fp>\n<hr \u002F>\n<h3>BNPL — global<\u002Fh3>\n<p>Klarna, Afterpay\u002FClearpay, Affirm, PayPal Pay Later, Zip, Sezzle, Splitit<\u002Fp>\n<h3>BNPL — Europe<\u002Fh3>\n<p>Scalapay, Alma (France), Floa (France), Oney (France\u002FSpain), Riverty (Germany), Twisto (CZ\u002FPL)<\u002Fp>\n<h3>BNPL — Asia-Pacific<\u002Fh3>\n<p>Atome (SEA), Kredivo (Indonesia\u002FVietnam), Akulaku (SEA), Grab PayLater, Spaylater (Shopee), BillEase (Philippines), Paidy (Japan)<\u002Fp>\n<h3>BNPL — MENA<\u002Fh3>\n<p>Tabby (UAE\u002FKSA\u002FKuwait), Tamara (KSA\u002FUAE), Cashew, valU (Egypt)<\u002Fp>\n<h3>BNPL — Latin America<\u002Fh3>\n<p>Kueski Pay (Mexico), Addi (Colombia\u002FBrazil), Mercado Crédito<\u002Fp>\n<h3>B2B BNPL<\u002Fh3>\n<p>Billie (Germany), Mondu, Hokodo (Europe), Two (UK\u002FNordics)<\u002Fp>\n<hr \u002F>\n<h3>Mobile money<\u002Fh3>\n<p>M-Pesa (Kenya\u002FTanzania\u002FMozambique\u002FDRC\u002FGhana\u002FEgypt), MTN MoMo (West\u002FEast\u002FCentral Africa), Airtel Money, Orange Money, Wave (Senegal\u002FCôte d'Ivoire), EcoCash (Zimbabwe), OPay (Nigeria), PalmPay (Nigeria), Paga (Nigeria), bKash (Bangladesh), Nagad (Bangladesh), JazzCash (Pakistan), Easypaisa (Pakistan), KBZPay (Myanmar)<\u002Fp>\n<hr \u002F>\n<h3>QR standards<\u002Fh3>\n<p>QRIS (Indonesia), QR Ph (Philippines), DuitNow QR (Malaysia), PromptPay QR (Thailand), PayNow QR (Singapore), Bharat QR (India), Pix QR (Brazil), UPI QR (India), WeChat QR \u002F Alipay QR (China)<\u002Fp>\n<hr \u002F>\n<h3>Cash-based \u002F convenience<\u002Fh3>\n<p>Boleto Bancário \u002F Boleto Flash (Brazil), OXXO (Mexico), Konbini (Japan), Pago Fácil (Argentina), Rapipago (Argentina), PagoEfectivo (Peru), Efecty (Colombia), Baloto (Colombia), SafetyPay (LatAm\u002FEU), Alfamart\u002FIndomaret (Indonesia)<\u002Fp>\n<h3>Prepaid vouchers<\u002Fh3>\n<p>Paysafecard (Europe\u002FCA\u002FAU), Neosurf (FR\u002FBE\u002FCA\u002FAfrica\u002FAU), AstroPay (global), CASHlib (France)<\u002Fp>\n<hr \u002F>\n<h3>Carrier billing<\u002Fh3>\n<p>Boku \u002F Fortumo (global aggregator), Centili, direct operator billing (market-specific)<\u002Fp>\n<hr \u002F>\n<h3>Cryptocurrency<\u002Fh3>\n<p>Bitcoin (BTC), Ethereum (ETH), XRP\u002FRipple, Litecoin (LTC), Monero (XMR), Bitcoin Cash (BCH)<\u002Fp>\n<h3>Stablecoins<\u002Fh3>\n<p>USDT (Tether), USDC (Circle), PYUSD (PayPal), RLUSD (Ripple), DAI (MakerDAO), EUROC (Circle)<\u002Fp>\n<h3>Crypto payment infrastructure<\u002Fh3>\n<p>Lightning Network, BitPay, Coinbase Commerce, Strike<\u002Fp>\n<h3>Crypto-backed cards<\u002Fh3>\n<p>Crypto.com Visa, Coinbase Card, Binance Card<\u002Fp>\n<h3>CBDCs<\u002Fh3>\n<p>e-CNY \u002F Digital Yuan (China — live), Digital Rupee (India — pilot), Sand Dollar (Bahamas — live), DCash (Eastern Caribbean), Digital Euro (EU — development), eNaira (Nigeria — live)<\u002Fp>"
+        }
+      ]
+    }
+  ],
+  "brand": "APM"
+};
+</script>
+
+<!-- ============================================================ APP -->
+<script>
+(function () {
+  "use strict";
+  var COURSE = window.COURSE_DATA;
+  var LS = "course:" + (COURSE.title || "untitled") + ".v1";
+  var ACCENTS = ["#1f6feb", "#1f8a5b", "#b4530a", "#7c3aed", "#475569"];
+
+  // ---- state ----
+  var state = {
+    done: {}, current: null, notes: {},
+    fc: {}, // flashcard index per topic
+    theme: "light", accent: "#1f6feb", font: "serif", density: "roomy",
+    collapsed: {}
+  };
+  try { var saved = JSON.parse(localStorage.getItem(LS)); if (saved) Object.assign(state, saved); } catch (e) {}
+  if (state.font !== "serif" && state.font !== "sans") state.font = "serif";
+  function save() { try { localStorage.setItem(LS, JSON.stringify(state)); } catch (e) {} }
+
+  // ---- flatten topics for ordering ----
+  var FLAT = [];
+  COURSE.modules.forEach(function (m) { (m.topics || []).forEach(function (t) { t._mod = m; FLAT.push(t); }); });
+  function topicById(id) { for (var i=0;i<FLAT.length;i++) if (FLAT[i].id===id) return FLAT[i]; return null; }
+  function hasContent(t) { return !!(t.lesson || t.model || (t.quiz&&t.quiz.length) || (t.cards&&t.cards.length)); }
+
+  // ---- icons ----
+  var IC = {
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    model: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>',
+    warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>',
+    cards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M18 8h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9"/></svg>',
+    recap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+    arrowL: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
+    arrowR: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>',
+    sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>',
+    moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+  };
+
+  var $ = function (s, r) { return (r||document).querySelector(s); };
+  var el = function (tag, cls, html) { var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
+
+  // ---- brand mark from title initials ----
+  function initials(title) {
+    var words = String(title || "").trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return "•";
+    return words.map(function (w) { return w[0]; }).join("").slice(0, 3).toUpperCase();
+  }
+
+  // ---- theme / appearance ----
+  function applyAppearance() {
+    var h = document.documentElement;
+    h.dataset.theme = state.theme;
+    h.dataset.font = state.font;
+    h.dataset.density = state.density === "compact" ? "compact" : "roomy";
+    h.style.setProperty("--accent", state.accent);
+    $("#themeBtn").innerHTML = state.theme === "dark" ? IC.sun : IC.moon;
+    syncSettingsUI();
+  }
+
+  // ---- progress ----
+  function modStats(m) {
+    var ts = m.topics || [], d = 0;
+    ts.forEach(function (t) { if (state.done[t.id]) d++; });
+    return { done: d, total: ts.length };
+  }
+  function updateProgress() {
+    var total = FLAT.length, done = 0;
+    FLAT.forEach(function (t) { if (state.done[t.id]) done++; });
+    var pct = total ? Math.round(done/total*100) : 0;
+    $("#overallPct").textContent = pct + "%";
+    $("#overallBar").style.width = pct + "%";
+    // module rings
+    COURSE.modules.forEach(function (m) {
+      var s = modStats(m), node = document.querySelector('[data-modring="'+m.id+'"]');
+      if (node) {
+        var frac = s.total ? s.done/s.total : 0, c = 2*Math.PI*6;
+        var v = node.querySelector(".val");
+        v.style.strokeDasharray = c; v.style.strokeDashoffset = c*(1-frac);
+        node.parentNode.querySelector(".mod-frac").textContent = s.done + "/" + s.total;
+      }
+    });
+  }
+
+  // ---- sidebar ----
+  function buildNav() {
+    var nav = $("#nav"); nav.innerHTML = "";
+    COURSE.modules.forEach(function (m, mi) {
+      var mod = el("div", "mod"); mod.dataset.mod = m.id;
+      if (state.collapsed[m.id]) mod.classList.add("collapsed");
+      var head = el("button", "mod-head");
+      head.innerHTML =
+        '<svg class="mod-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+        '<span class="mod-name">' + esc(m.title) + '</span>' +
+        '<span class="mod-frac">0/0</span>' +
+        '<svg class="mod-ring" data-modring="'+m.id+'" viewBox="0 0 16 16"><circle class="trk" cx="8" cy="8" r="6"/><circle class="val" cx="8" cy="8" r="6"/></svg>';
+      head.addEventListener("click", function () {
+        mod.classList.toggle("collapsed");
+        state.collapsed[m.id] = mod.classList.contains("collapsed"); save();
+      });
+      mod.appendChild(head);
+      var ul = el("ul", "topics");
+      (m.topics || []).forEach(function (t) {
+        var li = el("li", "topic"); li.dataset.topic = t.id;
+        li.innerHTML = '<span class="tdot">'+IC.check+'</span><span class="tname">'+esc(t.title)+'</span>';
+        li.addEventListener("click", function () { go(t.id); });
+        ul.appendChild(li);
+      });
+      mod.appendChild(ul);
+      nav.appendChild(mod);
+    });
+  }
+
+  function refreshNavStates() {
+    document.querySelectorAll(".topic").forEach(function (li) {
+      var id = li.dataset.topic;
+      li.classList.toggle("done", !!state.done[id]);
+      li.classList.toggle("active", id === state.current);
+    });
+  }
+
+  // ---- search ----
+  function runSearch(q) {
+    q = (q||"").trim().toLowerCase();
+    COURSE.modules.forEach(function (m) {
+      var modEl = document.querySelector('[data-mod="'+m.id+'"]'), anyVis = false;
+      (m.topics||[]).forEach(function (t) {
+        var li = modEl.querySelector('[data-topic="'+t.id+'"]');
+        var hit = !q || t.title.toLowerCase().indexOf(q) >= 0 || m.title.toLowerCase().indexOf(q) >= 0;
+        li.classList.toggle("hidden", !hit);
+        if (hit) anyVis = true;
+      });
+      modEl.classList.toggle("hidden", !anyVis);
+      if (q && anyVis) modEl.classList.remove("collapsed");
+    });
+  }
+
+  // ---- render a topic ----
+  function go(id) {
+    var t = topicById(id); if (!t) return;
+    state.current = id; save();
+    refreshNavStates();
+    var side = $("#side"); if (side.classList.contains("open")) { side.classList.remove("open"); $("#scrim").classList.remove("open"); }
+    renderTopic(t);
+    $("#main").scrollTop = 0;
+  }
+
+  function renderTopic(t) {
+    var r = $("#reading"); r.innerHTML = "";
+    $("#crumb").innerHTML = '<b>' + esc(t._mod.title) + '</b> &nbsp;/&nbsp; ' + esc(t.title);
+
+    r.appendChild(el("div", "t-kicker", esc(t._mod.title)));
+    r.appendChild(el("h1", "t-title", esc(t.title)));
+
+    if (!hasContent(t)) {
+      r.appendChild(el("div", "draft", "✍️ This topic is scaffolded but not yet written."));
+    }
+
+    // lesson (HTML string, already converted from markdown by build.py)
+    if (t.lesson) {
+      var lc = el("div", "lesson"); lc.innerHTML = t.lesson; r.appendChild(lc);
+    }
+    // mental model (short string, may contain <strong>)
+    if (t.model) {
+      r.appendChild(section("model-card", IC.model, "Mental model", '<p>'+t.model+'</p>'));
+    }
+    // common mistakes — [{title, detail}]
+    if (t.mistakes && t.mistakes.length) {
+      var ml = '<ul class="mistakes">' + t.mistakes.map(function (mk) {
+        var title = typeof mk === "string" ? mk : (mk.title || "");
+        var detail = typeof mk === "string" ? "" : (mk.detail || "");
+        return '<li><span class="x">'+IC.x+'</span><div><b>'+esc(title)+'</b>'+(detail?'<small>'+detail+'</small>':'')+'</div></li>';
+      }).join("") + '</ul>';
+      r.appendChild(section("", IC.warn, "Common mistakes to avoid", ml));
+    }
+    // glossary — [{term, def}]
+    if (t.terms && t.terms.length) {
+      var tl = '<dl class="terms">' + t.terms.map(function (x) {
+        return '<div class="term"><dt>'+esc(x.term)+'</dt><dd>'+(x.def||"")+'</dd></div>';
+      }).join("") + '</dl>';
+      r.appendChild(section("", IC.book, "Key terms", tl));
+    }
+    // quiz — [{q, options[], answer, explain}]
+    if (t.quiz && t.quiz.length) {
+      r.appendChild(buildQuiz(t));
+    }
+    // flashcards — [{q, a}]
+    if (t.cards && t.cards.length) {
+      r.appendChild(buildCards(t));
+    }
+    // recap (plain string)
+    if (t.recap) {
+      var rc = el("div", "recap");
+      rc.innerHTML = '<div class="rh">'+IC.recap+'TL;DR</div><p>'+esc(t.recap)+'</p>';
+      r.appendChild(rc);
+    }
+
+    // footer: complete + nav
+    var foot = el("div", "foot");
+    var idx = FLAT.indexOf(t);
+    var prev = FLAT[idx-1], next = FLAT[idx+1];
+    var pb = el("button", "pgbtn prev");
+    pb.innerHTML = IC.arrowL + '<span class="lab"><small>Previous</small><span>'+(prev?esc(prev.title):'—')+'</span></span>';
+    pb.disabled = !prev; if (prev) pb.addEventListener("click", function(){ go(prev.id); });
+    var nb = el("button", "pgbtn next");
+    nb.innerHTML = '<span class="lab"><small>Next</small><span>'+(next?esc(next.title):'—')+'</span></span>' + IC.arrowR;
+    nb.disabled = !next; if (next) nb.addEventListener("click", function(){ go(next.id); });
+    foot.appendChild(pb); foot.appendChild(nb);
+
+    var cbWrap = el("div", ""); cbWrap.style.cssText = "width:100%;display:flex;margin:26px 0 0;";
+    var cb = el("button", "complete-btn");
+    function setCB() {
+      var d = !!state.done[t.id];
+      cb.classList.toggle("is-done", d);
+      cb.innerHTML = IC.check + (d ? "Completed — click to undo" : "Mark topic complete");
+    }
+    setCB();
+    cb.addEventListener("click", function () {
+      state.done[t.id] = !state.done[t.id]; save();
+      setCB(); refreshNavStates(); updateProgress();
+      if (state.done[t.id]) { toast("Nice — topic complete ✓"); }
+    });
+    cbWrap.appendChild(cb);
+    r.appendChild(cbWrap);
+    r.appendChild(foot);
+  }
+
+  function section(extra, icon, title, bodyHtml) {
+    var c = el("div", "card" + (extra?" "+extra:""));
+    c.innerHTML = '<div class="card-h"><span class="ic">'+icon+'</span><b>'+title+'</b></div><div class="card-b">'+bodyHtml+'</div>';
+    return c;
+  }
+
+  // ---- quiz ----
+  function buildQuiz(t) {
+    var c = el("div", "card");
+    c.innerHTML = '<div class="card-h"><span class="ic">'+IC.quiz+'</span><b>Quick quiz</b></div>';
+    var body = el("div", "card-b");
+    t.quiz.forEach(function (q, qi) {
+      var qd = el("div", "q");
+      qd.innerHTML = '<p class="q-stem"><span class="n">Q'+(qi+1)+'</span>'+esc(q.q)+'</p>';
+      var opts = el("div", "opts");
+      q.options.forEach(function (opt, oi) {
+        var b = el("button", "opt");
+        b.innerHTML = '<span class="mk">'+IC.check+'</span><span>'+esc(opt)+'</span>';
+        b.addEventListener("click", function () {
+          if (qd.dataset.locked) return;
+          qd.dataset.locked = "1";
+          var ex = qd.querySelector(".q-explain");
+          opts.querySelectorAll(".opt").forEach(function (o, i) {
+            o.classList.add("locked");
+            if (i === q.answer) o.classList.add("correct");
+          });
+          if (oi !== q.answer) b.classList.add("wrong");
+          if (ex) ex.classList.add("show");
+        });
+        opts.appendChild(b);
+      });
+      qd.appendChild(opts);
+      if (q.explain) qd.appendChild(el("p", "q-explain", '<b>Why</b> &nbsp;'+esc(q.explain)));
+      body.appendChild(qd);
+    });
+    c.appendChild(body);
+    return c;
+  }
+
+  // ---- flashcards ----
+  function buildCards(t) {
+    var c = el("div", "card");
+    c.innerHTML = '<div class="card-h"><span class="ic">'+IC.cards+'</span><b>Flashcards — test your recall</b></div>';
+    var body = el("div", "card-b");
+    var stage = el("div", "fc-stage");
+    var i = state.fc[t.id] || 0; if (i >= t.cards.length) i = 0;
+    var fc = el("div", "fc");
+    function paint() {
+      var card = t.cards[i];
+      fc.classList.remove("flipped");
+      fc.innerHTML =
+        '<div class="fc-face fc-front"><span class="lab">Prompt</span><div class="txt">'+esc(card.q)+'</div><span class="fc-tap">tap to flip</span></div>' +
+        '<div class="fc-face fc-back"><span class="lab">Recall</span><div class="txt">'+esc(card.a)+'</div></div>';
+      count.textContent = (i+1) + " / " + t.cards.length;
+    }
+    fc.addEventListener("click", function () { fc.classList.toggle("flipped"); });
+    stage.appendChild(fc);
+    body.appendChild(stage);
+
+    var foot = el("div", "fc-foot");
+    var prev = el("button", "fc-prev", IC.arrowL);
+    var count = el("span", "fc-count");
+    var rate = el("div", "fc-rate");
+    var again = el("button", "rate-btn again", "Again");
+    var good = el("button", "rate-btn good", "Got it");
+    rate.appendChild(again); rate.appendChild(good);
+    var next = el("button", "fc-next", IC.arrowR);
+    function move(d) { i = (i + d + t.cards.length) % t.cards.length; state.fc[t.id]=i; save(); paint(); }
+    prev.addEventListener("click", function(){ move(-1); });
+    next.addEventListener("click", function(){ move(1); });
+    again.addEventListener("click", function(){ move(1); });
+    good.addEventListener("click", function(){ move(1); });
+    foot.appendChild(prev); foot.appendChild(count); foot.appendChild(rate); foot.appendChild(next);
+    body.appendChild(foot);
+    c.appendChild(body);
+    paint();
+    return c;
+  }
+
+  // ---- settings ----
+  function syncSettingsUI() {
+    segSel("#segFont", state.font);
+    segSel("#segDensity", state.density);
+    document.querySelectorAll("#swatches .sw").forEach(function (s) {
+      s.classList.toggle("sel", s.dataset.c === state.accent);
+    });
+  }
+  function segSel(sel, v) {
+    document.querySelectorAll(sel + " button").forEach(function (b) { b.classList.toggle("sel", b.dataset.v === v); });
+  }
+  function buildSettings() {
+    var sw = $("#swatches");
+    ACCENTS.forEach(function (c) {
+      var b = el("button", "sw"); b.dataset.c = c; b.style.background = c;
+      b.addEventListener("click", function () { state.accent = c; save(); applyAppearance(); });
+      sw.appendChild(b);
+    });
+    bindSeg("#segFont", "font");
+    bindSeg("#segDensity", "density");
+    $("#setBtn").addEventListener("click", openPanel);
+    syncSettingsUI();
+    $("#setClose").addEventListener("click", closePanel);
+    $("#scrim").addEventListener("click", function(){ closePanel(); $("#side").classList.remove("open"); });
+    $("#resetBtn").addEventListener("click", function () {
+      if (confirm("Reset all progress, notes and flashcard positions? This cannot be undone.")) {
+        state.done = {}; state.fc = {}; state.notes = {}; save();
+        refreshNavStates(); updateProgress();
+        var t = topicById(state.current); if (t) renderTopic(t);
+        toast("Progress reset");
+      }
+    });
+  }
+  function bindSeg(sel, key) {
+    document.querySelectorAll(sel + " button").forEach(function (b) {
+      b.addEventListener("click", function () { state[key] = b.dataset.v; save(); applyAppearance(); });
+    });
+  }
+  function openPanel() { $("#panel").classList.add("open"); $("#scrim").classList.add("open"); }
+  function closePanel() { $("#panel").classList.remove("open"); $("#scrim").classList.remove("open"); }
+
+  // ---- misc ----
+  var toastTimer;
+  function toast(msg) {
+    var t = $("#toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 1900);
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]; }); }
+
+  // ---- keyboard ----
+  document.addEventListener("keydown", function (e) {
+    if (e.target.matches("input, textarea")) {
+      if (e.key === "Escape") e.target.blur();
+      return;
+    }
+    if (e.key === "ArrowRight") { var i=FLAT.indexOf(topicById(state.current)); if (FLAT[i+1]) go(FLAT[i+1].id); }
+    else if (e.key === "ArrowLeft") { var j=FLAT.indexOf(topicById(state.current)); if (FLAT[j-1]) go(FLAT[j-1].id); }
+    else if (e.key === "t" || e.key === "T") { state.theme = state.theme==="dark"?"light":"dark"; save(); applyAppearance(); }
+    else if (e.key === "/") { e.preventDefault(); $("#search").focus(); }
+  });
+
+  // ---- init ----
+  function init() {
+    document.title = (COURSE.title || "Course") + " — Interactive Course";
+    $("#courseTitle").textContent = COURSE.title || "Course";
+    $("#courseSub").textContent = COURSE.description || "";
+    $("#brandMark").textContent = COURSE.brand || initials(COURSE.title);
+    applyAppearance();
+    buildNav();
+    buildSettings();
+    refreshNavStates();
+    updateProgress();
+    $("#search").addEventListener("input", function (e) { runSearch(e.target.value); });
+    $("#themeBtn").addEventListener("click", function () { state.theme = state.theme==="dark"?"light":"dark"; save(); applyAppearance(); });
+    $("#menuBtn").addEventListener("click", function () { $("#side").classList.toggle("open"); $("#scrim").classList.toggle("open"); });
+    var start = (state.current && topicById(state.current)) ? state.current : (FLAT[0] && FLAT[0].id);
+    if (start) go(start);
+  }
+  init();
+})();
+</script>
+
+</body></html>

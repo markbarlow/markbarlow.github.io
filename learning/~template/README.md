@@ -5,5 +5,5 @@
 - example-course.html — example of the built output from the yaml file
 - build.py — the script which converts the yaml into course content using the template and outputting a self-contained course file. Usage: `python3 build.py your-course.yaml output.html`
 
-Progress is stored using localStorage
+
 

@@ -121,8 +121,7 @@ def build_course(data: dict, rng: random.Random) -> dict:
 def inject(template: str, course: dict) -> str:
     """Replace the template's fallback COURSE_DATA with the real course JSON."""
     payload = json.dumps(course, ensure_ascii=False, indent=2)
-    # Encode "/" as "/" so an embedded "</script>" can't close the tag early
-    # (same approach as randomise_quiz.py).
+    # Encode "/" as "/" so an embedded "</script>" can't close the tag early.
     payload = payload.replace("/", "\\u002F")
     js = "window.COURSE_DATA = " + payload + ";\n"
 

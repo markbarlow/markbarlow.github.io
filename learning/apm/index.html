@@ -521,10 +521,10 @@ window.COURSE_DATA = {
             {
               "q": "A customer uses Google Pay to pay. Which of these best describes what happens?",
               "options": [
-                "The customer's bank balance is debited directly, bypassing card networks",
-                "A network token for their underlying card is used — the card network processes the payment",
                 "Google Pay creates a new virtual card number for every transaction",
-                "Google holds the payment and settles it to the merchant weekly"
+                "A network token for their underlying card is used — the card network processes the payment",
+                "Google holds the payment and settles it to the merchant weekly",
+                "The customer's bank balance is debited directly, bypassing card networks"
               ],
               "answer": 1,
               "explain": "Google Pay is a pass-through wallet. It tokenises the card and presents the token to the card network — the payment is processed just like a card transaction, with device signals added."
@@ -532,20 +532,20 @@ window.COURSE_DATA = {
             {
               "q": "Which signal is most useful for detecting ATO on a pass-through wallet?",
               "options": [
-                "A card being provisioned to a new device in a new geography, shortly before a large transaction",
-                "The cardholder using the same device they always use",
                 "The wallet account being three years old",
+                "The cardholder using the same device they always use",
+                "A card being provisioned to a new device in a new geography, shortly before a large transaction",
                 "A transaction in a familiar merchant category"
               ],
-              "answer": 0,
+              "answer": 2,
               "explain": "Device change + re-provisioning is a classic ATO signal. The fraudster has the card credentials and is setting up a new device to spend before the victim notices."
             },
             {
               "q": "Why is friendly fraud higher for wallet payments?",
               "options": [
-                "Wallet providers always side with the customer in disputes",
-                "Wallet payment names on bank statements can look unfamiliar, making it easy to dispute a legitimate charge",
                 "Wallets do not require any authentication",
+                "Wallet payment names on bank statements can look unfamiliar, making it easy to dispute a legitimate charge",
+                "Wallet providers always side with the customer in disputes",
                 "Wallet refunds are automatic and merchants cannot contest them"
               ],
               "answer": 1,
@@ -557,7 +557,7 @@ window.COURSE_DATA = {
         {
           "id": "p2p-apps",
           "title": "P2P payment apps",
-          "lesson": "<h3>What is a P2P payment app?<\u002Fh3>\n<p>P2P stands for \"peer-to-peer\" — person to person. These are apps designed to send money between individuals, not to merchants. Splitting a restaurant bill, paying rent to a flatmate, gifting money for a birthday.<\u002Fp>\n<p>The defining characteristic is that the payer initiates the transfer directly to another person's account. There's no merchant involved, no card network processing the transaction — it's a direct digital transfer.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Handing someone a £20 note, but on your phone. Once the money has changed hands, getting it back requires asking nicely — or a legal process.<\u002Fp>\n<\u002Fblockquote>\n<h3>How it works<\u002Fh3>\n<ol>\n<li>Payer opens the app, enters the recipient's phone number, username, or email<\u002Fli>\n<li>Payer confirms the amount and approves the transfer<\u002Fli>\n<li>Funds move — usually instantly, sometimes with a short delay<\u002Fli>\n<li>Recipient sees the money in their P2P app balance, which they can spend or withdraw<\u002Fli>\n<\u002Fol>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Generally <strong>not reversible<\u002Fstrong> once sent. Unlike a card payment, there is no automatic chargeback mechanism. Banks and P2P providers may help in fraud cases but cannot guarantee recovery.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low for the sender (authenticated in app), but recipients can be harder to trace in some markets.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Near-instant in most cases.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> Varies widely. US apps (Zelle, Venmo) require bank-linked accounts. Some apps in developing markets have lighter KYC at low transaction values.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Authorised Push Payment (APP) fraud<\u002Fstrong> is the dominant risk — and one of the fastest-growing fraud types globally. The victim is tricked into sending money willingly. Because the payment is technically authorised by the victim, it sits outside the standard chargeback framework.<\u002Fp>\n<p>Common APP fraud scenarios:\n- <strong>Romance scam:<\u002Fstrong> Fraudster builds trust over weeks, then requests money for an \"emergency\"\n- <strong>Impersonation:<\u002Fstrong> Pretends to be a bank, HMRC, or a known contact needing urgent payment\n- <strong>Fake invoice:<\u002Fstrong> Intercepts a legitimate payment (e.g. conveyancer solicitor fraud) and changes the bank details<\u002Fp>\n<p><strong>Mule account activity<\u002Fstrong> is the other major pattern. Fraudsters need to move money through intermediary accounts to obscure its origin. P2P apps are fast and cheap, making them attractive for onward transfers. A mule account receives funds, quickly transfers them on, and is then abandoned.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li><strong>First-time recipient:<\u002Fstrong> Sending to someone you've never paid before is a key risk signal, especially combined with a large amount<\u002Fli>\n<li><strong>Speed of onward transfer:<\u002Fstrong> Money received and immediately forwarded is a mule signal<\u002Fli>\n<li><strong>Account age:<\u002Fstrong> Newly created recipient accounts combined with unusual inbound volumes<\u002Fli>\n<li><strong>Behavioural anomaly:<\u002Fstrong> Large transfer at unusual time, new device, new location<\u002Fli>\n<\u002Ful>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>Zelle (USA):<\u002Fstrong> Bank-consortium operated, instant, bank-account linked. High APP fraud rate.<\u002Fli>\n<li><strong>Venmo (USA):<\u002Fstrong> PayPal-owned, popular with younger users. Has a social feed (fraud visibility risk).<\u002Fli>\n<li><strong>Swish (Sweden):<\u002Fstrong> Linked to BankID, one of the most mature P2P systems with strong identity.<\u002Fli>\n<li><strong>Blik (Poland):<\u002Fstrong> Hybrid — P2P and wallet payments via a 6-digit one-time code.<\u002Fli>\n<\u002Ful>",
+          "lesson": "<h3>What is a P2P payment app?<\u002Fh3>\n<p>P2P stands for \"peer-to-peer\" — person to person. These are apps designed to send money between individuals, not to merchants. Splitting a restaurant bill, paying rent to a flatmate, gifting money for a birthday.<\u002Fp>\n<p>The defining characteristic is that the payer initiates the transfer directly to another person's account. There's no merchant involved, no card network processing the transaction — it's a direct digital transfer.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Handing someone a £20 note, but on your phone. Once the money has changed hands, getting it back requires asking nicely — or a legal process.<\u002Fp>\n<\u002Fblockquote>\n<h3>How it works<\u002Fh3>\n<ol>\n<li>Payer opens the app, enters the recipient's phone number, username, or email<\u002Fli>\n<li>Payer confirms the amount and approves the transfer<\u002Fli>\n<li>Funds move — usually instantly, sometimes with a short delay<\u002Fli>\n<li>Recipient sees the money in their P2P app balance, which they can spend or withdraw<\u002Fli>\n<\u002Fol>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Generally <strong>not reversible<\u002Fstrong> once sent. Unlike a card payment, there is no automatic chargeback mechanism. Banks and P2P providers may help in fraud cases but cannot guarantee recovery.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low for the sender (authenticated in app), but recipients can be harder to trace in some markets.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Near-instant in most cases.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> Varies widely. US apps (Zelle, Venmo) require bank-linked accounts. Some apps in developing markets have lighter KYC at low transaction values.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Authorised Push Payment (APP) fraud<\u002Fstrong> is the dominant risk — and one of the fastest-growing fraud types globally. The victim is tricked into sending money willingly. Because the payment is technically authorised by the victim, it sits outside the standard chargeback framework.<\u002Fp>\n<p>Common APP fraud scenarios:<\u002Fp>\n<ul>\n<li><strong>Romance scam:<\u002Fstrong> Fraudster builds trust over weeks, then requests money for an \"emergency\"<\u002Fli>\n<li><strong>Impersonation:<\u002Fstrong> Pretends to be a bank, HMRC, or a known contact needing urgent payment<\u002Fli>\n<li><strong>Fake invoice:<\u002Fstrong> Intercepts a legitimate payment (e.g. conveyancer solicitor fraud) and changes the bank details<\u002Fli>\n<\u002Ful>\n<p><strong>Mule account activity<\u002Fstrong> is the other major pattern. Fraudsters need to move money through intermediary accounts to obscure its origin. P2P apps are fast and cheap, making them attractive for onward transfers. A mule account receives funds, quickly transfers them on, and is then abandoned.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li><strong>First-time recipient:<\u002Fstrong> Sending to someone you've never paid before is a key risk signal, especially combined with a large amount<\u002Fli>\n<li><strong>Speed of onward transfer:<\u002Fstrong> Money received and immediately forwarded is a mule signal<\u002Fli>\n<li><strong>Account age:<\u002Fstrong> Newly created recipient accounts combined with unusual inbound volumes<\u002Fli>\n<li><strong>Behavioural anomaly:<\u002Fstrong> Large transfer at unusual time, new device, new location<\u002Fli>\n<\u002Ful>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>Zelle (USA):<\u002Fstrong> Bank-consortium operated, instant, bank-account linked. High APP fraud rate.<\u002Fli>\n<li><strong>Venmo (USA):<\u002Fstrong> PayPal-owned, popular with younger users. Has a social feed (fraud visibility risk).<\u002Fli>\n<li><strong>Swish (Sweden):<\u002Fstrong> Linked to BankID, one of the most mature P2P systems with strong identity.<\u002Fli>\n<li><strong>Blik (Poland):<\u002Fstrong> Hybrid — P2P and wallet payments via a 6-digit one-time code.<\u002Fli>\n<\u002Ful>",
           "model": "P2P payments are <strong>digital cash<\u002Fstrong>. Once sent, they are very hard to recover. The key fraud risk is APP fraud — the victim does the sending.",
           "terms": [
             {
@@ -601,23 +601,23 @@ window.COURSE_DATA = {
             {
               "q": "A customer calls their bank saying they were tricked into sending £3,000 via Zelle to a \"HMRC agent\". What type of fraud is this?",
               "options": [
+                "Card fraud — a stolen card was used without the customer's knowledge",
                 "Identity fraud — someone opened an account in the customer's name",
                 "APP fraud — the customer willingly authorised the payment after being deceived",
-                "Card fraud — a stolen card was used without the customer's knowledge",
                 "Chargeback fraud — the customer is falsely claiming they didn't make the payment"
               ],
-              "answer": 1,
+              "answer": 2,
               "explain": "APP fraud means the victim authorised the transfer themselves, under false pretences. No card was stolen — the fraudster used social engineering instead."
             },
             {
               "q": "An account receives 12 transfers from different senders within 2 hours, then immediately sends all the funds to a single overseas account. What does this pattern suggest?",
               "options": [
-                "An account testing a new payment feature",
                 "A mule account being used to layer fraudulent funds",
                 "A legitimate business collecting payments from customers",
+                "An account testing a new payment feature",
                 "A rewards programme paying out bonuses"
               ],
-              "answer": 1,
+              "answer": 0,
               "explain": "Rapid aggregation from multiple senders followed by a single outbound transfer is a classic money mule pattern — collecting fraud proceeds and moving them on before detection."
             }
           ],
@@ -626,7 +626,7 @@ window.COURSE_DATA = {
         {
           "id": "super-apps",
           "title": "Super apps and embedded payments",
-          "lesson": "<h3>What is a super app?<\u002Fh3>\n<p>A super app is a single application that bundles many services — messaging, ride-hailing, food delivery, shopping, insurance, and payments — all in one place. Instead of having ten separate apps, you have one.<\u002Fp>\n<p>Payments in a super app are <strong>embedded<\u002Fstrong> — you don't go to a separate payment step. You order food, you tap confirm, payment happens silently in the background. The payment is part of the experience, not a separate transaction.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Imagine if Amazon, WhatsApp, Uber, your bank, and your insurance provider were all one app. That's WeChat in China. You can pay your electricity bill, split dinner with friends, and buy a flight — without leaving the app.<\u002Fp>\n<\u002Fblockquote>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Varies by sub-service. In-app purchases tend to follow the super app's own dispute process, not external card chargeback rules.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — super apps require comprehensive identity verification because they hold financial accounts.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Instant within the ecosystem.<\u002Fli>\n<li><strong>Data sharing:<\u002Fstrong> Very limited externally. Super apps are closed ecosystems — transaction data stays inside.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>ATO is amplified<\u002Fstrong> — because one account gives access to multiple services and a stored balance, a compromised super app account is significantly more valuable to a fraudster than a compromised single-purpose app.<\u002Fp>\n<p><strong>Ecosystem lock-in<\u002Fstrong> creates a monitoring blind spot. A payment made within WeChat's ecosystem doesn't appear as a card transaction that your fraud system can see. The merchant may only see \"WeChat Pay\" with minimal metadata.<\u002Fp>\n<p><strong>Return and refund fraud<\u002Fstrong> is elevated in commerce-heavy super apps, because the victim can use the app's own dispute system, which may be more lenient than card dispute rules.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Limited external signals are the central challenge. From a Ravelin or PSP perspective, a super app transaction typically only surfaces a wallet account ID, possibly an email, and a transaction amount. There is no device fingerprint, no card BIN, no network token.<\u002Fp>\n<p>Detection therefore relies on:\n- Account-level velocity (frequency, amount patterns)\n- Geographic inconsistency (account registered in China, transaction in Brazil)\n- Merchant-side signals (device, session, behavioural) paired with the payment event<\u002Fp>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>WeChat Pay (China):<\u002Fstrong> The original super app payment. 1+ billion users, used for everything from street food to mortgage repayments.<\u002Fli>\n<li><strong>Alipay (China):<\u002Fstrong> Ant Group's super app, with financial services (credit, investment) embedded.<\u002Fli>\n<li><strong>Grab (Southeast Asia):<\u002Fstrong> Started as ride-hailing, now covers payments, food, grocery, insurance across six countries.<\u002Fli>\n<li><strong>Gojek \u002F GoTo (Indonesia):<\u002Fstrong> Similar to Grab — rides, food, payments, financial services.<\u002Fli>\n<\u002Ful>",
+          "lesson": "<h3>What is a super app?<\u002Fh3>\n<p>A super app is a single application that bundles many services — messaging, ride-hailing, food delivery, shopping, insurance, and payments — all in one place. Instead of having ten separate apps, you have one.<\u002Fp>\n<p>Payments in a super app are <strong>embedded<\u002Fstrong> — you don't go to a separate payment step. You order food, you tap confirm, payment happens silently in the background. The payment is part of the experience, not a separate transaction.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Imagine if Amazon, WhatsApp, Uber, your bank, and your insurance provider were all one app. That's WeChat in China. You can pay your electricity bill, split dinner with friends, and buy a flight — without leaving the app.<\u002Fp>\n<\u002Fblockquote>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Varies by sub-service. In-app purchases tend to follow the super app's own dispute process, not external card chargeback rules.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — super apps require comprehensive identity verification because they hold financial accounts.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Instant within the ecosystem.<\u002Fli>\n<li><strong>Data sharing:<\u002Fstrong> Very limited externally. Super apps are closed ecosystems — transaction data stays inside.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>ATO is amplified<\u002Fstrong> — because one account gives access to multiple services and a stored balance, a compromised super app account is significantly more valuable to a fraudster than a compromised single-purpose app.<\u002Fp>\n<p><strong>Ecosystem lock-in<\u002Fstrong> creates a monitoring blind spot. A payment made within WeChat's ecosystem doesn't appear as a card transaction that your fraud system can see. The merchant may only see \"WeChat Pay\" with minimal metadata.<\u002Fp>\n<p><strong>Return and refund fraud<\u002Fstrong> is elevated in commerce-heavy super apps, because the victim can use the app's own dispute system, which may be more lenient than card dispute rules.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Limited external signals are the central challenge. From a Ravelin or PSP perspective, a super app transaction typically only surfaces a wallet account ID, possibly an email, and a transaction amount. There is no device fingerprint, no card BIN, no network token.<\u002Fp>\n<p>Detection therefore relies on:<\u002Fp>\n<ul>\n<li>Account-level velocity (frequency, amount patterns)<\u002Fli>\n<li>Geographic inconsistency (account registered in China, transaction in Brazil)<\u002Fli>\n<li>Merchant-side signals (device, session, behavioural) paired with the payment event<\u002Fli>\n<\u002Ful>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>WeChat Pay (China):<\u002Fstrong> The original super app payment. 1+ billion users, used for everything from street food to mortgage repayments.<\u002Fli>\n<li><strong>Alipay (China):<\u002Fstrong> Ant Group's super app, with financial services (credit, investment) embedded.<\u002Fli>\n<li><strong>Grab (Southeast Asia):<\u002Fstrong> Started as ride-hailing, now covers payments, food, grocery, insurance across six countries.<\u002Fli>\n<li><strong>Gojek \u002F GoTo (Indonesia):<\u002Fstrong> Similar to Grab — rides, food, payments, financial services.<\u002Fli>\n<\u002Ful>",
           "model": "A super app is a <strong>closed financial ecosystem<\u002Fstrong>. One account, many services. For fraud teams, the risk is amplified ATO value and very limited external data.",
           "terms": [
             {
@@ -666,23 +666,23 @@ window.COURSE_DATA = {
             {
               "q": "A merchant sees a sudden spike in orders paid via WeChat Pay from accounts created in the last 48 hours. What is the most likely fraud pattern?",
               "options": [
-                "Normal behaviour — WeChat Pay users create new accounts frequently",
-                "Card testing — fraudsters checking if stolen card numbers work",
                 "A genuine marketing promotion driving new user sign-ups",
-                "Newly created accounts being used for fraud — possibly compromised or synthetic identities exploiting the merchant"
+                "Newly created accounts being used for fraud — possibly compromised or synthetic identities exploiting the merchant",
+                "Card testing — fraudsters checking if stolen card numbers work",
+                "Normal behaviour — WeChat Pay users create new accounts frequently"
               ],
-              "answer": 3,
+              "answer": 1,
               "explain": "Account age is a key signal. Newly created accounts transacting immediately at volume is a red flag, especially when it's a sudden spike. WeChat Pay users don't routinely create fresh accounts to shop."
             },
             {
               "q": "Which signal is typically NOT available from a super app payment?",
               "options": [
-                "The device fingerprint of the customer's phone",
-                "The wallet account identifier",
+                "The transaction amount",
                 "The currency of the transaction",
-                "The transaction amount"
+                "The wallet account identifier",
+                "The device fingerprint of the customer's phone"
               ],
-              "answer": 0,
+              "answer": 3,
               "explain": "Super apps are closed ecosystems. Device fingerprint, network token, card BIN — none of these cross the boundary. The external system sees amount, currency, and an account ID."
             }
           ],
@@ -696,8 +696,8 @@ window.COURSE_DATA = {
       "topics": [
         {
           "id": "push-bank-transfer",
-          "title": "Push bank transfers and online banking redirects",
-          "lesson": "<h3>What is a push bank transfer?<\u002Fh3>\n<p>A push bank transfer is when the <strong>payer logs into their bank and sends money out<\u002Fstrong>. They are the one doing the pushing. The recipient has no control over when or whether it happens — they just receive the funds.<\u002Fp>\n<p>Compare this to a card payment, where you hand your card details to a merchant and they \"pull\" the money. With a push transfer, the direction is reversed — the payer initiates everything.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> A push bank transfer is like writing a cheque and posting it. A card payment is like giving someone your bank card and letting them take what they're owed. One you control; one you give control to.<\u002Fp>\n<\u002Fblockquote>\n<h3>Online banking redirects — push transfers at checkout<\u002Fh3>\n<p>Many countries have a specific payment method where, at checkout, you are <strong>redirected to your bank's login page<\u002Fstrong>, you approve the payment there, and then you come back to the merchant. This is a push bank transfer with a checkout-friendly wrapper around it.<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>Method<\u002Fth>\n<th>Country<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>iDEAL<\u002Ftd>\n<td>Netherlands<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Bancontact<\u002Ftd>\n<td>Belgium<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>EPS<\u002Ftd>\n<td>Austria<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Przelewy24 (P24)<\u002Ftd>\n<td>Poland<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>MyBank<\u002Ftd>\n<td>Italy<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Sofort \u002F Klarna Sofort<\u002Ftd>\n<td>Germany, Austria, Switzerland<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<p>These methods all share the same underlying structure: the payer authenticates with their own bank and authorises the transfer. The merchant never sees bank credentials.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> <strong>Generally irrevocable.<\u002Fstrong> Once a push transfer clears, the only way to get money back is to ask the recipient to return it, or pursue legal action. There is no chargeback mechanism equivalent to cards.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — the payer must authenticate with their bank.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Varies. Traditional bank transfers settle within hours or next day. Real-time rails (next topic) settle in seconds.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> High — bank accounts require ID verification.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>APP fraud<\u002Fstrong> (Authorised Push Payment fraud) is the primary risk — the victim is deceived into initiating the transfer themselves. Because the transfer is authorised by the account holder, there is no \"unauthorised transaction\" claim to make.<\u002Fp>\n<p>Common vectors:\n- <strong>Invoice fraud:<\u002Fstrong> A supplier's email is compromised. The attacker swaps the bank details on a real invoice. The victim pays the fraudster thinking they're paying a legitimate supplier.\n- <strong>Impersonation of banks or government bodies:<\u002Fstrong> \"Your account has been compromised, move your money to this safe account immediately.\"<\u002Fp>\n<p><strong>Mule account onward transfers<\u002Fstrong> — money received by a mule is quickly forwarded via push transfer, making tracing harder.<\u002Fp>\n<p><strong>Redirect interception<\u002Fstrong> is rare but exists — malware redirecting the bank login redirect to a phishing page at the moment of payment.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Push bank transfers provide <strong>less real-time signal<\u002Fstrong> than cards:\n- No BIN, no network token, no card scheme data\n- IBAN (account number) is the primary identifier — useful for velocity and blocklisting\n- Account holder name can be matched against known mule lists\n- For redirect methods (iDEAL etc.), the issuing bank is known and can be a risk signal<\u002Fp>\n<p><strong>Ravelin note:<\u002Fstrong> The Enterprise API has deprecated <code>banktransfer<\u002Fcode> in favour of <code>bankaccount<\u002Fcode> with <code>transferType: push<\u002Fcode>. The deprecated type carried scheme-level detail (iDEAL, Bancontact etc.); the replacement currently lacks per-scheme fields.<\u002Fp>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>iDEAL (Netherlands):<\u002Fstrong> Covers ~70% of Dutch ecommerce. Low fraud rate due to strong bank authentication.<\u002Fli>\n<li><strong>Sofort (Germany):<\u002Fstrong> Real-time account verification, available across Europe.<\u002Fli>\n<li><strong>Faster Payments (UK):<\u002Fstrong> Underlying infrastructure for most UK bank transfers.<\u002Fli>\n<li><strong>SPEI (Mexico):<\u002Fstrong> Mexico's primary interbank transfer system.<\u002Fli>\n<\u002Ful>",
+          "title": "Push bank transfers",
+          "lesson": "<h3>What is a push bank transfer?<\u002Fh3>\n<p>A push bank transfer is when the <strong>payer logs into their bank and sends money out<\u002Fstrong>. They are the one doing the pushing. The recipient has no control over when or whether it happens — they just receive the funds.<\u002Fp>\n<p>Compare this to a card payment, where you hand your card details to a merchant and they \"pull\" the money. With a push transfer, the direction is reversed — the payer initiates everything.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> A push bank transfer is like writing a cheque and posting it. A card payment is like giving someone your bank card and letting them take what they're owed. One you control; one you give control to.<\u002Fp>\n<\u002Fblockquote>\n<h3>Online banking redirects — push transfers at checkout<\u002Fh3>\n<p>Many countries have a specific payment method where, at checkout, you are <strong>redirected to your bank's login page<\u002Fstrong>, you approve the payment there, and then you come back to the merchant. This is a push bank transfer with a checkout-friendly wrapper around it.<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>Method<\u002Fth>\n<th>Country<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>iDEAL<\u002Ftd>\n<td>Netherlands<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Bancontact<\u002Ftd>\n<td>Belgium<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>EPS<\u002Ftd>\n<td>Austria<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Przelewy24 (P24)<\u002Ftd>\n<td>Poland<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>MyBank<\u002Ftd>\n<td>Italy<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Sofort \u002F Klarna Sofort<\u002Ftd>\n<td>Germany, Austria, Switzerland<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<p>These methods all share the same underlying structure: the payer authenticates with their own bank and authorises the transfer. The merchant never sees bank credentials.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> <strong>Generally irrevocable.<\u002Fstrong> Once a push transfer clears, the only way to get money back is to ask the recipient to return it, or pursue legal action. There is no chargeback mechanism equivalent to cards.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — the payer must authenticate with their bank.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Varies. Traditional bank transfers settle within hours or next day. Real-time rails (next topic) settle in seconds.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> High — bank accounts require ID verification.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>APP fraud<\u002Fstrong> (Authorised Push Payment fraud) is the primary risk — the victim is deceived into initiating the transfer themselves. Because the transfer is authorised by the account holder, there is no \"unauthorised transaction\" claim to make.<\u002Fp>\n<p>Common vectors:<\u002Fp>\n<ul>\n<li><strong>Invoice fraud:<\u002Fstrong> A supplier's email is compromised. The attacker swaps the bank details on a real invoice. The victim pays the fraudster thinking they're paying a legitimate supplier.<\u002Fli>\n<li><strong>Impersonation of banks or government bodies:<\u002Fstrong> \"Your account has been compromised, move your money to this safe account immediately.\"<\u002Fli>\n<li><strong>Mule account onward transfers:<\u002Fstrong> Money received by a mule is quickly forwarded via push transfer, making tracing harder.<\u002Fli>\n<li><strong>Redirect interception:<\u002Fstrong> Rare but exists — malware redirecting the bank login redirect to a phishing page at the moment of payment.<\u002Fli>\n<\u002Ful>\n<h3>Signals and detection<\u002Fh3>\n<p>Push bank transfers provide <strong>less real-time signal<\u002Fstrong> than cards:<\u002Fp>\n<ul>\n<li>No BIN, no network token, no card scheme data<\u002Fli>\n<li>IBAN (account number) is the primary identifier — useful for velocity and blocklisting<\u002Fli>\n<li>Account holder name can be matched against known mule lists<\u002Fli>\n<li>For redirect methods (iDEAL etc.), the issuing bank is known and can be a risk signal<\u002Fli>\n<\u002Ful>\n<p><strong>Ravelin note:<\u002Fstrong> The Enterprise API has deprecated <code>banktransfer<\u002Fcode> in favour of <code>bankaccount<\u002Fcode> with <code>transferType: push<\u002Fcode>. The deprecated type carried scheme-level detail (iDEAL, Bancontact etc.); the replacement currently lacks per-scheme fields.<\u002Fp>\n<h3>Representative examples<\u002Fh3>\n<ul>\n<li><strong>iDEAL (Netherlands):<\u002Fstrong> Covers ~70% of Dutch ecommerce. Low fraud rate due to strong bank authentication.<\u002Fli>\n<li><strong>Sofort (Germany):<\u002Fstrong> Real-time account verification, available across Europe.<\u002Fli>\n<li><strong>Faster Payments (UK):<\u002Fstrong> Underlying infrastructure for most UK bank transfers.<\u002Fli>\n<li><strong>SPEI (Mexico):<\u002Fstrong> Mexico's primary interbank transfer system.<\u002Fli>\n<\u002Ful>",
           "model": "Push transfers put the <strong>payer in control<\u002Fstrong>. That's also what makes APP fraud work — the payer was tricked into pushing the money themselves, so it's technically \"authorised\".",
           "terms": [
             {
@@ -749,23 +749,23 @@ window.COURSE_DATA = {
             {
               "q": "A UK business pays what it thinks is a supplier invoice for £45,000. The money goes to a fraudster who intercepted the email and changed the bank details. Can the business get the money back via chargeback?",
               "options": [
-                "Yes — all payments in the UK are covered by the Payment Services Regulations chargeback rules",
-                "Yes — iDEAL has a buyer protection scheme that applies here",
+                "No — push bank transfers have no chargeback mechanism",
                 "Yes — the bank must refund within 24 hours under APP fraud rules",
-                "No — push bank transfers have no chargeback mechanism"
+                "Yes — iDEAL has a buyer protection scheme that applies here",
+                "Yes — all payments in the UK are covered by the Payment Services Regulations chargeback rules"
               ],
-              "answer": 3,
+              "answer": 0,
               "explain": "Push bank transfers don't have chargeback. The business must rely on the bank's APP fraud recovery process (voluntary, not guaranteed) or legal action. The UK's PSR mandated reimbursement scheme covers consumer APP fraud but rules vary for businesses."
             },
             {
               "q": "At checkout, a Dutch customer is redirected to their bank's login page to approve a payment. Which method is this most likely to be?",
               "options": [
                 "Paysafecard",
-                "Apple Pay",
                 "iDEAL",
+                "Apple Pay",
                 "Klarna"
               ],
-              "answer": 2,
+              "answer": 1,
               "explain": "iDEAL is the Netherlands' dominant online banking redirect method. The customer authenticates with their own bank and authorises the push transfer there."
             }
           ],
@@ -819,22 +819,22 @@ window.COURSE_DATA = {
               "q": "A fraudster calls a victim, pretends to be their bank, and tells them to immediately transfer their savings via Faster Payments to a \"safe account\". Why is recovery especially difficult?",
               "options": [
                 "Faster Payments requires the recipient's consent before funds can be recovered",
-                "Faster Payments settles instantly and is irrevocable — there is no chargeback or recall window",
                 "Faster Payments only operates during business hours so the bank cannot act",
+                "Faster Payments settles instantly and is irrevocable — there is no chargeback or recall window",
                 "The bank must prove the payment was unauthorised before it can reverse it"
               ],
-              "answer": 1,
+              "answer": 2,
               "explain": "Irrevocability is the key property. Once the victim authorises and the payment settles — which takes seconds on Faster Payments — no automatic reversal is possible. Recovery depends on the receiving bank freezing funds voluntarily."
             },
             {
               "q": "Which real-time payment rail processes the largest volume of transactions by count?",
               "options": [
-                "Pix (Brazil)",
-                "FedNow (USA)",
                 "UPI (India) — over 14 billion transactions per month",
+                "FedNow (USA)",
+                "Pix (Brazil)",
                 "Faster Payments (UK)"
               ],
-              "answer": 2,
+              "answer": 0,
               "explain": "UPI in India is one of the world's highest-volume payment systems by transaction count, driven by India's large population and rapid digital payments adoption since the 2016 demonetisation."
             }
           ],
@@ -891,10 +891,10 @@ window.COURSE_DATA = {
             {
               "q": "A customer sees a direct debit on their bank statement they don't recognise. They are in Germany, using SEPA Direct Debit. What are their options?",
               "options": [
-                "They have 24 hours to dispute, after which the collection is final",
+                "They must contact the merchant directly and the bank cannot help",
                 "SEPA Direct Debit has no consumer refund rights — it is merchant-initiated only",
                 "They can claim a refund for up to 13 months if the collection was unauthorised",
-                "They must contact the merchant directly and the bank cannot help"
+                "They have 24 hours to dispute, after which the collection is final"
               ],
               "answer": 2,
               "explain": "SEPA Direct Debit gives strong consumer protections. No-questions-asked reversal is available for 8 weeks; unauthorised claims can be made for up to 13 months."
@@ -902,12 +902,12 @@ window.COURSE_DATA = {
             {
               "q": "What fraud type exploits the strong consumer reversal rights of direct debit?",
               "options": [
-                "SIM swap — fraudster takes over the customer's phone number",
                 "QR substitution — fraudster replaces a legitimate QR code with their own",
                 "Friendly fraud — customer receives goods then reverses the direct debit claiming it was unauthorised",
+                "SIM swap — fraudster takes over the customer's phone number",
                 "Card testing — fraudster checks if a card number is valid"
               ],
-              "answer": 2,
+              "answer": 1,
               "explain": "The right to reverse is designed to protect consumers but can be abused. A customer receives goods, then claims the direct debit was set up without their consent — resulting in a reversal while they keep the goods."
             }
           ],
@@ -916,7 +916,7 @@ window.COURSE_DATA = {
         {
           "id": "open-banking",
           "title": "Open banking payments",
-          "lesson": "<h3>What is open banking?<\u002Fh3>\n<p>Open banking is a regulatory framework that requires banks to share customer account data (with consent) with authorised third parties via standardised APIs. In Europe, this is driven by PSD2 (Second Payment Services Directive). In the UK, Open Banking was mandated separately.<\u002Fp>\n<p>For payments, open banking enables <strong>third-party providers to initiate push bank transfers on behalf of a customer<\u002Fstrong> — without the customer needing to log into their bank directly.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Normally, to transfer money, you log into your bank. Open banking lets an authorised app (like a checkout page) do it for you — but you still explicitly consent, using your bank's authentication.<\u002Fp>\n<\u002Fblockquote>\n<h3>How an open banking payment works<\u002Fh3>\n<ol>\n<li>At checkout, customer selects \"Pay by Bank\" (or similar)<\u002Fli>\n<li>They choose their bank from a list<\u002Fli>\n<li>They are redirected to their bank's authentication screen<\u002Fli>\n<li>They approve the payment using their bank's app or credentials<\u002Fli>\n<li>A push transfer is initiated directly from their bank account<\u002Fli>\n<li>They return to the merchant — payment done<\u002Fli>\n<\u002Fol>\n<p>This is similar to an online banking redirect (iDEAL etc.) but uses a standardised open banking API rather than each bank's proprietary integration.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Same as push bank transfers — generally irrevocable once cleared.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — requires full bank authentication.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Depends on the underlying rail. In the UK, uses Faster Payments (seconds). In Europe, uses SEPA SCT Inst where available.<\u002Fli>\n<li><strong>Data richness:<\u002Fstrong> High. Open banking APIs can surface account holder name, account number, balance confirmation — valuable for fraud assessment.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Lower fraud rate than cards<\u002Fstrong> — because open banking payments require strong bank authentication (biometric or multi-factor), they are harder to initiate fraudulently than card payments.<\u002Fp>\n<p><strong>ATO on the bank account<\u002Fstrong> — if a fraudster has taken over the victim's bank account or mobile banking app, they can authorise open banking payments just as a legitimate user would.<\u002Fp>\n<p><strong>Consent manipulation<\u002Fstrong> — in open banking, consent is central. Attackers have attempted to display misleading consent screens to trick users into approving payments they did not intend.<\u002Fp>\n<p><strong>VRP (Variable Recurring Payments)<\u002Fstrong> — a newer open banking variant in the UK allows merchants to initiate a series of variable-amount payments under a single consent (the customer approves once, payments follow). This is more powerful and, if the consent is compromised, allows repeated collections.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Open banking is one of the <strong>richest sources of fraud signal<\u002Fstrong> among bank-based payment methods:\n- Account holder name confirmation: verify the name matches who you think you're dealing with\n- Account existence and ownership confirmation pre-payment\n- Balance check (with consent): confirm funds exist before initiating collection\n- Account transaction history (with consent): establish behavioural baseline<\u002Fp>",
+          "lesson": "<h3>What is open banking?<\u002Fh3>\n<p>Open banking is a regulatory framework that requires banks to share customer account data (with consent) with authorised third parties via standardised APIs. In Europe, this is driven by PSD2 (Second Payment Services Directive). In the UK, Open Banking was mandated separately.<\u002Fp>\n<p>For payments, open banking enables <strong>third-party providers to initiate push bank transfers on behalf of a customer<\u002Fstrong> — without the customer needing to log into their bank directly.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Normally, to transfer money, you log into your bank. Open banking lets an authorised app (like a checkout page) do it for you — but you still explicitly consent, using your bank's authentication.<\u002Fp>\n<\u002Fblockquote>\n<h3>How an open banking payment works<\u002Fh3>\n<ol>\n<li>At checkout, customer selects \"Pay by Bank\" (or similar)<\u002Fli>\n<li>They choose their bank from a list<\u002Fli>\n<li>They are redirected to their bank's authentication screen<\u002Fli>\n<li>They approve the payment using their bank's app or credentials<\u002Fli>\n<li>A push transfer is initiated directly from their bank account<\u002Fli>\n<li>They return to the merchant — payment done<\u002Fli>\n<\u002Fol>\n<p>This is similar to an online banking redirect (iDEAL etc.) but uses a standardised open banking API rather than each bank's proprietary integration.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Same as push bank transfers — generally irrevocable once cleared.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Low — requires full bank authentication.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Depends on the underlying rail. In the UK, uses Faster Payments (seconds). In Europe, uses SEPA SCT Inst where available.<\u002Fli>\n<li><strong>Data richness:<\u002Fstrong> High. Open banking APIs can surface account holder name, account number, balance confirmation — valuable for fraud assessment.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Lower fraud rate than cards<\u002Fstrong> — because open banking payments require strong bank authentication (biometric or multi-factor), they are harder to initiate fraudulently than card payments.<\u002Fp>\n<p><strong>ATO on the bank account<\u002Fstrong> — if a fraudster has taken over the victim's bank account or mobile banking app, they can authorise open banking payments just as a legitimate user would.<\u002Fp>\n<p><strong>Consent manipulation<\u002Fstrong> — in open banking, consent is central. Attackers have attempted to display misleading consent screens to trick users into approving payments they did not intend.<\u002Fp>\n<p><strong>VRP (Variable Recurring Payments)<\u002Fstrong> — a newer open banking variant in the UK allows merchants to initiate a series of variable-amount payments under a single consent (the customer approves once, payments follow). This is more powerful and, if the consent is compromised, allows repeated collections.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Open banking is one of the <strong>richest sources of fraud signal<\u002Fstrong> among bank-based payment methods:<\u002Fp>\n<ul>\n<li>Account holder name confirmation: verify the name matches who you think you're dealing with<\u002Fli>\n<li>Account existence and ownership confirmation pre-payment<\u002Fli>\n<li>Balance check (with consent): confirm funds exist before initiating collection<\u002Fli>\n<li>Account transaction history (with consent): establish behavioural baseline<\u002Fli>\n<\u002Ful>",
           "model": "Open banking is <strong>bank authentication as a service<\u002Fstrong>. The customer authenticates with their own bank; a third party initiates the transfer. Strong auth = low fraud, but ATO of the bank account itself bypasses all of it.",
           "terms": [
             {
@@ -964,23 +964,23 @@ window.COURSE_DATA = {
             {
               "q": "A customer's mobile banking app is compromised in an ATO. What does this mean for open banking payments?",
               "options": [
-                "The fraudster can now initiate open banking payments that will pass SCA — the authentication is with the bank app, which they now control",
                 "The bank will always send a secondary SMS code to the customer's original phone number",
-                "Open banking payments are blocked automatically if a new device is detected",
-                "Open banking requires in-branch verification so remote ATO is impossible"
+                "The fraudster can now initiate open banking payments that will pass SCA — the authentication is with the bank app, which they now control",
+                "Open banking requires in-branch verification so remote ATO is impossible",
+                "Open banking payments are blocked automatically if a new device is detected"
               ],
-              "answer": 0,
+              "answer": 1,
               "explain": "SCA is only as strong as the authentication method. If the fraudster controls the device and banking app, they can pass biometric or PIN authentication exactly as the legitimate user would."
             },
             {
               "q": "An open banking API can confirm the account holder's name before a payment is sent. Why is this valuable for fraud detection?",
               "options": [
+                "It allows the payer to block payments to certain nationalities",
                 "It automatically reverses the payment if a name mismatch is found",
-                "It lets the payee verify the recipient account belongs to who they expect — helping detect mule accounts registered in different names",
-                "It allows the payee to block payments to certain nationalities",
-                "It gives the payee access to the recipient's full transaction history"
+                "It lets the payer verify the recipient account belongs to who they expect — helping detect mule accounts registered in different names",
+                "It gives the payer access to the recipient's full transaction history"
               ],
-              "answer": 1,
+              "answer": 2,
               "explain": "Name confirmation catches cases where the account being paid belongs to someone other than the intended recipient — a common mule account signal."
             }
           ],
@@ -1043,23 +1043,23 @@ window.COURSE_DATA = {
             {
               "q": "A fraudster opens BNPL accounts with Klarna, Afterpay, and Affirm on the same day, each time using the same identity but different email addresses. What is this called?",
               "options": [
-                "Credit stacking — taking simultaneous credit from multiple providers who cannot see each other's exposure",
                 "Mandate fraud — setting up direct debits without consent",
+                "Credit stacking — taking simultaneous credit from multiple providers who cannot see each other's exposure",
                 "APP fraud — tricking victims into sending money",
                 "Card testing — checking if stolen card numbers are valid"
               ],
-              "answer": 0,
+              "answer": 1,
               "explain": "Credit stacking exploits the lack of real-time data sharing between BNPL providers. Each provider approves the credit in isolation, unaware the same person is obtaining multiple lines simultaneously."
             },
             {
               "q": "Which characteristic makes BNPL more attractive for identity fraud than a credit card application?",
               "options": [
                 "BNPL is always free so there is no financial gain for the fraudster",
-                "BNPL providers never check the delivery address",
                 "Much lighter KYC — often only name, email, date of birth, and address required, with only a soft credit check",
-                "BNPL has no fraud monitoring at all"
+                "BNPL has no fraud monitoring at all",
+                "BNPL providers never check the delivery address"
               ],
-              "answer": 2,
+              "answer": 1,
               "explain": "Credit card applications typically require full identity verification and a hard credit check. BNPL soft-checks mean a fraudster with basic personal data can often get approved."
             }
           ],
@@ -1100,12 +1100,12 @@ window.COURSE_DATA = {
             {
               "q": "A fraudster orders £50,000 of electronics from a supplier using the genuine Companies House details of a legitimate UK business, then disappears. What type of fraud is this?",
               "options": [
-                "Friendly fraud — the business received goods and is falsely disputing the charge",
                 "Mandate fraud — setting up an unauthorised direct debit",
-                "Business identity fraud — impersonating a real company to obtain trade credit",
-                "Card testing — checking stolen card details on small purchases"
+                "Card testing — checking stolen card details on small purchases",
+                "Friendly fraud — the business received goods and is falsely disputing the charge",
+                "Business identity fraud — impersonating a real company to obtain trade credit"
               ],
-              "answer": 2,
+              "answer": 3,
               "explain": "The fraudster used real company data (publicly available from Companies House) to impersonate a legitimate business and obtain goods on trade credit with no intention of paying."
             }
           ],
@@ -1120,7 +1120,7 @@ window.COURSE_DATA = {
         {
           "id": "mobile-money",
           "title": "Mobile money",
-          "lesson": "<h3>What is mobile money?<\u002Fh3>\n<p>Mobile money is a financial service operated by a <strong>mobile network operator (telco)<\u002Fstrong> — your phone company — rather than a bank. It lets people send, receive, and store money using a basic mobile phone, with a SIM card as the account.<\u002Fp>\n<p>This is not a smartphone wallet like Apple Pay. Mobile money works on basic feature phones via SMS and USSD codes — which is why it has become critical infrastructure in markets where banking is limited but mobile phone ownership is widespread.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Your SIM card becomes your bank account. Instead of a sort code and account number, your mobile phone number is your financial identity. Instead of an ATM, you use a local agent.<\u002Fp>\n<\u002Fblockquote>\n<h3>Where it matters most<\u002Fh3>\n<p>Mobile money is dominant in sub-Saharan Africa, with growing presence in South Asia and Southeast Asia.<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>Provider<\u002Fth>\n<th>Markets<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>M-Pesa<\u002Ftd>\n<td>Kenya, Tanzania, Mozambique, DRC, Ghana, Egypt<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>MTN MoMo<\u002Ftd>\n<td>West, East, Central Africa (16+ countries)<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Airtel Money<\u002Ftd>\n<td>Multi-country Africa<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>bKash<\u002Ftd>\n<td>Bangladesh<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>JazzCash \u002F Easypaisa<\u002Ftd>\n<td>Pakistan<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Wave<\u002Ftd>\n<td>Senegal, Côte d'Ivoire<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<p>M-Pesa in Kenya processes more transactions than the Kenyan banking system — it is not a niche product in its market.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Generally not reversible. Mobile money transfers are treated like cash.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Varies significantly by market and KYC regime. In some markets, SIM registration is rigorous; in others, it is weak.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Instant.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> Range from basic (phone number + ID document) to minimal in some regions.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>SIM swap fraud<\u002Fstrong> — the fraudster convinces a mobile operator's customer service to port the victim's phone number to a new SIM (one the fraudster controls). They then receive all SMS one-time passwords and can access the mobile money account.<\u002Fp>\n<p><strong>Agent fraud<\u002Fstrong> — mobile money relies on a network of physical agents for cash-in and cash-out. Agents have privileged access and can be bribed or compromised.<\u002Fp>\n<p><strong>Social engineering<\u002Fstrong> — sending fraudulent \"wrong transfer\" SMS messages to convince victims to return money that was never actually received.<\u002Fp>\n<p><strong>Fake merchant QR codes<\u002Fstrong> — in markets where mobile money uses QR for merchant payments, QR substitution attacks occur (covered in the QR topic).<\u002Fp>\n<p><strong>Limited external visibility<\u002Fstrong> — transactions within the mobile money ecosystem are often not visible to external fraud systems. If a customer's funds end up in an M-Pesa account, a bank-based fraud system may not detect it.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Monitoring is harder than card or bank fraud:\n- SIM swap events should trigger account suspension or step-up authentication\n- Agent transaction velocity — unusually high cash-out volumes at a single agent\n- Geographic inconsistency — mobile money account registered in Nairobi, cash-out attempted in Mombasa within minutes\n- Device change — accessing account from a new IMEI (device identifier)<\u002Fp>",
+          "lesson": "<h3>What is mobile money?<\u002Fh3>\n<p>Mobile money is a financial service operated by a <strong>mobile network operator (telco)<\u002Fstrong> — your phone company — rather than a bank. It lets people send, receive, and store money using a basic mobile phone, with a SIM card as the account.<\u002Fp>\n<p>This is not a smartphone wallet like Apple Pay. Mobile money works on basic feature phones via SMS and USSD codes — which is why it has become critical infrastructure in markets where banking is limited but mobile phone ownership is widespread.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Your SIM card becomes your bank account. Instead of a sort code and account number, your mobile phone number is your financial identity. Instead of an ATM, you use a local agent.<\u002Fp>\n<\u002Fblockquote>\n<h3>Where it matters most<\u002Fh3>\n<p>Mobile money is dominant in sub-Saharan Africa, with growing presence in South Asia and Southeast Asia.<\u002Fp>\n<table>\n<thead>\n<tr>\n<th>Provider<\u002Fth>\n<th>Markets<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>M-Pesa<\u002Ftd>\n<td>Kenya, Tanzania, Mozambique, DRC, Ghana, Egypt<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>MTN MoMo<\u002Ftd>\n<td>West, East, Central Africa (16+ countries)<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Airtel Money<\u002Ftd>\n<td>Multi-country Africa<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>bKash<\u002Ftd>\n<td>Bangladesh<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>JazzCash \u002F Easypaisa<\u002Ftd>\n<td>Pakistan<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Wave<\u002Ftd>\n<td>Senegal, Côte d'Ivoire<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<p>M-Pesa in Kenya processes more transactions than the Kenyan banking system — it is not a niche product in its market.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Generally not reversible. Mobile money transfers are treated like cash.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Varies significantly by market and KYC regime. In some markets, SIM registration is rigorous; in others, it is weak.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Instant.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> Range from basic (phone number + ID document) to minimal in some regions.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>SIM swap fraud<\u002Fstrong> — the fraudster convinces a mobile operator's customer service to port the victim's phone number to a new SIM (one the fraudster controls). They then receive all SMS one-time passwords and can access the mobile money account.<\u002Fp>\n<p><strong>Agent fraud<\u002Fstrong> — mobile money relies on a network of physical agents for cash-in and cash-out. Agents have privileged access and can be bribed or compromised.<\u002Fp>\n<p><strong>Social engineering<\u002Fstrong> — sending fraudulent \"wrong transfer\" SMS messages to convince victims to return money that was never actually received.<\u002Fp>\n<p><strong>Fake merchant QR codes<\u002Fstrong> — in markets where mobile money uses QR for merchant payments, QR substitution attacks occur (covered in the QR topic).<\u002Fp>\n<p><strong>Limited external visibility<\u002Fstrong> — transactions within the mobile money ecosystem are often not visible to external fraud systems. If a customer's funds end up in an M-Pesa account, a bank-based fraud system may not detect it.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Monitoring is harder than card or bank fraud:<\u002Fp>\n<ul>\n<li>SIM swap events should trigger account suspension or step-up authentication<\u002Fli>\n<li>Agent transaction velocity — unusually high cash-out volumes at a single agent<\u002Fli>\n<li>Geographic inconsistency — mobile money account registered in Nairobi, cash-out attempted in Mombasa within minutes<\u002Fli>\n<li>Device change — accessing account from a new IMEI (device identifier)<\u002Fli>\n<\u002Ful>",
           "model": "Mobile money is <strong>banking via your SIM card<\u002Fstrong>. The phone number is the account. The biggest fraud risk is SIM swap — steal the number, steal the account.",
           "terms": [
             {
@@ -1164,12 +1164,12 @@ window.COURSE_DATA = {
             {
               "q": "An M-Pesa user reports they suddenly cannot receive calls or SMS, and shortly after discovers their account has been drained. What most likely happened?",
               "options": [
+                "A software bug caused the funds to be deleted",
                 "Agent fraud — an M-Pesa agent accessed the account directly",
                 "A SIM swap — the attacker transferred the victim's number to a new SIM, intercepted OTPs, and accessed the account",
-                "The account was suspended for inactivity",
-                "A software bug caused the funds to be deleted"
+                "The account was suspended for inactivity"
               ],
-              "answer": 1,
+              "answer": 2,
               "explain": "The sudden loss of phone service is the classic early sign of a SIM swap. The attacker ports the number and immediately begins draining the account before the victim can react."
             }
           ],
@@ -1178,7 +1178,7 @@ window.COURSE_DATA = {
         {
           "id": "carrier-billing",
           "title": "Carrier and operator billing",
-          "lesson": "<h3>What is carrier billing?<\u002Fh3>\n<p>Carrier billing (also called direct carrier billing or DCB) lets you charge a purchase directly to your <strong>mobile phone bill<\u002Fstrong> — or deduct it from your prepaid credit. You don't need a card or bank account. The payment is collected by your telco with your next bill.<\u002Fp>\n<p>It is widely used for:\n- Digital content (app purchases, ringtones, games, subscriptions)\n- In-app purchases on Android in markets where Google Play's card payment penetration is low\n- Charitable donations (text-to-donate)<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Putting something on a hotel room tab. The cost doesn't come out of your wallet now — it goes on a running total that you settle at the end. Here, your mobile contract is the tab.<\u002Fp>\n<\u002Fblockquote>\n<h3>How it works<\u002Fh3>\n<ol>\n<li>User selects \"Pay via mobile\" or \"Charge to phone bill\"<\u002Fli>\n<li>Their phone number (MSISDN) is identified — either from the mobile network directly, or by the user entering it<\u002Fli>\n<li>A one-time PIN is sent to the phone for confirmation (in most regulated markets)<\u002Fli>\n<li>Charge is approved; telco collects payment in the next billing cycle<\u002Fli>\n<li>Merchant receives funds (minus the telco's revenue share — often 30–40%)<\u002Fli>\n<\u002Fol>\n<p>Key intermediaries: <strong>Boku<\u002Fstrong> and <strong>Fortumo<\u002Fstrong> (now merged) are the dominant global carrier billing aggregators, connecting merchants to multiple telcos.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Limited — varies by telco and market. Chargebacks are not standard.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Moderate. The telco knows who you are (your account). But externally, the only identifier shared may be a tokenised or hashed MSISDN — the actual phone number is often not exposed.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Merchant receives funds on a billing-cycle lag (monthly).<\u002Fli>\n<li><strong>Fraud API coverage:<\u002Fstrong> Almost none externally. <strong>No major fraud API (Stripe, Adyen, Worldpay, Ravelin) natively supports carrier billing.<\u002Fstrong> Boku is the only specialist platform.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Cramming<\u002Fstrong> — adding unauthorised charges to a phone bill, often by a fraudulent merchant claiming the user signed up for a subscription they did not. The user only notices when reviewing their bill.<\u002Fp>\n<p><strong>Subscription fraud<\u002Fstrong> — a fraudster uses someone else's phone number to sign up for premium subscriptions, which are charged to the victim's account.<\u002Fp>\n<p><strong>Limited consumer awareness<\u002Fstrong> — users often don't notice small charges on a complex mobile bill until months have passed.<\u002Fp>\n<p><strong>Telco customer service exploitation<\u002Fstrong> — some attacks involve social engineering telco support staff to redirect billing or change account details.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Carrier billing offers the <strong>least external fraud signal<\u002Fstrong> of any payment method:\n- The MSISDN (phone number) is usually tokenised or not shared externally at all\n- No card data, no bank data, no network tokens\n- Fraud detection relies on the telco's own systems and Boku's internal risk scoring\n- External fraud systems (like Ravelin) currently have <strong>no native carrier billing support<\u002Fstrong> — clients are forced to use <code>wallet<\u002Fcode> or deprecated <code>other<\u002Fcode> types as workarounds<\u002Fp>\n<p>This is an identified gap: carrier billing fraud is effectively invisible to most fraud APIs.<\u002Fp>",
+          "lesson": "<h3>What is carrier billing?<\u002Fh3>\n<p>Carrier billing (also called direct carrier billing or DCB) lets you charge a purchase directly to your <strong>mobile phone bill<\u002Fstrong> — or deduct it from your prepaid credit. You don't need a card or bank account. The payment is collected by your telco with your next bill.<\u002Fp>\n<p>It is widely used for:<\u002Fp>\n<ul>\n<li>Digital content (app purchases, ringtones, games, subscriptions)<\u002Fli>\n<li>In-app purchases on Android in markets where Google Play's card payment penetration is low<\u002Fli>\n<li>Charitable donations (text-to-donate)<\u002Fli>\n<\u002Ful>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> Putting something on a hotel room tab. The cost doesn't come out of your wallet now — it goes on a running total that you settle at the end. Here, your mobile contract is the tab.<\u002Fp>\n<\u002Fblockquote>\n<h3>How it works<\u002Fh3>\n<ol>\n<li>User selects \"Pay via mobile\" or \"Charge to phone bill\"<\u002Fli>\n<li>Their phone number (MSISDN) is identified — either from the mobile network directly, or by the user entering it<\u002Fli>\n<li>A one-time PIN is sent to the phone for confirmation (in most regulated markets)<\u002Fli>\n<li>Charge is approved; telco collects payment in the next billing cycle<\u002Fli>\n<li>Merchant receives funds (minus the telco's revenue share — often 30–40%)<\u002Fli>\n<\u002Fol>\n<p>Key intermediaries: <strong>Boku<\u002Fstrong> and <strong>Fortumo<\u002Fstrong> (now merged) are the dominant global carrier billing aggregators, connecting merchants to multiple telcos.<\u002Fp>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Limited — varies by telco and market. Chargebacks are not standard.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Moderate. The telco knows who you are (your account). But externally, the only identifier shared may be a tokenised or hashed MSISDN — the actual phone number is often not exposed.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Merchant receives funds on a billing-cycle lag (monthly).<\u002Fli>\n<li><strong>Fraud API coverage:<\u002Fstrong> Almost none externally. <strong>No major fraud API (Stripe, Adyen, Worldpay, Ravelin) natively supports carrier billing.<\u002Fstrong> Boku is the only specialist platform.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Cramming<\u002Fstrong> — adding unauthorised charges to a phone bill, often by a fraudulent merchant claiming the user signed up for a subscription they did not. The user only notices when reviewing their bill.<\u002Fp>\n<p><strong>Subscription fraud<\u002Fstrong> — a fraudster uses someone else's phone number to sign up for premium subscriptions, which are charged to the victim's account.<\u002Fp>\n<p><strong>Limited consumer awareness<\u002Fstrong> — users often don't notice small charges on a complex mobile bill until months have passed.<\u002Fp>\n<p><strong>Telco customer service exploitation<\u002Fstrong> — some attacks involve social engineering telco support staff to redirect billing or change account details.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<p>Carrier billing offers the <strong>least external fraud signal<\u002Fstrong> of any payment method:<\u002Fp>\n<ul>\n<li>The MSISDN (phone number) is usually tokenised or not shared externally at all<\u002Fli>\n<li>No card data, no bank data, no network tokens<\u002Fli>\n<li>Fraud detection relies on the telco's own systems and Boku's internal risk scoring<\u002Fli>\n<li>External fraud systems (like Ravelin) currently have <strong>no native carrier billing support<\u002Fstrong> — clients are forced to use <code>wallet<\u002Fcode> or deprecated <code>other<\u002Fcode> types as workarounds<\u002Fli>\n<\u002Ful>\n<p>This is an identified gap: carrier billing fraud is effectively invisible to most fraud APIs.<\u002Fp>",
           "model": "Carrier billing puts the <strong>telco between the merchant and the customer's money<\u002Fstrong>. Fraud signals are almost entirely inside the telco's system — external fraud APIs see almost nothing.",
           "terms": [
             {
@@ -1224,8 +1224,8 @@ window.COURSE_DATA = {
               "options": [
                 "Ravelin has no native carrier billing type — the merchant would need to use wallet or the deprecated other type as a workaround",
                 "Carrier billing is blocked by PSD2 regulations in Europe",
-                "Carrier billing transactions are automatically scored by the telco before reaching Ravelin",
-                "Boku provides a real-time fraud API that Ravelin can query directly"
+                "Boku provides a real-time fraud API that Ravelin can query directly",
+                "Carrier billing transactions are automatically scored by the telco before reaching Ravelin"
               ],
               "answer": 0,
               "explain": "As identified in Ravelin's API coverage review, carrier billing has no dedicated type. This is a gap — clients currently use wallet or other as workarounds, with no typed fields."
@@ -1290,23 +1290,23 @@ window.COURSE_DATA = {
             {
               "q": "A market stall accepts UPI QR payments. A fraudster places their own QR sticker over the stall's code. Three customers pay before the fraud is discovered. What type of fraud is this?",
               "options": [
-                "Mandate fraud — an unauthorised direct debit was set up",
                 "QR substitution fraud — the legitimate QR was physically replaced",
+                "SIM swap fraud — the fraudster took over the merchant's phone number",
                 "APP fraud — the merchant was tricked into authorising a transfer",
-                "SIM swap fraud — the fraudster took over the merchant's phone number"
+                "Mandate fraud — an unauthorised direct debit was set up"
               ],
-              "answer": 1,
+              "answer": 0,
               "explain": "The fraudster physically replaced the merchant's QR code with their own. Every customer who scanned paid the fraudster's account instead. A classic static QR substitution attack."
             },
             {
               "q": "A customer receives an email with a QR code claiming to be from their bank, asking them to \"verify their account\" by scanning. What is this most likely?",
               "options": [
-                "A mobile money registration code",
                 "A standard account verification process",
-                "A legitimate open banking consent request",
-                "Quishing — QR phishing designed to capture credentials or trigger a fraudulent payment"
+                "A mobile money registration code",
+                "Quishing — QR phishing designed to capture credentials or trigger a fraudulent payment",
+                "A legitimate open banking consent request"
               ],
-              "answer": 3,
+              "answer": 2,
               "explain": "Legitimate banks do not send QR codes via email to verify accounts. This is a quishing attack — the QR routes to a phishing page designed to steal credentials."
             }
           ],
@@ -1320,7 +1320,7 @@ window.COURSE_DATA = {
       "topics": [
         {
           "id": "cash-based",
-          "title": "Cash-based and convenience store payments",
+          "title": "Cash-based payments",
           "lesson": "<h3>What is a cash-based payment method?<\u002Fh3>\n<p>Online shoppers in some markets prefer not to (or cannot) pay with a card or bank account. Cash-based payment methods bridge this gap: the customer completes an online order, receives a payment reference or barcode, then walks into a physical location (a convenience store, pharmacy, or ATM) and pays cash. The payment is confirmed to the merchant once cash is received.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> It's like an \"order online, pay in store\" model — but the \"store\" is a 7-Eleven or a pharmacy counter, and \"in store\" just means handing over cash.<\u002Fp>\n<\u002Fblockquote>\n<h3>Key markets and methods<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Method<\u002Fth>\n<th>Market<\u002Fth>\n<th>Network<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>Boleto Bancário<\u002Ftd>\n<td>Brazil<\u002Ftd>\n<td>Issued by banks, payable at any bank branch or ATM<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>OXXO<\u002Ftd>\n<td>Mexico<\u002Ftd>\n<td>20,000+ OXXO convenience stores<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Konbini<\u002Ftd>\n<td>Japan<\u002Ftd>\n<td>7-Eleven, Lawson, FamilyMart<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PagoEfectivo<\u002Ftd>\n<td>Peru<\u002Ftd>\n<td>Banks and convenience outlets<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Efecty<\u002Ftd>\n<td>Colombia<\u002Ftd>\n<td>Cash payment network<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>Alfamart \u002F Indomaret<\u002Ftd>\n<td>Indonesia<\u002Ftd>\n<td>Convenience store chains<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility: Almost none.<\u002Fstrong> Cash payments are final. There is no chargeback — the customer paid cash.<\u002Fli>\n<li><strong>Anonymity: High.<\u002Fstrong> The payer is anonymous at the point of cash payment. The only link to the online order is the reference code.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Delayed — typically 1–3 days after the cash payment.<\u002Fli>\n<li><strong>KYC:<\u002Fstrong> None at the point of cash payment.<\u002Fli>\n<\u002Ful>\n<h3>Fraud risks<\u002Fh3>\n<p><strong>Money laundering<\u002Fstrong> — cash-based payment methods are attractive for money laundering because cash is anonymous. Generating a payment reference online and then \"paying\" it with cash converts illicit cash into a traceable digital credit.<\u002Fp>\n<p><strong>False dispute claims<\u002Fstrong> — once cash is paid, the customer cannot chargeback (there's no card). But some methods have dispute mechanisms that can be exploited.<\u002Fp>\n<p><strong>Non-delivery fraud<\u002Fstrong> — merchant receives payment confirmation, ships goods. But because the cash payment happens after the order, the order was placed with false details. Rare, because payment is usually required before shipment.<\u002Fp>\n<p><strong>Boleto fraud (Brazil)<\u002Fstrong> — a significant historical fraud type: malware intercepts the barcode on a legitimate Boleto and replaces it with a fraudster's barcode. The customer scans and pays the fraudster. The merchant's payment confirmation never arrives. PIX has significantly reduced Boleto's dominance.<\u002Fp>\n<h3>Signals and detection<\u002Fh3>\n<ul>\n<li>No card or bank account data — the only identifier is typically an email address or CPF (Brazil)<\u002Fli>\n<li>Device fingerprint and behavioural signals at order time are the primary levers — the cash payment is opaque<\u002Fli>\n<li>Orders never followed by a cash payment (abandoned) can be a signal of probing or testing<\u002Fli>\n<li>Email age, device, IP, and order contents are the fraud features — there's nothing to analyse in the payment itself<\u002Fli>\n<\u002Ful>",
           "model": "Cash-based payments bridge online commerce and physical cash. For fraud teams, <strong>the order event is where you intervene<\u002Fstrong> — by the time cash is paid, it's too late and too anonymous.",
           "terms": [
@@ -1361,10 +1361,10 @@ window.COURSE_DATA = {
             {
               "q": "A fraudster creates accounts at an online merchant in Brazil, generates Boleto payment references for high-value orders, but never pays them. What are they likely doing?",
               "options": [
-                "Laundering money — converting illicit cash into digital credits",
                 "Card testing — checking if stolen card numbers work",
+                "QR substitution — replacing the merchant's QR code",
                 "Probing or testing — gathering merchant system information, or preparing for a larger fraud that doesn't require payment (e.g. using the order record for social engineering)",
-                "QR substitution — replacing the merchant's QR code"
+                "Laundering money — converting illicit cash into digital credits"
               ],
               "answer": 2,
               "explain": "Orders generated but never paid are a probing signal — the fraudster is exploring the system without committing. It can also precede social engineering attacks using \"pending order\" references."
@@ -1411,10 +1411,10 @@ window.COURSE_DATA = {
             {
               "q": "A customer contacts a merchant's support, saying they won a prize but need to pay a \"processing fee\" using Paysafecard codes. What should this trigger?",
               "options": [
-                "A routine customer service request",
                 "A potential affiliate marketing payment",
+                "A B2B trade credit application",
                 "A scam alert — this is a textbook prize scam demanding anonymous, irreversible payment",
-                "A B2B trade credit application"
+                "A routine customer service request"
               ],
               "answer": 2,
               "explain": "Requests to pay fees (for prizes, taxes, insurance, customs) using prepaid voucher codes are a classic scam indicator. No legitimate organisation requires payment this way."
@@ -1484,11 +1484,11 @@ window.COURSE_DATA = {
               "q": "A blockchain analytics tool flags that funds arriving in a merchant's crypto wallet originated from a known mixer. What does this indicate?",
               "options": [
                 "The mixer flag is routine — most crypto users use mixers for privacy",
-                "The sender deliberately broke the transaction trail — a strong signal of attempting to obscure the source of funds",
                 "The transaction is definitely fraudulent and should be auto-declined",
+                "The sender deliberately broke the transaction trail — a strong signal of attempting to obscure the source of funds",
                 "The funds originated from a legitimate exchange"
               ],
-              "answer": 1,
+              "answer": 2,
               "explain": "Mixer use is not proof of fraud, but it's a significant risk signal. Legitimate users don't typically route funds through mixers. Combined with other signals, it warrants investigation."
             }
           ],
@@ -1497,7 +1497,7 @@ window.COURSE_DATA = {
         {
           "id": "stablecoins",
           "title": "Stablecoins",
-          "lesson": "<h3>What is a stablecoin?<\u002Fh3>\n<p>A stablecoin is a cryptocurrency <strong>pegged to the value of a real-world asset<\u002Fstrong> — usually the US dollar. One USDT or USDC is designed to always be worth $1. This removes the price volatility that makes Bitcoin and Ethereum impractical for everyday commerce.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> A stablecoin is like a poker chip — it's a token that represents a fixed dollar value, can be transferred easily around the table, and can be cashed out at the end. The chip itself isn't money, but it tracks it exactly.<\u002Fp>\n<\u002Fblockquote>\n<h3>Main stablecoins<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Name<\u002Fth>\n<th>Issuer<\u002Fth>\n<th>Peg<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>USDT (Tether)<\u002Ftd>\n<td>Tether<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>USDC<\u002Ftd>\n<td>Circle<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PYUSD<\u002Ftd>\n<td>PayPal<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>EUROC<\u002Ftd>\n<td>Circle<\u002Ftd>\n<td>EUR<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>DAI<\u002Ftd>\n<td>MakerDAO<\u002Ftd>\n<td>USD (algorithmic)<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Same as crypto — none. Once sent on-chain, irreversible.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Pseudonymous, same as other crypto. More accessible to blockchain analytics than privacy coins.<\u002Fli>\n<li><strong>Price stability:<\u002Fstrong> Fixed to the peg (usually $1). Removes the \"I sent $100 but it's worth $80 when they receive it\" problem.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Seconds to minutes depending on the blockchain.<\u002Fli>\n<\u002Ful>\n<h3>Use cases and fraud context<\u002Fh3>\n<p>Stablecoins are growing in:\n- <strong>B2B cross-border payments:<\u002Fstrong> Faster and cheaper than SWIFT for international supplier payments\n- <strong>Remittances:<\u002Fstrong> Sending money home without bank intermediaries\n- <strong>Crypto-backed debit cards:<\u002Fstrong> Spend stablecoin balances via Visa\u002FMastercard card<\u002Fp>\n<p><strong>Fraud risks:<\u002Fstrong>\n- Same as crypto — irreversible transfers, no chargeback\n- <strong>USDT (Tether) is the dominant currency in crypto-enabled scam payments<\u002Fstrong> — its price stability makes it practical for large fraudulent transfers\n- Stablecoin bridges and smart contract exploits (more relevant to DeFi than payments)\n- Counterfeit stablecoins on less-established blockchains<\u002Fp>\n<p>Stablecoins are increasingly <strong>visible to regulators<\u002Fstrong> — USDC and PYUSD are issued by regulated entities and cooperate with law enforcement freeze requests. USDT has also frozen wallets on request, though with more friction.<\u002Fp>",
+          "lesson": "<h3>What is a stablecoin?<\u002Fh3>\n<p>A stablecoin is a cryptocurrency <strong>pegged to the value of a real-world asset<\u002Fstrong> — usually the US dollar. One USDT or USDC is designed to always be worth $1. This removes the price volatility that makes Bitcoin and Ethereum impractical for everyday commerce.<\u002Fp>\n<blockquote>\n<p><strong>Analogy:<\u002Fstrong> A stablecoin is like a poker chip — it's a token that represents a fixed dollar value, can be transferred easily around the table, and can be cashed out at the end. The chip itself isn't money, but it tracks it exactly.<\u002Fp>\n<\u002Fblockquote>\n<h3>Main stablecoins<\u002Fh3>\n<table>\n<thead>\n<tr>\n<th>Name<\u002Fth>\n<th>Issuer<\u002Fth>\n<th>Peg<\u002Fth>\n<\u002Ftr>\n<\u002Fthead>\n<tbody>\n<tr>\n<td>USDT (Tether)<\u002Ftd>\n<td>Tether<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>USDC<\u002Ftd>\n<td>Circle<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>PYUSD<\u002Ftd>\n<td>PayPal<\u002Ftd>\n<td>USD<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>EUROC<\u002Ftd>\n<td>Circle<\u002Ftd>\n<td>EUR<\u002Ftd>\n<\u002Ftr>\n<tr>\n<td>DAI<\u002Ftd>\n<td>MakerDAO<\u002Ftd>\n<td>USD (algorithmic)<\u002Ftd>\n<\u002Ftr>\n<\u002Ftbody>\n<\u002Ftable>\n<h3>Key properties<\u002Fh3>\n<ul>\n<li><strong>Reversibility:<\u002Fstrong> Same as crypto — none. Once sent on-chain, irreversible.<\u002Fli>\n<li><strong>Anonymity:<\u002Fstrong> Pseudonymous, same as other crypto. More accessible to blockchain analytics than privacy coins.<\u002Fli>\n<li><strong>Price stability:<\u002Fstrong> Fixed to the peg (usually $1). Removes the \"I sent $100 but it's worth $80 when they receive it\" problem.<\u002Fli>\n<li><strong>Settlement speed:<\u002Fstrong> Seconds to minutes depending on the blockchain.<\u002Fli>\n<\u002Ful>\n<h3>Use cases and fraud context<\u002Fh3>\n<p>Stablecoins are growing in:<\u002Fp>\n<ul>\n<li><strong>B2B cross-border payments:<\u002Fstrong> Faster and cheaper than SWIFT for international supplier payments<\u002Fli>\n<li><strong>Remittances:<\u002Fstrong> Sending money home without bank intermediaries<\u002Fli>\n<li><strong>Crypto-backed debit cards:<\u002Fstrong> Spend stablecoin balances via Visa\u002FMastercard card<\u002Fli>\n<\u002Ful>\n<p><strong>Fraud risks:<\u002Fstrong><\u002Fp>\n<ul>\n<li>Same as crypto — irreversible transfers, no chargeback<\u002Fli>\n<li><strong>USDT (Tether) is the dominant currency in crypto-enabled scam payments<\u002Fstrong> — its price stability makes it practical for large fraudulent transfers<\u002Fli>\n<li>Stablecoin bridges and smart contract exploits (more relevant to DeFi than payments)<\u002Fli>\n<li>Counterfeit stablecoins on less-established blockchains<\u002Fli>\n<\u002Ful>\n<p>Stablecoins are increasingly <strong>visible to regulators<\u002Fstrong> — USDC and PYUSD are issued by regulated entities and cooperate with law enforcement freeze requests. USDT has also frozen wallets on request, though with more friction.<\u002Fp>",
           "model": "Stablecoins are <strong>crypto without the volatility<\u002Fstrong>. They combine crypto's irreversibility and pseudonymity with price stability — making them practical for larger fraudulent transfers.",
           "terms": [
             {
@@ -1533,12 +1533,12 @@ window.COURSE_DATA = {
             {
               "q": "A fraud scheme demands payment in USDT rather than Bitcoin. What is the likely reason?",
               "options": [
-                "USDT cannot be traced by blockchain analytics firms",
                 "USDT is fully anonymous with no blockchain record",
-                "Bitcoin is slower than USDT to send",
-                "USDT is price-stable — the fraudster knows exactly what value they will receive, unlike Bitcoin which can fluctuate significantly"
+                "USDT cannot be traced by blockchain analytics firms",
+                "USDT is price-stable — the fraudster knows exactly what value they will receive, unlike Bitcoin which can fluctuate significantly",
+                "Bitcoin is slower than USDT to send"
               ],
-              "answer": 3,
+              "answer": 2,
               "explain": "Stablecoins are favoured for large fraudulent demands because the value is predictable. Crypto price swings create uncertainty — $100k demanded in BTC might arrive as $90k if the price drops during transfer."
             }
           ],
@@ -1581,12 +1581,12 @@ window.COURSE_DATA = {
             {
               "q": "Why are CBDCs considered lower fraud risk than Bitcoin?",
               "options": [
-                "CBDCs are anonymous so fraudsters cannot target users",
-                "CBDCs use stronger cryptography than Bitcoin",
                 "They are centrally issued and controlled — the central bank can freeze wallets and reverse transactions if needed",
-                "CBDCs have chargeback protections identical to card payments"
+                "CBDCs have chargeback protections identical to card payments",
+                "CBDCs are anonymous so fraudsters cannot target users",
+                "CBDCs use stronger cryptography than Bitcoin"
               ],
-              "answer": 2,
+              "answer": 0,
               "explain": "The central authority is the key difference. Bitcoin is decentralised — no one can freeze a wallet or reverse a transaction. A central bank issuing a CBDC retains these powers by design."
             }
           ],
@@ -1641,23 +1641,23 @@ window.COURSE_DATA = {
             {
               "q": "A customer's frequent flyer account is compromised. The attacker immediately redeems 200,000 Avios for flights. What type of fraud is this?",
               "options": [
+                "QR substitution — replacing a payment QR code",
                 "Card testing — checking stolen card details",
                 "Loyalty fraud via ATO — points account takeover, immediately liquidated",
-                "Mandate fraud — unauthorised direct debit",
-                "QR substitution — replacing a payment QR code"
+                "Mandate fraud — unauthorised direct debit"
               ],
-              "answer": 1,
+              "answer": 2,
               "explain": "Loyalty accounts are ATO targets because points have real value but security is often weaker than bank accounts. The attacker redeems quickly before the victim can freeze the account."
             },
             {
               "q": "VRP gives a merchant repeated collection rights under a single consent. What makes this riskier than a standard one-off open banking payment if the consent is compromised?",
               "options": [
-                "VRP is only available to criminal enterprises with banking licences",
-                "VRP has no authentication step and is therefore completely unprotected",
                 "VRP payments cannot be traced because they use open banking",
-                "The attacker can make multiple collections up to the cap — not just a single theft"
+                "VRP has no authentication step and is therefore completely unprotected",
+                "The attacker can make multiple collections up to the cap — not just a single theft",
+                "VRP is only available to criminal enterprises with banking licences"
               ],
-              "answer": 3,
+              "answer": 2,
               "explain": "A compromised VRP consent is worse than a compromised one-off payment. The attacker has a recurring mandate — they can collect repeatedly until the consent is revoked or the cap is hit."
             }
           ],

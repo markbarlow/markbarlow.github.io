@@ -147,6 +147,7 @@ modules:
           **Authorised Push Payment (APP) fraud** is the dominant risk — and one of the fastest-growing fraud types globally. The victim is tricked into sending money willingly. Because the payment is technically authorised by the victim, it sits outside the standard chargeback framework.
 
           Common APP fraud scenarios:
+
           - **Romance scam:** Fraudster builds trust over weeks, then requests money for an "emergency"
           - **Impersonation:** Pretends to be a bank, HMRC, or a known contact needing urgent payment
           - **Fake invoice:** Intercepts a legitimate payment (e.g. conveyancer solicitor fraud) and changes the bank details
@@ -237,6 +238,7 @@ modules:
           Limited external signals are the central challenge. From a Ravelin or PSP perspective, a super app transaction typically only surfaces a wallet account ID, possibly an email, and a transaction amount. There is no device fingerprint, no card BIN, no network token.
 
           Detection therefore relies on:
+
           - Account-level velocity (frequency, amount patterns)
           - Geographic inconsistency (account registered in China, transaction in Brazil)
           - Merchant-side signals (device, session, behavioural) paired with the payment event
@@ -292,7 +294,7 @@ modules:
     topics:
 
       - id: push-bank-transfer
-        title: Push bank transfers and online banking redirects
+        title: Push bank transfers
         lesson: |
           ### What is a push bank transfer?
 
@@ -329,16 +331,16 @@ modules:
           **APP fraud** (Authorised Push Payment fraud) is the primary risk — the victim is deceived into initiating the transfer themselves. Because the transfer is authorised by the account holder, there is no "unauthorised transaction" claim to make.
 
           Common vectors:
+
           - **Invoice fraud:** A supplier's email is compromised. The attacker swaps the bank details on a real invoice. The victim pays the fraudster thinking they're paying a legitimate supplier.
           - **Impersonation of banks or government bodies:** "Your account has been compromised, move your money to this safe account immediately."
-
-          **Mule account onward transfers** — money received by a mule is quickly forwarded via push transfer, making tracing harder.
-
-          **Redirect interception** is rare but exists — malware redirecting the bank login redirect to a phishing page at the moment of payment.
+          - **Mule account onward transfers:** Money received by a mule is quickly forwarded via push transfer, making tracing harder.
+          - **Redirect interception:** Rare but exists — malware redirecting the bank login redirect to a phishing page at the moment of payment.
 
           ### Signals and detection
 
           Push bank transfers provide **less real-time signal** than cards:
+
           - No BIN, no network token, no card scheme data
           - IBAN (account number) is the primary identifier — useful for velocity and blocklisting
           - Account holder name can be matched against known mule lists
@@ -618,6 +620,7 @@ modules:
           ### Signals and detection
 
           Open banking is one of the **richest sources of fraud signal** among bank-based payment methods:
+
           - Account holder name confirmation: verify the name matches who you think you're dealing with
           - Account existence and ownership confirmation pre-payment
           - Balance check (with consent): confirm funds exist before initiating collection
@@ -655,11 +658,11 @@ modules:
               - Open banking requires in-branch verification so remote ATO is impossible
             explain: SCA is only as strong as the authentication method. If the fraudster controls the device and banking app, they can pass biometric or PIN authentication exactly as the legitimate user would.
           - q: An open banking API can confirm the account holder's name before a payment is sent. Why is this valuable for fraud detection?
-            correct: It lets the payee verify the recipient account belongs to who they expect — helping detect mule accounts registered in different names
+            correct: It lets the payer verify the recipient account belongs to who they expect — helping detect mule accounts registered in different names
             distractors:
-              - It allows the payee to block payments to certain nationalities
+              - It allows the payer to block payments to certain nationalities
               - It automatically reverses the payment if a name mismatch is found
-              - It gives the payee access to the recipient's full transaction history
+              - It gives the payer access to the recipient's full transaction history
             explain: Name confirmation catches cases where the account being paid belongs to someone other than the intended recipient — a common mule account signal.
         recap: >
           Open banking uses bank authentication to initiate push transfers. Lower fraud rate than cards due to strong auth, but rich data (name, ownership, balance) is the bigger prize for fraud teams. ATO on the bank account bypasses all the auth controls.
@@ -875,6 +878,7 @@ modules:
           ### Signals and detection
 
           Monitoring is harder than card or bank fraud:
+
           - SIM swap events should trigger account suspension or step-up authentication
           - Agent transaction velocity — unusually high cash-out volumes at a single agent
           - Geographic inconsistency — mobile money account registered in Nairobi, cash-out attempted in Mombasa within minutes
@@ -920,6 +924,7 @@ modules:
           Carrier billing (also called direct carrier billing or DCB) lets you charge a purchase directly to your **mobile phone bill** — or deduct it from your prepaid credit. You don't need a card or bank account. The payment is collected by your telco with your next bill.
 
           It is widely used for:
+
           - Digital content (app purchases, ringtones, games, subscriptions)
           - In-app purchases on Android in markets where Google Play's card payment penetration is low
           - Charitable donations (text-to-donate)
@@ -956,6 +961,7 @@ modules:
           ### Signals and detection
 
           Carrier billing offers the **least external fraud signal** of any payment method:
+
           - The MSISDN (phone number) is usually tokenised or not shared externally at all
           - No card data, no bank data, no network tokens
           - Fraud detection relies on the telco's own systems and Boku's internal risk scoring
@@ -1104,7 +1110,7 @@ modules:
     topics:
 
       - id: cash-based
-        title: Cash-based and convenience store payments
+        title: Cash-based payments
         lesson: |
           ### What is a cash-based payment method?
 
@@ -1367,11 +1373,13 @@ modules:
           ### Use cases and fraud context
 
           Stablecoins are growing in:
+
           - **B2B cross-border payments:** Faster and cheaper than SWIFT for international supplier payments
           - **Remittances:** Sending money home without bank intermediaries
           - **Crypto-backed debit cards:** Spend stablecoin balances via Visa/Mastercard card
 
           **Fraud risks:**
+
           - Same as crypto — irreversible transfers, no chargeback
           - **USDT (Tether) is the dominant currency in crypto-enabled scam payments** — its price stability makes it practical for large fraudulent transfers
           - Stablecoin bridges and smart contract exploits (more relevant to DeFi than payments)

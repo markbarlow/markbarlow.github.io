@@ -1,237 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-   <link rel="shortcut icon" href="img/favicon.ico">
-
-    <title>Mark Barlow</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="css/grayscale.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
-    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mark Barlow</title>
+<meta name="description" content="Mark Barlow — digital product management. Apps, sites, writing and music.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: #faf9f7; }
+  a { color: inherit; }
+  a:hover { color: oklch(0.52 0.11 25); }
+  a.tile:hover { background: #faf9f7; color: inherit; }
+  @media (max-width: 860px) {
+    [data-r="row"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+    [data-r="row"] > h2 { padding-top: 0 !important; }
+  }
+  @media (max-width: 720px) {
+    main { padding: 44px 24px 40px !important; }
+    main h1 { font-size: 32px !important; }
+    [data-r="items"] { grid-template-columns: 1fr !important; }
+    [data-r="work"] { grid-template-columns: 1fr !important; gap: 22px !important; }
+    [data-r="foot"] { flex-direction: column !important; align-items: flex-start !important; gap: 22px !important; }
+    [data-r="foot"] > div:last-child { flex-wrap: wrap; }
+  }
+</style>
 </head>
+<body>
+<main style="width:100%; max-width:900px; margin:0 auto; color:#1c1917; font-family:'IBM Plex Sans','Segoe UI',system-ui,sans-serif; padding:80px 76px 56px">
 
-<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+<header style="display:flex; flex-direction:column; gap:20px; padding-bottom:52px">
+  <h1 style="margin:0; font-size:40px; font-weight:600; letter-spacing:-0.02em">MB</h1>
+  <p style="margin: 0; max-width: 52ch; font-size: 16px; line-height: 1.55; color: #44403c; text-wrap: pretty">Digital product management. A bit of music and running on the side.</p>
+</header>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
-                    <i class="fa fa-bars"></i>
-                </button>
-                <a class="navbar-brand page-scroll" href="#page-top">
-                    <i class="fa fa-play-circle"></i>  <span class="light">Mark</span> Barlow
-                </a>
-            </div>
+<div style="display:flex; flex-direction:column; gap:44px; border-top:1px solid #e0dcd6; padding-top:44px">
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
-                <ul class="nav navbar-nav">
-                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
-                    <li class="hidden">
-                        <a href="#page-top"></a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#about">About</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#quotes">Inspiration</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+  <div data-r="row" style="display:grid; grid-template-columns:150px 1fr; gap:32px; align-items:start">
+    <h2 style="margin:0; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.52 0.11 25); padding-top:6px">Words</h2>
+    <div data-r="items" style="display:grid; grid-template-columns:1fr 1fr; gap:4px 32px">
+      <a href="https://markbarlow.co.uk/memory-palace/" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">MP</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">The Memory Palace</span>
+          <span style="font-size:13px; color:#78716c">Exercising some muscles</span>
+        </span>
+      </a>
+      <a href="https://lexicorium.vercel.app" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">LX</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">The Lexicorium</span>
+          <span style="font-size:13px; color:#78716c">Lesser-spotted words</span>
+        </span>
+      </a>
+      <a href="https://markbarlow.co.uk/genji-quijote/#gq-0488" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">GQ</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">The Shining Prince meets The Knight Errant</span>
+          <span style="font-size:13px; color:#78716c">Exquisite Corpse of the classics</span>
+        </span>
+      </a>
+    </div>
+  </div>
 
-    <!-- Intro Header -->
-    <!-- bg image commented out in css -->
-    <header class="intro">
-        <div class="intro-body">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2">
-                        <h1 class="brand-heading">Hello</h1>
-                        <p class="intro-text">Digital product management.<br>
-                        A bit of <a href="http://www.mulberryharbourmusic.co.uk">music</a> and running on the side.</p>
-                        <a href="#about" class="btn btn-circle page-scroll">
-                            <i class="fa fa-angle-double-down animated"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
+  <div data-r="row" style="display:grid; grid-template-columns:150px 1fr; gap:32px; align-items:start; border-top:1px solid #e8e4de; padding-top:36px">
+    <h2 style="margin:0; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.52 0.11 25); padding-top:6px">Music</h2>
+    <div data-r="items" style="display:grid; grid-template-columns:1fr 1fr; gap:4px 32px">
+      <a href="http://mulberryharbourmusic.co.uk" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">MH</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">Mulberry Harbour</span>
+          <span style="font-size:13px; color:#78716c">Soundtracks and instrumentals</span>
+        </span>
+      </a>
+      <a href="https://music.apple.com/us/artist/brody-quint/196486483" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">BQ</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">Brody &amp; Quint</span>
+          <span style="font-size:13px; color:#78716c">Long gone but lives on</span>
+        </span>
+      </a>
+    </div>
+  </div>
 
-    <!-- About Section -->
-    <section id="about" class="container content-section text-center">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
-                <h2>About Me</h2>
-		    <p>Product at <a href="https://www.ravelin.com">Ravelin</a>, stopping fraudsters. Experience working in large multinationals, small startups and government digital services. Previously at the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office">Foreign &amp; Commonwealth Office</a>, two-taps-to-a-taxi app <a href="https://www.hailoapp.com/">Hailo</a>, early mobile group messaging app <A href="http://www.telegraph.co.uk/technology/3355166/TruTap-Goodbye-computer-hello-mobile-phone.html">Trutap</a>, <a href="http://www.yahoo.co.uk">Yahoo!</a>, search old-timer <a href="http://www.altavista.com">AltaVista</a>, and <a href="http://www.bbc.co.uk">BBC Online</a>, amongst others.</p>
-                <p>Member of the <a href="https://www.prsformusic.com/Pages/default.aspx">PRS for Music</a>. <a href="http://www.mulberryharbourmusic.co.uk">Soundtrack composition</a> credits include BBC3, Channel 5, The Learning Channel and Animal Planet.</p>
-                <p>Got into running <a href="/180steps/blog/2017/01/18/why-I-started-running">largely by accident</a> in 2015. The <a href="/180steps/blog/2017/01/28/180-steps-intro">180 steps per minute theory</a> turned into a good excuse for combining exercise with <a href="/180steps/index.html">180 bpm music</a>.</p>
-                <p>Spanish and French speaker, and something of a Hispanophile.</p>
-                <p>No relation to Gary.</p>
-            </div>
-        </div>
-    </section>
+  <div data-r="row" style="display:grid; grid-template-columns:150px 1fr; gap:32px; align-items:start; border-top:1px solid #e8e4de; padding-top:36px">
+    <h2 style="margin:0; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.52 0.11 25); padding-top:6px">Outdoors</h2>
+    <div data-r="items" style="display:grid; grid-template-columns:1fr 1fr; gap:4px 32px">
+      <a href="https://markbarlow.co.uk/route-posters/" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">RP</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">Route posters</span>
+          <span style="font-size:13px; color:#78716c">Rides and runs, printed</span>
+        </span>
+      </a>
+    </div>
+  </div>
 
-    <!-- Quotes Section -->
-    <section id="quotes" class="content-section text-center">
-        
-        <!-- uncomment image in download-section in css to get the background image back -->
-        <div class="download-section"> 
-        
-             <div class="container">
-              <h2>Inspiration</h2>
-                <div class="col-lg-8 col-lg-offset-2"  id="myBox">
+  <div data-r="row" style="display:grid; grid-template-columns:150px 1fr; gap:32px; align-items:start; border-top:1px solid #e8e4de; padding-top:36px">
+    <h2 style="margin:0; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.52 0.11 25); padding-top:6px">Tools</h2>
+    <div data-r="items" style="display:grid; grid-template-columns:1fr 1fr; gap:4px 32px">
+      <a href="https://markbarlow.co.uk/vanguard-tracker/" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">VT</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">Vanguard tracker</span>
+          <span style="font-size:13px; color:#78716c">At-a-glance view</span>
+        </span>
+      </a>
+      <a href="https://markbarlow.co.uk/subscription-tracker/" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">ST</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">Subscription tracker</span>
+          <span style="font-size:13px; color:#78716c">Savings vs. Spend</span>
+        </span>
+      </a>
+      <a href="https://github.com/markbarlow/markbarlow.github.io/tree/master/learning/~template" style="display:flex; gap:14px; align-items:center; padding:10px 12px 10px 0; text-decoration:none; border-radius:4px" class="tile">
+        <span style="flex:none; width:36px; height:36px; display:grid; place-items:center; border:1px solid #d9d4cc; border-radius:4px; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:14px; color:#57534e">ET</span>
+        <span style="display:flex; flex-direction:column; gap:2px">
+          <span style="font-size:16px; font-weight:500">E-learning template</span>
+          <span style="font-size:13px; color:#78716c">Source on GitHub</span>
+        </span>
+      </a>
+    </div>
+  </div>
 
-<!-- quote generator -->
-
-<script type="text/javascript">
-
-      function getQuote() {
-
-         var quotes = new Array("<p>Time is the coin of your life. It is the only coin you have, and only you can determine how it will be spent.<br><b>Carl Sandburg</b></p>",
-		"<p>Diligence is the mother of good fortune, and idleness, its opposite, never brought a man to the goal of any of his best wishes.<br><b>Cervantes</b></p>",
-		"<p>My most important problem was to destroy the line of demarcation that separates what seems real from what seems fantastic.<br><b>Gabriel Garc&iacute;a M&aacute;rquez</b></p>",
-		"<p>Memory is a snare, pure and simple; it alters, it subtly rearranges the past to fit the present.<br><b>Mario Vargas Llosa</b></p>",
-		"<p>Memories warm you up from the inside. But they also tear you apart.<br><b>Haruki Murakami</b><br><br></p>",
-		"<p>People who know little are usually great talkers, while men who know much say little.<br><b>Jean-Jacques Rousseau</b><br></p>",
-		"<p>Those who contemplate the beauty of the earth find reserves of strength that will endure as long as life lasts.<br><b>Rachel Carson</b></p>",
-		"<p>Creativity is allowing yourself to make mistakes. Art is knowing which ones to keep.<br><b>Scott Adams</b></p>",
-		"<p>Music expresses that which cannot be put into words and that which cannot remain silent.<br><b>Victor Hugo</b></p>",
-		"<p>And those who were seen dancing were thought to be insane by those who could not hear the music.<br><b>Friedrich Nietzsche</b></p>",
-		"<p>If I had my life to live over again, I would have made a rule to read some poetry and listen to some music at least once every week.<br><b>Charles Darwin</b></p>",
-		"<p>All the good music has already been written by people with wigs and stuff.<br><b>Frank Zappa</b><br><br></p>",
-		"<p>Music brings a warm glow to my vision, thawing mind and muscle from their endless wintering.<br><b>Haruki Murakami</b></p>",
-		"<p>We delight in the beauty of the butterfly, but rarely admit the changes it has gone through to achieve that beauty.<br><b>Maya Angelou</b></p>",
-		"<p>It was only a sunny smile, and little it cost in the giving, but like morning light it scattered the night and made the day worth living.<br><b>F. Scott Fitzgerald</b></p>",
-		"<p>If you're picking raspberries, you see only what's red, and if you're looking for bones you see only the white.<br><b>Tove Jansson</b></p>",
-        	"<p>Think big thoughts but relish small pleasures.<br><b>H. Jackson Brown, Jr.</b><br><br></p>",
-		"<p>How we spend our days is, of course, how we spend our lives.<br><b>Annie Dillard</b><br><br></p>",
-		"<p>Expect everything worthwhile to take a long time.<br><b>Debbie Millman</b><br><br></p>",
-		"<p>Go oft to the house of thy friend, for weeds choke the unused path.<br><b>Ralph Waldo Emerson</b><br><br></p>");
-
-         var randomChoice = Math.floor(Math.random()* quotes.length)
-
-         $("#myBox").html(quotes[randomChoice]);
-
-      }
-
-   </script>
-
- <p>Perfection is finally attained not when there is no longer anything to add, but when there is no longer anything to take away<br><b>Antoine de Saint-Exup&eacute;ry</b></p>
 </div>
 
-   <p>
-     <a href="javascript:getQuote()" class="btn btn-default btn-lg">Show me another!</a>
-   </p>
+<div data-r="row" style="display:grid; grid-template-columns:150px 1fr; gap:32px; align-items:start; border-top:1px solid #e0dcd6; margin-top:44px; padding-top:44px">
+  <h2 style="margin:0; font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.52 0.11 25); padding-top:4px">Work</h2>
+  <div style="display:flex; flex-direction:column; gap:20px">
+    <div data-r="work" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px 32px">
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:#a8a29e">Startup</span>
+        <div style="display:flex; flex-direction:column; gap:9px; font-size:16px; line-height:1.3; color:#292524">
+        <span>Ravelin</span>
+        <span>Hailo</span>
+        <span>Handmade Mobile Entertainment</span>
+        <span>Trutap</span>
+      </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:#a8a29e">Government &amp; public</span>
+        <div style="display:flex; flex-direction:column; gap:9px; font-size:16px; line-height:1.3; color:#292524">
+        <span>Foreign, Commonwealth &amp; Development Office</span>
+        <span>BBC Online</span>
+      </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:#a8a29e">Enterprise</span>
+        <div style="display:flex; flex-direction:column; gap:9px; font-size:16px; line-height:1.3; color:#292524">
+        <span>Yahoo!</span>
+        <span>AltaVista</span>
+        <span>Electronic Publishing Services</span>
+      </div>
+      </div>
+    </div>
+    <p style="margin:0; max-width:56ch; font-size:14px; line-height:1.6; color:#78716c">Member of the PRS for Music. Soundtrack composition credits include BBC3, Channel 5, The Learning Channel and Animal Planet.</p>
+  </div>
+</div>
 
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="container content-section text-center">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
-                <h2>Contact</h2>
-                <p>You can reach me at the places below.</p>
-               <ul class="list-inline banner-social-buttons">
-                    <!-- The font-awesome css folder has button styles -->
-                    <li>
-                      <!--  <a href="https://twitter.com/markbarlow" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a> -->
-                    </li>
-                    <li>
-                        <a href="https://github.com/markbarlow" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
-                    </li>
-                    <!-- <li>
-					    <a href="https://instagram.com/markbarlow/" class="btn btn-default btn-lg"><i class="fa fa-instagram fa-fw"></i> <span class="network-name">Instagram</span></a>
-                    </li> -->
-                    <li>
-					    <a href="https://www.linkedin.com/in/markbarlow" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">LinkedIn</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Random Section -->
-    <section id="about" class="container content-section text-center">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
-                <h2>Random</h2>
-		    <p><a href="/colorlessgreenideas/">Colorless green ideas sleep furiously</a></p>
-		    <p><a href="/challengeciting.html">Challengeciting</a></p>
-		    <!-- https://blogs.fcdo.gov.uk/markbarlow/2015/12/04/assessments-users-needs-and-the-design-of-everyday-things/
-			https://www.mindtheproduct.com/why-machine-learning-products-should-be-managed-differently/
-			https://www.ravelin.com/blog/how-are-you-counting-the-cost-of-chargebacks
-			https://pages.ravelin.com/how-to-solve-refund-abuse-webinar
- -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container text-center">
-            <p> <!-- Copyright &copy; Mark Barlow <script>document.write(new Date().getFullYear())</script> --></p>
-        </div>
-    </footer>
-
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
-
-    <!-- Plugin JavaScript -->
-    <script src="js/jquery.easing.min.js"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="js/grayscale.js"></script>
-
-    <!-- Google Analytics JavaScript -->
-	<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-63444334-1', 'auto');
-  ga('send', 'pageview');
-	</script>
-
-
+<footer data-r="foot" style="display:flex; justify-content:space-between; align-items:flex-end; gap:32px; border-top:1px solid #e0dcd6; margin-top:44px; padding-top:28px">
+  <div style="display:flex; gap:24px; font-size:15px">
+    <a href="https://www.linkedin.com/in/markbarlow" style="text-decoration:none; border-bottom:1px solid #cfc9c0; padding-bottom:2px">LinkedIn</a>
+    <a href="https://github.com/markbarlow" style="text-decoration:none; border-bottom:1px solid #cfc9c0; padding-bottom:2px">GitHub</a>
+  </div>
+  <div style="display:flex; gap:20px; font-size:13px; color:#a8a29e">
+    <span style="font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace; letter-spacing:0.04em">Odds and ends</span>
+    <a href="https://markbarlow.co.uk/colorlessgreenideas/" style="text-decoration:none; color:#78716c">Colorless green ideas</a>
+    <a href="https://markbarlow.co.uk/challengeciting.html" style="text-decoration:none; color:#78716c">Challengeciting</a>
+  </div>
+</footer>
+</main>
 </body>
-
 </html>

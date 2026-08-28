@@ -5,6 +5,7 @@ Fetches historical price data from Yahoo Finance for UK Vanguard funds.
 """
 
 import json
+import math
 import os
 from datetime import datetime, timedelta
 
@@ -52,13 +53,24 @@ def fetch_fund_data():
                 print("No data available")
                 continue
 
-            # Convert to list of {date, price} objects
+            # Convert to list of {date, price} objects.
+            # Yahoo sometimes returns rows with a NaN close (e.g. a partial
+            # trading day). NaN is not valid JSON, so skip those rows.
             prices = []
+            skipped = 0
             for date, row in hist.iterrows():
+                close = row["Close"]
+                if close is None or math.isnan(close):
+                    skipped += 1
+                    continue
                 prices.append({
                     "date": date.strftime("%Y-%m-%d"),
-                    "price": round(row["Close"], 4)
+                    "price": round(float(close), 4)
                 })
+
+            if not prices:
+                print("No valid prices")
+                continue
 
             fund_data = {
                 "name": fund["name"],
@@ -69,7 +81,8 @@ def fetch_fund_data():
             }
 
             all_data["funds"].append(fund_data)
-            print(f"OK ({len(prices)} data points)")
+            note = f", {skipped} skipped" if skipped else ""
+            print(f"OK ({len(prices)} data points{note})")
 
         except Exception as e:
             print(f"Error: {e}")
@@ -77,9 +90,13 @@ def fetch_fund_data():
     return all_data
 
 def save_json(data, filepath):
-    """Save data to JSON file."""
+    """Save data to JSON file.
+
+    allow_nan=False makes this raise rather than write NaN/Infinity, which
+    are Python extensions that browsers reject when parsing the file.
+    """
     with open(filepath, "w") as f:
-        json.dump(data, f, indent=2)
+        json.dump(data, f, indent=2, allow_nan=False)
     print(f"\nData saved to {filepath}")
 
 def main():

@@ -24,7 +24,7 @@ At the top of the script, edit `CONFIG`:
 
 ```js
 expected: {
-  'platform-team-2026-11': 12
+  'product-team-2026-11': 12
 }
 ```
 
@@ -134,7 +134,7 @@ a reveal. Add the session to `closeDates` in the script **and** set the same dat
 in `config.js`:
 
 ```js
-closeDates: { 'platform-team-2026-11': '2026-11-14' }
+closeDates: { 'product-team-2026-11': '2026-11-14' }
 ```
 
 Then redeploy (Deploy → Manage deployments → edit → New version). Two things to

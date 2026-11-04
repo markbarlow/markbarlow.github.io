@@ -146,10 +146,13 @@ When the files arrive, what the implementation needs:
 - **Not tied to `prefers-reduced-motion`.** That flag is about motion, not
   sound. The toggle is the control for this.
 
-#### Candidate sources — checked, and none of them usable
+#### Reference sounds — audio.com, cannot ship, kept on purpose
 
 Found by Mark on audio.com. Licences checked 2026-11-04: **none of these six
-can ship.** Kept here so the question is not reopened.
+can ship** (why, below). Mark is sourcing or recording his own and asked to
+keep these as the comparison — they are the target to match, not files to
+use. Listen to them, then find or record something that sounds like them
+under a licence that permits it.
 
 | Possible bucket | Sound | Length | Link |
 |---|---|---|---|

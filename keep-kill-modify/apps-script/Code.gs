@@ -26,7 +26,7 @@ var CONFIG = {
      For a vote that runs over several days, add the session id here with
      the date its results may be revealed, and set the SAME date in
      config.js. THIS is the real gate -- config.js only displays it.
-       closeDates: { 'platform-team-2026-11': '2026-11-14' }
+       closeDates: { 'product-team-2026-11': '2026-11-14' }
      Format YYYY-MM-DD, compared at 00:00 UTC. */
   closeDates: {},
 
@@ -35,7 +35,7 @@ var CONFIG = {
 
   /* How many people were asked, per session. Shown as "7 of 12". */
   expected: {
-    'platform-team-2026-11': 12
+    'product-team-2026-11': 12
   },
 
   /* Hard ceiling on how many activities one ballot may carry. */

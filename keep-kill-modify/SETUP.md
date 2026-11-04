@@ -18,25 +18,22 @@ In that Sheet: **Extensions → Apps Script**. A new tab opens with a file calle
 Delete everything in the editor and paste the whole contents of
 [`apps-script/Code.gs`](apps-script/Code.gs). Save (⌘S).
 
-## 4. Set the session and the close date
+## 4. Set the headcount
 
 At the top of the script, edit `CONFIG`:
 
 ```js
-closeDates: {
-  'platform-team-2026-11': '2026-11-14'
-},
 expected: {
   'platform-team-2026-11': 12
 }
 ```
 
-The key must match `SESSION_ID` in [`config.js`](config.js) exactly.
+The key must match `SESSION_ID` in [`config.js`](config.js) exactly. It is only
+used to render "7 of 12 responded".
 
-**The close date has to be set in both places.** The one in `config.js` is only
-what the page displays; the one here is what actually withholds the results. If
-you only change `config.js`, the page will say the wrong date and the tally will
-unlock at the old one.
+`closeDates` is empty, which means **no gate**: results are readable as soon as
+ballots arrive. That is what you want for a live session. See "Running it live"
+below, and "Withholding results" if you ever need the other mode.
 
 ## 5. Deploy it
 
@@ -66,8 +63,28 @@ Commit and push. Done.
 
 1. Open the page, sort the list, send it. You should land on the thank-you screen.
 2. Look at the Sheet — one row should have appeared.
-3. Open the page at `#results`. Before the close date you'll see turnout only;
-   after it, the full split.
+3. Open the page at `#results`. You should see your own ballot counted.
+
+Do this once yourself before the session. It is the only step that proves the
+whole round trip, and it takes a minute.
+
+## Running it live
+
+For an away-day session where everyone votes in the room and you show the
+results there and then:
+
+- Leave `CLOSE_DATE` empty in `config.js` and `closeDates` empty in the script.
+  Results are then live.
+- Share the page URL. A short link or a QR code on the slide beats reading it out.
+- Keep `#results` open on the projector while people sort. It shows turnout —
+  "14 of 20 have returned a card" — so you can see when to call time. Hit
+  refresh to re-poll; it never auto-reloads under you.
+- Set `EXPECTED_RESPONDENTS` to the number of people in the room, or that
+  counter has nothing to count against.
+- **Venue wifi is the risk, not the script.** If a send fails the page keeps the
+  answers and offers a retry plus a download, so nobody loses their sorting —
+  but tell people to speak up if they see a red banner rather than silently
+  giving up.
 
 If the send fails, the page says so, keeps your answers, and offers a retry and
 a "save as file" button. Nothing is lost.
@@ -105,6 +122,24 @@ it will be the current version.
   choice. One person voting from a laptop and a phone counts twice, and anyone
   with the link can submit. Fine for a team exercise; don't quote the numbers
   outside the team as if they were audited.
-- **`#results` is unlisted, not secret.** Anyone reading the page source can find
-  it. What protects the tally before the meeting is the close date in the script,
-  which no amount of reading the page gets around.
+- **`#results` is unlisted, not secret.** Anyone reading the page source can
+  find it, and with no gate configured it shows the running tally to anyone who
+  does. For a live session that is the point. If you ever need it withheld, see
+  below — obscurity is not what protects it.
+
+## Withholding results (the other mode)
+
+Only needed if people vote over several days and you want the split hidden until
+a reveal. Add the session to `closeDates` in the script **and** set the same date
+in `config.js`:
+
+```js
+closeDates: { 'platform-team-2026-11': '2026-11-14' }
+```
+
+Then redeploy (Deploy → Manage deployments → edit → New version). Two things to
+know: the script is the real gate, so a date in `config.js` alone does nothing
+but change the wording on the page; and a session id missing from `closeDates`
+is **never sealed**, so it fails open, not closed. Before the date, `#results`
+shows turnout only — enough to see who is still outstanding, not enough to
+anchor you.

@@ -20,13 +20,15 @@ var CONFIG = {
   /* Reject anything larger than this, in bytes. */
   maxBytes: 20000,
 
-  /* Results stay sealed until this date, per session id.
-     THIS is the real gate — config.js only displays the date, it cannot
-     enforce it. Keep the two in step.
+  /* EMPTY = no gate: results are readable as soon as ballots arrive.
+     That is what you want for a live session.
+
+     For a vote that runs over several days, add the session id here with
+     the date its results may be revealed, and set the SAME date in
+     config.js. THIS is the real gate -- config.js only displays it.
+       closeDates: { 'platform-team-2026-11': '2026-11-14' }
      Format YYYY-MM-DD, compared at 00:00 UTC. */
-  closeDates: {
-    'platform-team-2026-11': '2026-11-14'
-  },
+  closeDates: {},
 
   /* Sessions not listed above: '' means never sealed. */
   defaultCloseDate: '',

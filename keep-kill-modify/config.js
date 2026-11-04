@@ -19,13 +19,19 @@ window.KKM_CONFIG = {
      cannot send anything. */
   ENDPOINT_URL: '',
 
-  /* Results stay locked until this date, so nobody can see the tally while
-     people are still voting. The Apps Script enforces it, not the page.
-     Format YYYY-MM-DD, treated as that date at 00:00 UTC. */
-  CLOSE_DATE: '2026-11-14',
+  /* Leave this EMPTY for a live session (everyone votes in the room, you
+     put the results on the screen there and then). Results are then
+     readable as soon as ballots arrive.
+
+     Set a date (YYYY-MM-DD, 00:00 UTC) only if people vote over several
+     days and you want the split withheld until a reveal. If you do, set
+     the SAME date in the Apps Script's closeDates -- the script is what
+     actually withholds it; this one is only what the page displays. */
+  CLOSE_DATE: '',
 
   /* How many people you asked, so the results read "7 of 12 responded".
-     Set to 0 to show a bare count instead. */
+     In a live session this is your "are we done yet?" signal, so it is
+     worth getting right. Set to 0 to show a bare count instead. */
   EXPECTED_RESPONDENTS: 12,
 
   /* ---- The list -------------------------------------------------------- */

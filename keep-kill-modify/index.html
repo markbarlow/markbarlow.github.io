@@ -318,7 +318,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       <b>1</b>, <b>2</b> or <b>3</b>. Nothing is sent until you look over the lot at the end,
       so change your mind freely.</p>
     <p class="note-small" style="margin-top:10px">Your answers are anonymous &mdash; no name,
-      no email, nothing identifying. Results stay sealed until <b id="intro-close"></b>.</p>
+      no email, nothing identifying. <span id="intro-close"></span></p>
 
     <div id="setup-warning" class="banner" hidden>
       <p><b>Not collecting answers yet.</b> <span class="hint">No endpoint is set in
@@ -458,8 +458,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     </div>
     <p style="margin-top:14px">Your verdicts are in, with no name attached to them.</p>
     <div class="tally" id="done-tally"></div>
-    <p class="note-small">The team's results unlock on <b id="done-close"></b>. Until then
-      nobody can see the split &mdash; not even the facilitator.</p>
+    <p class="note-small" id="done-close"></p>
   </div>
 </section>
 
@@ -524,6 +523,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     } catch (e) { /* fall through */ }
     return 'b-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
   }
+  function hasClose() { return !!closeDate(); }
   function closeDate() {
     var d = CFG.CLOSE_DATE ? new Date(CFG.CLOSE_DATE + 'T00:00:00Z') : null;
     return (d && !isNaN(d.getTime())) ? d : null;
@@ -575,7 +575,9 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
   function paintIntro() {
     $('intro-sub').textContent =
       (CFG.SESSION_NAME || 'This team') + ' · ' + ACTS.length + ' recurring activities';
-    $('intro-close').textContent = closeDateText();
+    $('intro-close').textContent = hasClose()
+      ? ('Results stay sealed until ' + closeDateText() + '.')
+      : 'The results go up on the screen once everyone has sorted.';
     $('intro-time').textContent = 'About ' + Math.max(2, Math.round(ACTS.length / 6)) + ' minutes.';
     if (!CFG.ENDPOINT_URL) { $('setup-warning').hidden = false; }
     var d = loadDraft();
@@ -589,7 +591,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
   /* ---------- sort --------------------------------------------------- */
   function paintSort() {
     $('sort-session').textContent = CFG.SESSION_NAME || '';
-    $('sort-closes').textContent = 'Closes ' + closeDateText();
+    $('sort-closes').textContent = hasClose() ? ('Closes ' + closeDateText()) : '';
 
     if (state.index >= ACTS.length) { goReview(); return; }
     var a = ACTS[state.index];
@@ -973,7 +975,10 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       box.appendChild(el('p', 'eyebrow', LABEL[k]));
       wrap.appendChild(box);
     }
-    $('done-close').textContent = closeDateText();
+    $('done-close').textContent = hasClose()
+      ? ("The team's results unlock on " + closeDateText() +
+         '. Until then nobody can see the split \u2014 not even the facilitator.')
+      : 'Sit tight \u2014 the results go up on the screen once everyone has sorted.';
   }
 
   /* ---------- results -------------------------------------------------- */

@@ -109,3 +109,21 @@ and WCAG AA contrast measured on every text pair, which caught one failing label
 
 **Not verified:** the live round-trip against a real Apps Script deployment, which
 needs Mark's own Google account.
+
+## Noted, not yet built
+
+Mark's feedback after the first build, recorded here while the rest of it
+arrives. Nothing below is implemented.
+
+- **A sound on each drop**, one per bucket, in character:
+  - **Keep** — a short choral, positive "Gloria!" swell.
+  - **Modify** — a quizzical, rising-inflection sound.
+  - **Kill** — a zombie groan.
+
+  Open questions when this gets built: whether the sounds are synthesised in the
+  page (Web Audio, no files, keeps the "no dependencies" non-goal intact) or
+  shipped as three small audio files; and that there must be a mute control,
+  defaulted off or on — a page that makes noise unprompted on a work laptop is
+  the kind of thing people close. Sound also has to stay a garnish, since
+  browsers block audio until the first interaction and the page must work
+  silently.

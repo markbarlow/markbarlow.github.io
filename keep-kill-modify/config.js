@@ -7,10 +7,10 @@ window.KKM_CONFIG = {
 
   /* A short id. Change it to start a fresh round; old rounds stay in the
      Sheet under their own id and are not mixed in. No spaces. */
-  SESSION_ID: 'platform-team-2026-11',
+  SESSION_ID: 'product-team-2026-11',
 
   /* Shown on the page. */
-  SESSION_NAME: 'Platform team',
+  SESSION_NAME: 'Product team away day',
 
   /* ---- Where the answers go -------------------------------------------- */
 

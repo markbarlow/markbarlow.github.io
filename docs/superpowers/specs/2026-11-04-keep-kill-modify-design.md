@@ -145,3 +145,32 @@ When the files arrive, what the implementation needs:
   Call `play()` inside a try and swallow the rejected promise.
 - **Not tied to `prefers-reduced-motion`.** That flag is about motion, not
   sound. The toggle is the control for this.
+
+#### Candidate sources (Mark's, unchecked)
+
+Found by Mark, saved here to audition later. Nothing below has been listened
+to, licence-checked or trimmed, and the bucket column is only my reading of
+what each might be for.
+
+| Possible bucket | Sound | Link |
+|---|---|---|
+| Kill | Zombie craving for brain | <https://audio.com/hertzheirloomvoyager/audio/zombie-craving-for-brain> |
+| Kill or Modify | Sinister female laughter | <https://audio.com/sonicfableforge/audio/sinister-female-laughter-sound-effects> |
+| Keep | Nepomuk's church bells | <https://audio.com/freqshiftnomad/audio/nepomuk-s-church-bells> |
+| Keep | Struck singing bowl | <https://audio.com/decibelphantomx/audio/sound-of-striking-a-singing-bowl> |
+| Modify | Large bubbles, vol. 3 | <https://audio.com/freqshiftnomad/audio/large-bubbles-volume-3> |
+| Modify | Bubble sound effects (collection) | <https://audio.com/acousticalchemyartisan5/collections/bubble-sound-effects> |
+
+Read together these suggest a different and better scheme than the original
+note: church bells for Van Helsing, a bubbling potion for Jekyll, a groan for
+the Zombie. That is more legible than "choral swell / quizzical rise / groan",
+because each sound names its character rather than its mood.
+
+Two things to settle before any of these ship:
+
+- **Licence.** audio.com terms vary per upload, so each file needs its own
+  check, and whatever it says goes in `sounds/README.md` beside the file. No
+  licence, no ship.
+- **Length.** Bells and singing bowls ring for seconds. Per-card sounds need
+  trimming to roughly half a second, with the full ring kept for the final
+  card at most.

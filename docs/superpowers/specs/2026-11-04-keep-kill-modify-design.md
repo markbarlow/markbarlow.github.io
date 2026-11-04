@@ -146,31 +146,53 @@ When the files arrive, what the implementation needs:
 - **Not tied to `prefers-reduced-motion`.** That flag is about motion, not
   sound. The toggle is the control for this.
 
-#### Candidate sources (Mark's, unchecked)
+#### Candidate sources — checked, and none of them usable
 
-Found by Mark, saved here to audition later. Nothing below has been listened
-to, licence-checked or trimmed, and the bucket column is only my reading of
-what each might be for.
+Found by Mark on audio.com. Licences checked 2026-11-04: **none of these six
+can ship.** Kept here so the question is not reopened.
 
-| Possible bucket | Sound | Link |
-|---|---|---|
-| Kill | Zombie craving for brain | <https://audio.com/hertzheirloomvoyager/audio/zombie-craving-for-brain> |
-| Kill or Modify | Sinister female laughter | <https://audio.com/sonicfableforge/audio/sinister-female-laughter-sound-effects> |
-| Keep | Nepomuk's church bells | <https://audio.com/freqshiftnomad/audio/nepomuk-s-church-bells> |
-| Keep | Struck singing bowl | <https://audio.com/decibelphantomx/audio/sound-of-striking-a-singing-bowl> |
-| Modify | Large bubbles, vol. 3 | <https://audio.com/freqshiftnomad/audio/large-bubbles-volume-3> |
-| Modify | Bubble sound effects (collection) | <https://audio.com/acousticalchemyartisan5/collections/bubble-sound-effects> |
+| Possible bucket | Sound | Length | Link |
+|---|---|---|---|
+| Kill | Zombie craving for brain | 0:33 | <https://audio.com/hertzheirloomvoyager/audio/zombie-craving-for-brain> |
+| Kill or Modify | Sinister female laughter | 0:01 | <https://audio.com/sonicfableforge/audio/sinister-female-laughter-sound-effects> |
+| Keep | Nepomuk's church bells | 2:00 | <https://audio.com/freqshiftnomad/audio/nepomuk-s-church-bells> |
+| Keep | Struck singing bowl | 0:05 | <https://audio.com/decibelphantomx/audio/sound-of-striking-a-singing-bowl> |
+| Modify | Large bubbles, vol. 3 | 0:21 | <https://audio.com/freqshiftnomad/audio/large-bubbles-volume-3> |
+| Modify | Bubble sound effects (collection) | — | <https://audio.com/acousticalchemyartisan5/collections/bubble-sound-effects> |
 
 Read together these suggest a different and better scheme than the original
 note: church bells for Van Helsing, a bubbling potion for Jekyll, a groan for
 the Zombie. That is more legible than "choral swell / quizzical rise / groan",
 because each sound names its character rather than its mood.
 
-Two things to settle before any of these ship:
+**Why none of them ship.** No upload on audio.com states its own licence — all
+six were checked, and the only terms are the site-wide ones. Those say:
 
-- **Licence.** audio.com terms vary per upload, so each file needs its own
-  check, and whatever it says goes in `sounds/README.md` beside the file. No
-  licence, no ship.
-- **Length.** Bells and singing bowls ring for seconds. Per-card sounds need
-  trimming to roughly half a second, with the full ring kept for the final
-  card at most.
+> Content received through the Service, that isn't modified after acquisition,
+> may be accessed for your personal, non-commercial use only.
+
+and separately prohibit users from choosing to "publish, transmit, distribute,
+display [or] redistribute" that content. Putting a file in this repo serves it
+from a public website, which is distribution, and an employer's away day is not
+personal use. Two independent reasons it fails; no amount of trimming fixes
+either, since the "modified after acquisition" wording grants nothing.
+
+**Where to look instead.** Each of these states a licence per file, which is
+the thing audio.com does not do:
+
+- **freesound.org**, filtered to CC0. Strong on groans, bells and bubbles, and
+  CC0 needs no attribution at all.
+- **Pixabay** — its own licence covers commercial use with no attribution.
+- **Zapsplat** — free with attribution, paid to drop it.
+- A paid library (Epidemic Sound, Artlist, Soundsnap) if the employer will
+  cover it. Cleanest rights, and these are three files.
+
+**Or record them.** Bubbles are a straw in a glass of water. A groan is a phone
+voice memo pitched down. A bell is a wine glass. Thirty seconds of effort,
+nothing to attribute, nobody's terms to read, and it is funnier at the away day
+for being the team's own. Of all the routes this is the one most likely to
+actually get done.
+
+**Length, whatever the source.** The durations above are why this matters: two
+minutes of church bells is not a drop sound. Per-card sounds want trimming to
+roughly half a second, with a longer version kept for the final card at most.

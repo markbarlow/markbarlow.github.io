@@ -34,9 +34,9 @@ FUNDS = [
 def load_previous(filepath):
     """Load the last saved data, keyed by ticker. Returns {} if unreadable."""
     try:
-        with open(filepath) as f:
-            previous = json.load(f)
-        return {f["ticker"]: f for f in previous.get("funds", [])}
+        with open(filepath) as handle:
+            previous = json.load(handle)
+        return {fund["ticker"]: fund for fund in previous.get("funds", [])}
     except (OSError, ValueError, KeyError):
         return {}
 

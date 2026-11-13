@@ -26,11 +26,28 @@ FUNDS = [
     {"name": "LifeStrategy 20%", "ticker": "0P0000TKZG.L", "short": "LS200, 0.20%"},
     {"name": "FTSE 100 Index", "ticker": "0P00018XAP.L", "short": "FTSE100, 0.06%"},
     {"name": "FTSE Dev Europe ex-UK", "ticker": "0P0000KSP8.L", "short": "EU, 0.12%"},
-    {"name": "Japan Stock Index", "ticker": "IE00B50MZ948.IR", "short": "Japan, 0.16%"},
+    # Yahoo retired the ISIN-style symbol IE00B50MZ948.IR in Sept 2026;
+    # 0P0000KM1Y.L is the same GBP Acc share class.
+    {"name": "Japan Stock Index", "ticker": "0P0000KM1Y.L", "short": "Japan, 0.16%"},
 ]
 
-def fetch_fund_data():
-    """Fetch historical data for all funds."""
+def load_previous(filepath):
+    """Load the last saved data, keyed by ticker. Returns {} if unreadable."""
+    try:
+        with open(filepath) as handle:
+            previous = json.load(handle)
+        return {fund["ticker"]: fund for fund in previous.get("funds", [])}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
+def fetch_fund_data(previous):
+    """Fetch historical data for all funds.
+
+    Returns (data, failed). A fund whose fetch fails is carried over from the
+    previous run rather than dropped, so a ticker that stops resolving cannot
+    silently remove a fund from the page. Failures are reported in `failed`.
+    """
     print("Fetching Vanguard fund data from Yahoo Finance...")
 
     # Fetch 1 year + buffer of historical data
@@ -41,6 +58,19 @@ def fetch_fund_data():
         "last_updated": datetime.now().isoformat(),
         "funds": []
     }
+    failed = []
+
+    def carry_over(fund, reason):
+        """Reuse the previous run's prices for a fund we could not fetch."""
+        failed.append((fund, reason))
+        stale = previous.get(fund["ticker"])
+        if stale and stale.get("prices"):
+            stale = dict(stale, name=fund["name"], short=fund["short"])
+            all_data["funds"].append(stale)
+            print(f"{reason} - keeping previous data "
+                  f"(last {stale['prices'][-1]['date']})")
+        else:
+            print(f"{reason} - no previous data to fall back on")
 
     for fund in FUNDS:
         print(f"  Fetching {fund['name']} ({fund['ticker']})...", end=" ")
@@ -50,7 +80,7 @@ def fetch_fund_data():
             hist = ticker.history(start=start_date, end=end_date)
 
             if hist.empty:
-                print("No data available")
+                carry_over(fund, "No data available")
                 continue
 
             # Convert to list of {date, price} objects.
@@ -69,7 +99,7 @@ def fetch_fund_data():
                 })
 
             if not prices:
-                print("No valid prices")
+                carry_over(fund, "No valid prices")
                 continue
 
             fund_data = {
@@ -85,9 +115,13 @@ def fetch_fund_data():
             print(f"OK ({len(prices)} data points{note})")
 
         except Exception as e:
-            print(f"Error: {e}")
+            carry_over(fund, f"Error: {e}")
 
-    return all_data
+    # Keep a stable order regardless of which funds fell back.
+    order = {f["ticker"]: i for i, f in enumerate(FUNDS)}
+    all_data["funds"].sort(key=lambda f: order.get(f["ticker"], len(order)))
+
+    return all_data, failed
 
 def save_json(data, filepath):
     """Save data to JSON file.
@@ -103,16 +137,28 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(script_dir, "data")
     os.makedirs(data_dir, exist_ok=True)
+    json_path = os.path.join(data_dir, "fund_data.json")
 
-    # Fetch data
-    data = fetch_fund_data()
+    # Fetch data, falling back to the last run for anything that fails
+    previous = load_previous(json_path)
+    data, failed = fetch_fund_data(previous)
 
     # Save to JSON
-    json_path = os.path.join(data_dir, "fund_data.json")
     save_json(data, json_path)
 
-    print(f"\nSuccessfully fetched data for {len(data['funds'])} funds")
+    print(f"\nFetched data for {len(data['funds'])} of {len(FUNDS)} funds")
     print("Open index.html in a browser to view the tracker")
 
+    if failed:
+        print(f"\n{len(failed)} fund(s) could not be fetched:")
+        for fund, reason in failed:
+            print(f"  - {fund['name']} ({fund['ticker']}): {reason}")
+        print("Check whether these tickers are still valid on Yahoo Finance.")
+        # Non-zero exit so the scheduled workflow goes red instead of
+        # quietly publishing a page with a fund missing or frozen.
+        return 1
+
+    return 0
+
 if __name__ == "__main__":
-    main()
+    exit(main())

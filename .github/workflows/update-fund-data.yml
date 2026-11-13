@@ -19,7 +19,10 @@ jobs:
 
       - run: python vanguard-tracker/fetch_data.py
 
+      # Runs even when the fetch reports a bad ticker, so the good funds are
+      # still published; the job itself stays red so the failure is visible.
       - name: Commit & push
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

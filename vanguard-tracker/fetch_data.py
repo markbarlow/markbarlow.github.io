@@ -140,8 +140,8 @@ def main():
     json_path = os.path.join(data_dir, "fund_data.json")
 
     # Fetch data, falling back to the last run for anything that fails
-    data = load_previous(json_path)
-    data, failed = fetch_fund_data(data)
+    previous = load_previous(json_path)
+    data, failed = fetch_fund_data(previous)
 
     # Save to JSON
     save_json(data, json_path)

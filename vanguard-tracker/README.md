@@ -15,7 +15,7 @@ A local HTML dashboard to track 10 UK Vanguard investments with charts and perce
 | LifeStrategy 20% | `0P0000TKZG.L` |
 | FTSE 100 Index | `0P00018XAP.L` |
 | FTSE Dev Europe ex-UK | `0P0000KSP8.L` |
-| Japan Stock Index | `IE00B50MZ948.IR` |
+| Japan Stock Index | `0P0000KM1Y.L` |
 
 ## Setup
 
@@ -68,4 +68,14 @@ vanguard-tracker/
 
 ## Maintenance
 
-Run `python3 fetch_data.py` weekly or whenever you want fresh prices. Takes ~10 seconds to update all funds.
+Prices refresh automatically on weekdays via the `Update Fund Data` GitHub
+Action. Run `python3 fetch_data.py` yourself whenever you want them sooner.
+
+### When a ticker stops working
+
+Yahoo occasionally retires a symbol — it did this to the Japan fund's old
+`IE00B50MZ948.IR` in September 2026. When that happens the fetch keeps the
+fund's previous prices rather than dropping it from the page, prints which
+tickers failed, and exits non-zero so the scheduled job goes red. Look up the
+fund's current symbol on Yahoo Finance and update the `FUNDS` list in
+`fetch_data.py`. UK Vanguard OEICs are usually listed under a `0P….L` symbol.

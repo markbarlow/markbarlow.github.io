@@ -39,7 +39,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 /* Claude window */
 #win{left:42px;top:112px;width:488px;height:494px;border-radius:14px;background:#faf6f1;color:#2b2622;
   box-shadow:0 18px 50px rgba(0,0,0,.5);overflow:hidden;opacity:0;transform:translateY(12px);transition:all .7s;display:flex;flex-direction:column}
-#win.on{opacity:1;transform:none}
+#win.on{opacity:1;transform:none;will-change:auto}
 #bar{height:38px;background:#efe8df;display:flex;align-items:center;padding:0 12px;gap:7px;border-bottom:1px solid #e1d7ca;flex:none}
 #bar i{width:10px;height:10px;border-radius:50%;background:#d4c9ba}
 #bar b{margin-left:8px;font-size:12.5px;color:#5b5147}
@@ -81,7 +81,7 @@ td.p{transition:all .6s}
 
 /* Ravelin side */
 #mcp{left:864px;top:122px;width:368px;height:236px;border-radius:16px;background:linear-gradient(160deg,#1c2250,#171c40);border:1.5px solid rgba(143,123,255,.7);box-shadow:0 12px 36px rgba(0,0,0,.4);padding:14px 16px;transition:box-shadow .4s, transform .4s}
-#mcp.hot{box-shadow:0 0 0 2px var(--rav),0 0 40px rgba(143,123,255,.6);transform:scale(1.015)}
+#mcp.hot{box-shadow:0 0 0 2px var(--rav),0 0 40px rgba(143,123,255,.6);}
 #mcp h4{font-size:14px;display:flex;align-items:center;gap:8px}
 #mcp h4 span{font-size:10px;background:rgba(143,123,255,.25);color:#c9bfff;border-radius:99px;padding:2px 8px;font-weight:600}
 #mcp p.sub{font-size:11px;color:var(--mute);margin:3px 0 10px}
@@ -119,8 +119,9 @@ td.p{transition:all .6s}
 #mcplabel{left:556px;top:130px;width:260px;font-size:11px;color:var(--mute);line-height:1.5;opacity:0;transition:opacity .6s;text-align:center}
 #mcplabel b{color:#fff;font-size:12px;display:block;letter-spacing:.5px}
 #mcplabel.on{opacity:1}
-#xbadge{left:566px;top:236px;width:250px;text-align:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--pii);padding:6px 10px;border-radius:99px;box-shadow:0 0 24px rgba(255,93,115,.6);opacity:0;transform:scale(.8);transition:all .4s;z-index:5}
+#xbadge{left:566px;top:236px;width:250px;text-align:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--pii);padding:6px 10px;border-radius:99px;box-shadow:0 0 24px rgba(255,93,115,.6);opacity:0;transition:opacity .4s;z-index:5}
 #xbadge.on{opacity:1;transform:none}
+.msg.on,#win.on{transform:none}
 
 /* packets */
 .pk{position:absolute;left:0;top:0;white-space:nowrap;font:600 11px ui-monospace,Menlo,Consolas,monospace;padding:5px 10px;border-radius:8px;z-index:6;pointer-events:none}
@@ -305,16 +306,16 @@ async function play(){
   if(cur)cur.dead=true;
   const tk={dead:false};cur=tk;reset();paused=false;$('#bp').textContent='❚❚ Pause';
   const chk=()=>{if(tk.dead)throw'x'};
-  const SLOW=1.2;
+  const SLOW=1.32;
   const sleep=(ms,raw)=>new Promise((res,rej)=>{ms=raw?ms:ms*SLOW;let t=0;const iv=setInterval(()=>{if(tk.dead){clearInterval(iv);rej('x')}else if(!paused){t+=30;if(t>=ms){clearInterval(iv);res()}}},30)});
   const anim=async(el,kf,o)=>{chk();const a=el.animate(kf,{fill:'forwards',...o});anims.add(a);if(paused)a.pause();try{await a.finished}catch(e){}anims.delete(a);chk()};
   const fly=async(text,cls,from,to,dur=1300,keep=false)=>{dur*=SLOW;
     const p=document.createElement('div');p.className='pk '+cls;p.textContent=text;stage.appendChild(p);
     const w=p.offsetWidth,h=p.offsetHeight;
-    await anim(p,[{transform:`translate(${from.x-w/2}px,${from.y-h/2}px) scale(.7)`,opacity:0},
-      {transform:`translate(${from.x-w/2}px,${from.y-h/2}px) scale(1)`,opacity:1,offset:.12},
-      {transform:`translate(${to.x-w/2}px,${to.y-h/2}px) scale(1)`,opacity:1,offset:.88},
-      {transform:`translate(${to.x-w/2}px,${to.y-h/2}px) scale(.8)`,opacity:keep?1:0}],{duration:dur,easing:'ease-in-out'});
+    await anim(p,[{transform:`translate(${Math.round(from.x-w/2)}px,${Math.round(from.y-h/2)}px)`,opacity:0},
+      {transform:`translate(${Math.round(from.x-w/2)}px,${Math.round(from.y-h/2)}px)`,opacity:1,offset:.12},
+      {transform:`translate(${Math.round(to.x-w/2)}px,${Math.round(to.y-h/2)}px)`,opacity:1,offset:.88},
+      {transform:`translate(${Math.round(to.x-w/2)}px,${Math.round(to.y-h/2)}px)`,opacity:keep?1:0}],{duration:dur,easing:'ease-in-out'});
     if(!keep)p.remove();return p};
   const type=async(el,txt,ms)=>{for(let i=1;i<=txt.length;i++){el.textContent=txt.slice(0,i);await sleep(ms,true)}};
   const add=(html,cls)=>{const d=document.createElement('div');d.className='msg '+cls;d.innerHTML=html;$('#chat').appendChild(d);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('on')));return d};

@@ -51,9 +51,13 @@ Each activity is dragged onto one of three characters:
 
 ### Risks flagged, and chosen anyway
 
-- **Forced buckets.** People who don't attend an activity will guess, and those
+- **Forced buckets.** ~~People who don't attend an activity will guess, and those
   guesses can push an activity nobody knows about to the top of the contested
-  list. Read a high-contention row on an obscure activity as possible ignorance.
+  list.~~ **Reversed 2026-11-16.** Mark hit exactly this while writing the real
+  list: it has meetings that only some of the room attends. There is now a
+  **Skip this one** button (and the `S` key) on the sort screen, skipped items
+  get their own strip on the review screen, and a skip is reversible in either
+  direction. See "Skipping" below.
 - **No guard.** One person on two devices counts twice; anyone with the link can
   submit. Fine inside a team; not a number to quote outside it.
 
@@ -85,6 +89,33 @@ Each activity is dragged onto one of three characters:
   box and the results note stripe, since those are Hyde's own comments — so
   every remaining use of `--modify` is semantic. Contrast re-measured across
   56 text pairs afterwards: no failures, lowest 5.07 against 4.5 required.
+
+## Skipping
+
+Added 2026-11-16, reversing the original no-abstain decision.
+
+**A skip is an absence of a verdict, not a fourth bucket.** It is held in
+`state.votes` as `'skip'` so the draft, the progress bar, resume and undo all
+treat the card as decided, then stripped out in `payload()` before the ballot is
+sent. The endpoint, the Sheet and the tally never learn the word exists, so the
+Apps Script needed no change at all.
+
+Three consequences that had to be handled, none of them optional:
+
+- **Everything skipped is not a ballot.** The script rejects a ballot with no
+  verdicts, so the page disables Send and says why, rather than letting someone
+  submit and collect a failure banner.
+- **Response counts now vary per activity.** A row says "3 of 10 answered"
+  whenever some people skipped it, and the count turns to the accent colour
+  below half, because a 2-1 split from three people reads identically to a 6-3
+  split from nine otherwise.
+- **Contention had to stop being raw entropy.** Entropy does not care how many
+  answered: three people splitting 1-1-1 scores 1.585, above ten people
+  splitting 4-3-3 at 1.571. Ordering by that would put the activities nobody
+  attends at the top of the meeting — the exact problem skipping exists to
+  solve. Contention is now entropy weighted by the share of respondents who had
+  an opinion, which is identical to raw entropy when nobody skips. The CSV
+  carries both columns plus a `skipped` count, so the raw figure is still there.
 
 ## Shape
 

@@ -100,6 +100,19 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 .cast-name{font-family:var(--font-display); font-size:19px; line-height:1.2}
 .verdict-tag{font-size:11px; letter-spacing:.22em; text-transform:uppercase; font-weight:700}
 .tag-keep{color:var(--keep)} .tag-modify{color:var(--modify)} .tag-kill{color:var(--kill)}
+.tag-skip{color:var(--bone-dim)}
+
+/* skipped items sit below the three columns, deliberately plainer: they are
+   an absence of a verdict, not a fourth one */
+.skipped{margin:0 0 20px; border:1px dashed var(--rule); padding:12px}
+.skipped .col-head{border-bottom:1px dashed var(--rule)}
+/* auto-fill, not auto-fit: a lone chip on the last row keeps its width
+   instead of stretching across the strip */
+#b-skip{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px}
+#b-skip .chip{opacity:.82}
+#b-skip .chip:hover{opacity:1}
+.res-sub{display:block; font-weight:400; font-size:13px; color:var(--bone-dim)}
+.res-sub.thin{color:var(--spot)}
 .note-small{font-size:15px; color:var(--bone-dim)}
 .actions{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:8px}
 
@@ -422,8 +435,10 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 
     <div class="actions">
       <button class="btn-quiet" id="undo" type="button" hidden>Undo last</button>
+      <button class="btn-quiet" id="skip" type="button">Skip this one</button>
       <button class="btn-quiet" id="restart" type="button">Start over</button>
-      <span class="hint">Drag the card onto a figure, or press 1, 2 or 3.</span>
+      <span class="hint">Drag the card onto a figure, or press 1, 2 or 3.
+        Press S to skip anything you do not attend.</span>
     </div>
   </div>
 </section>
@@ -464,6 +479,17 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
         </div>
         <div class="col-body" id="b-kill"></div>
       </div>
+    </div>
+
+    <div class="skipped" id="skipped-wrap" hidden>
+      <div class="col-head">
+        <div>
+          <p class="verdict-tag tag-skip">Skipped</p>
+          <p class="cast-name" style="font-size:16px">Not yours to judge</p>
+        </div>
+        <p class="col-count" id="c-skip">0</p>
+      </div>
+      <div class="col-body" id="b-skip"></div>
     </div>
 
     <div id="submit-error" class="banner" hidden>
@@ -521,7 +547,11 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
   var CFG = window.KKM_CONFIG || {};
   var ACTS = Array.isArray(CFG.ACTIVITIES) ? CFG.ACTIVITIES : [];
   var BUCKETS = ['keep', 'modify', 'kill'];
-  var LABEL = { keep: 'Keep', modify: 'Modify', kill: 'Kill' };
+  var LABEL = { keep: 'Keep', modify: 'Modify', kill: 'Kill', skip: 'Skip' };
+  /* A skip is an absence of a verdict, not a fourth bucket. It is held in
+     state.votes so the draft, the progress bar and undo all treat it as
+     decided, and stripped out again before the ballot is sent. */
+  var SKIP = 'skip';
   var DRAFT_KEY = 'kkm:' + (CFG.SESSION_ID || 'default') + ':draft';
   var BALLOT_KEY = 'kkm:' + (CFG.SESSION_ID || 'default') + ':ballot';
   var ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X',
@@ -834,6 +864,18 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     if (state.index >= ACTS.length) { goReview(); } else { paintSort(); }
   }
 
+  function skipCard() {
+    if (state.index >= ACTS.length) { return; }
+    var a = ACTS[state.index];
+    state.votes[a.id] = SKIP;
+    delete state.notes[a.id];
+    state.lastId = a.id;
+    state.index = state.index + 1;
+    closeNote();
+    saveDraft();
+    if (state.index >= ACTS.length) { goReview(); } else { paintSort(); }
+  }
+
   function openNote(a) {
     var bar = $('notebar');
     $('note-label').textContent = 'Hyde wants to know: how would you change ' + a.name + '?';
@@ -933,7 +975,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
   }
 
   function moveTo(id, bucket) {
-    playBucket(bucket);
+    if (bucket !== SKIP) { playBucket(bucket); }
     state.votes[id] = bucket;
     if (bucket !== 'modify') { delete state.notes[id]; }
     saveDraft();
@@ -956,6 +998,14 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
         moves.appendChild(btn);
       }(BUCKETS[i]));
     }
+    (function () {
+      var btn = el('button', null, LABEL[SKIP]);
+      btn.type = 'button';
+      btn.setAttribute('aria-pressed', state.votes[a.id] === SKIP ? 'true' : 'false');
+      btn.setAttribute('aria-label', 'Skip ' + a.name + ', I do not attend it');
+      btn.addEventListener('click', function () { moveTo(a.id, SKIP); });
+      moves.appendChild(btn);
+    }());
     chip.appendChild(moves);
 
     if (state.votes[a.id] === 'modify') {
@@ -1020,22 +1070,28 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
   }
 
   function paintReview() {
-    var counts = { keep: 0, modify: 0, kill: 0 };
+    var counts = { keep: 0, modify: 0, kill: 0, skip: 0 };
     for (var b = 0; b < BUCKETS.length; b++) { $('b-' + BUCKETS[b]).textContent = ''; }
+    $('b-skip').textContent = '';
     for (var i = 0; i < ACTS.length; i++) {
       var a = ACTS[i];
       var v = state.votes[a.id];
       if (!v) { continue; }
       counts[v]++;
-      $('b-' + v).appendChild(chipFor(a));
+      $(v === SKIP ? 'b-skip' : 'b-' + v).appendChild(chipFor(a));
     }
     for (var k = 0; k < BUCKETS.length; k++) {
       $('c-' + BUCKETS[k]).textContent = String(counts[BUCKETS[k]]);
     }
+    $('c-skip').textContent = String(counts.skip);
+    $('skipped-wrap').hidden = counts.skip === 0;
+
     var left = ACTS.length - votedCount();
-    $('send').disabled = left > 0 || !CFG.ENDPOINT_URL;
-    $('review-hint').textContent = left > 0
-      ? left + (left === 1 ? ' activity' : ' activities') + ' still unsorted.'
+    var verdicts = counts.keep + counts.modify + counts.kill;
+    $('send').disabled = left > 0 || verdicts === 0 || !CFG.ENDPOINT_URL;
+    $('review-hint').textContent =
+      left > 0 ? left + (left === 1 ? ' activity' : ' activities') + ' still to go.'
+      : verdicts === 0 ? 'Everything is skipped, so there is nothing to send.'
       : (CFG.ENDPOINT_URL ? '' : 'No endpoint is set, so nothing can be sent yet.');
     $('back-to-sort').hidden = left === 0;
   }
@@ -1046,12 +1102,22 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       state.ballotId = store(BALLOT_KEY) || uuid();
       store(BALLOT_KEY, state.ballotId);
     }
+    /* Skips are an absence of an answer: they are dropped here rather than
+       sent as a fourth value, so the endpoint and the tally never have to
+       know the word exists. */
+    var votes = {}, notes = {};
+    for (var i = 0; i < ACTS.length; i++) {
+      var id = ACTS[i].id, v = state.votes[id];
+      if (!v || v === SKIP) { continue; }
+      votes[id] = v;
+      if (state.notes[id]) { notes[id] = state.notes[id]; }
+    }
     return {
       sessionId: CFG.SESSION_ID || 'default',
       ballotId: state.ballotId,
       submittedAt: new Date().toISOString(),
-      votes: state.votes,
-      notes: state.notes,
+      votes: votes,
+      notes: notes,
       clientVersion: 1
     };
   }
@@ -1137,10 +1203,23 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     return h;
   }
 
-  function resultsRow(a, c, notes) {
+  function weighted(c, total) {
+    var n = c.keep + c.modify + c.kill;
+    if (n === 0 || !total) { return -1; }
+    return entropy(c) * (n / total);
+  }
+
+  function resultsRow(a, c, notes, total) {
     var n = c.keep + c.modify + c.kill;
     var row = el('div', 'res-row');
-    row.appendChild(el('p', 'res-name', a.name));
+    var name = el('p', 'res-name', a.name);
+    if (total && n < total) {
+      var sub = el('span', 'res-sub', n + ' of ' + total + ' answered');
+      /* fewer than half is a thin basis for a verdict, and worth seeing */
+      if (n * 2 < total) { sub.className = 'res-sub thin'; }
+      name.appendChild(sub);
+    }
+    row.appendChild(name);
 
     var bar = el('div', 'bar');
     bar.setAttribute('role', 'img');
@@ -1179,12 +1258,14 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 
   function csvFor(rows) {
     function q(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }
-    var out = ['activity_id,activity,keep,modify,kill,responses,contention,notes'];
+    var out = ['activity_id,activity,keep,modify,kill,responses,skipped,contention,weighted,notes'];
     for (var i = 0; i < rows.length; i++) {
       var r = rows[i];
+      var n = r.c.keep + r.c.modify + r.c.kill;
       out.push([
         q(r.a.id), q(r.a.name), r.c.keep, r.c.modify, r.c.kill,
-        r.c.keep + r.c.modify + r.c.kill, entropy(r.c).toFixed(3),
+        n, (r.total ? r.total - n : 0), entropy(r.c).toFixed(3),
+        (r.total ? weighted(r.c, r.total).toFixed(3) : ''),
         q((r.notes || []).join(' | '))
       ].join(','));
     }
@@ -1229,7 +1310,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       if (top === n) {
         settled[c.keep === n ? 'keep' : (c.modify === n ? 'modify' : 'kill')]++;
       }
-      rows.push({ a: a, c: c, notes: allNotes[a.id] || [] });
+      rows.push({ a: a, c: c, notes: allNotes[a.id] || [], total: total });
     }
 
     if (answered === 0) {
@@ -1239,8 +1320,13 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       return;
     }
 
+    /* Contention alone would put a 1-1 split from two people above a 5-4
+       split from nine, because entropy does not care how many answered.
+       Once people can skip what they do not attend, that is the common
+       case, so contention is weighted by the share of respondents who had
+       an opinion. With nobody skipping it is identical to raw entropy. */
     rows.sort(function (x, y) {
-      var d = entropy(y.c) - entropy(x.c);
+      var d = weighted(y.c, total) - weighted(x.c, total);
       if (d !== 0) { return d; }
       return (y.c.keep + y.c.modify + y.c.kill) - (x.c.keep + x.c.modify + x.c.kill);
     });
@@ -1266,7 +1352,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 
     var list = el('div', 'res-rows');
     for (var r = 0; r < rows.length; r++) {
-      list.appendChild(resultsRow(rows[r].a, rows[r].c, rows[r].notes));
+      list.appendChild(resultsRow(rows[r].a, rows[r].c, rows[r].notes, total));
     }
     body.appendChild(list);
 
@@ -1361,6 +1447,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
   /* ---------- wiring ---------------------------------------------------- */
   function wire() {
     $('mute').addEventListener('click', toggleMute);
+    $('skip').addEventListener('click', skipCard);
     document.addEventListener('pointerdown', unlockSound, true);
     document.addEventListener('keydown', unlockSound, true);
     document.addEventListener('click', unlockSound, true);
@@ -1424,6 +1511,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       if (e.key === '1') { assign('keep'); }
       else if (e.key === '2') { assign('modify'); }
       else if (e.key === '3') { assign('kill'); }
+      else if (e.key === 's' || e.key === 'S') { skipCard(); }
     });
 
     window.addEventListener('hashchange', route);

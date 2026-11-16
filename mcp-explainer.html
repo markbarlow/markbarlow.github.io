@@ -29,7 +29,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .zone .zl{position:absolute;top:-13px;left:22px;background:var(--bg);padding:0 10px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
 #acme{left:20px;top:84px;width:790px;height:540px;border-color:rgba(255,181,71,.55);background:rgba(255,181,71,.035)}
 #acme .zl{color:var(--aws)}
-#rav{left:836px;top:84px;width:424px;height:540px;border-color:rgba(90,162,255,.6);background:rgba(90,162,255,.04)}
+#rav{left:900px;top:84px;width:360px;height:540px;border-color:rgba(90,162,255,.6);background:rgba(90,162,255,.04)}
 #rav .zl{color:var(--gcp)}
 #rav.flash{box-shadow:0 0 0 3px rgba(255,93,115,.55),0 0 40px rgba(255,93,115,.35);border-color:var(--pii)}
 #rav.dim ~ #mcp,#rav.dim ~ #db{filter:grayscale(1) brightness(.5)}
@@ -80,7 +80,7 @@ td.p{transition:all .6s}
 #inputbar.typing .send{opacity:1}
 
 /* Ravelin side */
-#mcp{left:864px;top:122px;width:368px;height:236px;border-radius:16px;background:linear-gradient(160deg,#1c2250,#171c40);border:1.5px solid rgba(143,123,255,.7);box-shadow:0 12px 36px rgba(0,0,0,.4);padding:14px 16px;transition:box-shadow .4s, transform .4s}
+#mcp{left:928px;top:122px;width:304px;height:236px;border-radius:16px;background:linear-gradient(160deg,#1c2250,#171c40);border:1.5px solid rgba(143,123,255,.7);box-shadow:0 12px 36px rgba(0,0,0,.4);padding:14px 16px;transition:box-shadow .4s, transform .4s}
 #mcp.hot{box-shadow:0 0 0 2px var(--rav),0 0 40px rgba(143,123,255,.6);}
 #mcp h4{font-size:14px;display:flex;align-items:center;gap:8px}
 #mcp h4 span{font-size:10px;background:rgba(143,123,255,.25);color:#c9bfff;border-radius:99px;padding:2px 8px;font-weight:600}
@@ -92,13 +92,13 @@ td.p{transition:all .6s}
 .tl div small{color:var(--mute);font-family:inherit}
 #authchip{position:absolute;left:16px;bottom:12px;font-size:10px;color:#a5f3cf;border:1px solid rgba(61,220,151,.4);border-radius:99px;padding:2px 8px;opacity:0;transition:opacity .5s}
 #authchip.on{opacity:1}
-#db{left:864px;top:446px;width:368px;height:150px;border-radius:16px;background:#12203d;border:1.5px solid rgba(90,162,255,.5);padding:14px 16px;transition:box-shadow .4s}
+#db{left:928px;top:446px;width:304px;height:150px;border-radius:16px;background:#12203d;border:1.5px solid rgba(90,162,255,.5);padding:14px 16px;transition:box-shadow .4s}
 #db.hot{box-shadow:0 0 0 2px var(--gcp),0 0 34px rgba(90,162,255,.5)}
 #db h4{font-size:13.5px}
 #db p{font-size:11px;color:var(--mute);margin:3px 0 10px}
 .rows{display:flex;flex-direction:column;gap:4px}
 .rows i{display:block;height:7px;border-radius:4px;background:rgba(90,162,255,.28)}
-#mcp-db{left:1048px;top:358px;width:0;height:88px;border-left:2px dashed rgba(143,123,255,.6);opacity:.0;transition:opacity .4s}
+#mcp-db{left:1080px;top:358px;width:0;height:88px;border-left:2px dashed rgba(143,123,255,.6);opacity:.0;transition:opacity .4s}
 #mcp-db.on{opacity:1}
 
 /* tools panel (acme) */
@@ -114,12 +114,17 @@ td.p{transition:all .6s}
 /* connection */
 .conn{height:0;border-top:2px dashed rgba(255,255,255,.18);transform-origin:left;opacity:0;transition:opacity .5s}
 .conn.on{opacity:1}
-#c1{left:530px;top:210px;width:334px}
-#c2{left:530px;top:292px;width:334px}
+#c1{left:530px;top:210px;width:398px}
+#c2{left:530px;top:292px;width:398px}
 #mcplabel{left:556px;top:130px;width:260px;font-size:11px;color:var(--mute);line-height:1.5;opacity:0;transition:opacity .6s;text-align:center}
 #mcplabel b{color:#fff;font-size:12px;display:block;letter-spacing:.5px}
 #mcplabel.on{opacity:1}
-#xbadge{left:566px;top:236px;width:250px;text-align:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--pii);padding:6px 10px;border-radius:99px;box-shadow:0 0 24px rgba(255,93,115,.6);opacity:0;transition:opacity .4s;z-index:5}
+#anth{left:790px;top:184px;width:130px;height:136px;border-radius:16px;background:#1a1f33;border:1.5px solid #aab4dd;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:6px;padding:10px;z-index:2;opacity:0;transition:opacity .7s,box-shadow .4s}
+#anth.on{opacity:1}
+#anth.hot{box-shadow:0 0 0 2px #fff,0 0 30px rgba(220,226,255,.55)}
+#anth b{font-size:15px;color:#fff;letter-spacing:.3px}
+#anth span{font-size:11px;line-height:1.4;color:#aab4dd}
+#xbadge{left:730px;top:372px;width:250px;text-align:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--pii);padding:6px 10px;border-radius:99px;box-shadow:0 0 24px rgba(255,93,115,.6);opacity:0;transition:opacity .4s;z-index:5}
 #xbadge.on{opacity:1;transform:none}
 .msg.on,#win.on{transform:none}
 
@@ -131,7 +136,7 @@ td.p{transition:all .6s}
 .pk.pii{background:#3a1d2d;color:#ffd0d6;border:1px solid var(--pii);font-weight:500;font-size:10.5px;box-shadow:0 0 14px rgba(255,93,115,.45)}
 
 /* overlays */
-#blind{left:836px;top:84px;width:424px;height:540px;border-radius:22px;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .8s;z-index:4}
+#blind{left:900px;top:84px;width:360px;height:540px;border-radius:22px;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .8s;z-index:4}
 #blind.on{opacity:1}
 #blind div{background:rgba(11,16,32,.9);border:1px solid var(--pii);color:#ffd0d6;border-radius:14px;padding:14px 18px;text-align:center;font-size:13px;line-height:1.45;max-width:300px;box-shadow:0 0 40px rgba(255,93,115,.25)}
 #blind b{display:block;color:#fff;font-size:15px;margin-bottom:4px}
@@ -192,8 +197,8 @@ td.p{transition:all .6s}
 <div id="stage">
 
 
-  <div id="acme" class="zone abs"><span class="zl">Acme Ltd · Amazon (AWS)</span></div>
-  <div id="rav" class="zone abs"><span class="zl">Ravelin · Google Cloud (GCP)</span><div class="inner"></div></div>
+  <div id="acme" class="zone abs"><span class="zl">Acme Ltd</span></div>
+  <div id="rav" class="zone abs"><span class="zl">Ravelin</span><div class="inner"></div></div>
 
   <!-- Claude window -->
   <div id="win" class="abs">
@@ -207,6 +212,7 @@ td.p{transition:all .6s}
   <div id="mcplabel" class="abs"><b>MCP CONNECTION</b>remote · over the internet<br>authenticated as Acme</div>
   <div id="c1" class="conn abs"></div>
   <div id="c2" class="conn abs"></div>
+  <div id="anth" class="abs"><b>Anthropic</b><span>Runs the Claude model and relays tool calls</span></div>
 
   <!-- Ravelin -->
   <div id="mcp" class="abs">
@@ -232,7 +238,7 @@ td.p{transition:all .6s}
     <div id="tgrid">
       <div class="t" data-k="slack">💬 Slack<small>#fraud-ops</small></div>
       <div class="t" data-k="jira">🎫 Jira<small>case tickets</small></div>
-      <div class="t" data-k="lake">🗄️ Data lake<small>S3 · analytics</small></div>
+      <div class="t" data-k="lake">🗄️ Data lake<small>analytics</small></div>
       <div class="t" data-k="agent">🤖 Internal agent<small>chargeback bot</small></div>
       <div class="t" data-k="mcp">🔌 Other MCPs<small>CRM, support, ERP</small></div>
       <div class="t" data-k="mail">✉️ Email / docs<small>exports, pastes</small></div>
@@ -240,10 +246,10 @@ td.p{transition:all .6s}
   </div>
 
   <div class="lbl aws" style="left:270px;top:98px">① Acme's fraud analyst, using Claude Desktop</div>
-  <div class="lbl" style="left:678px;top:196px;width:290px;text-align:center">② MCP connection <small>the link between the two</small></div>
-  <div class="lbl rav" style="left:906px;top:108px">③ Ravelin's MCP server <small>hosted on GCP</small></div>
-  <div class="lbl gcp" style="left:906px;top:432px">④ Ravelin's data <small>Acme's orders &amp; customers</small></div>
-  <div class="lbl aws" style="left:558px;top:290px;white-space:normal;width:236px;border-radius:16px">⑤ Acme's other internal tools &amp; agents <small>(they come into play later)</small></div>
+  <div class="lbl" style="left:548px;top:232px;white-space:normal;width:190px;border-radius:16px">② Anthropic <small>runs Claude and relays its tool calls</small></div>
+  <div class="lbl rav" style="left:970px;top:108px">③ Ravelin's MCP server</div>
+  <div class="lbl gcp" style="left:970px;top:432px">④ Ravelin's data <small>Acme's orders &amp; customers</small></div>
+  <div class="lbl aws" style="left:558px;top:290px;white-space:normal;width:220px;border-radius:16px">⑤ Acme's other internal tools &amp; agents <small>(they come into play later)</small></div>
   <div id="xbadge" class="abs">⚠ Customer PII leaves Ravelin</div>
   <div id="blind" class="abs"><div><b>Ravelin's view ends here</b>It saw two tool calls. It cannot see, trace or recall where this data goes next.</div></div>
 
@@ -257,6 +263,7 @@ td.p{transition:all .6s}
       <div class="col cola"><h3>Acme is responsible for</h3><ul>
         <li>Who in Acme can connect, and with which permissions</li>
         <li>Everything that happens once the data is in the chat: copies, shares, other agents & MCPs</li>
+        <li>Which AI provider sees the data on its way to the chat, and the terms that govern it</li>
         <li>Storage, retention, DPIA & legal basis for the PII now in its own systems</li></ul></div>
     </div>
     <p class="foot">Treat an MCP connection like giving a person an export button: grant least privilege, minimise PII in tool outputs, and log what leaves.</p>
@@ -293,8 +300,8 @@ const PROMPT='What is our block rate over the last 30 minutes, and send me the t
 const STEPS=[
  'Acme\'s fraud analyst has added Ravelin\'s <b>remote MCP server</b> to Claude. On connect, the server lists the <b>tools</b> Claude is allowed to call.',
  'The analyst asks a plain-English question. <b>No dashboard, no query language.</b>',
- 'Claude picks the right tools and sends two <b>tool calls</b> over the MCP connection to Ravelin on GCP, authenticated as Acme.',
- 'Ravelin\'s server runs them against Acme\'s data and returns the results: <em>including real customer PII.</em>',
+ 'Claude picks the right tools and sends two <b>tool calls</b> to Ravelin, relayed by <b>Anthropic</b> over the MCP connection and authenticated as Acme.',
+ 'Ravelin\'s server runs them against Acme\'s data and returns the results back through Anthropic: <em>including real customer PII.</em>',
  'The answer lands in Claude, on Acme\'s side of the line: names, emails, card digits. <b>A copy now exists outside Ravelin.</b>',
  'From here it can go anywhere Acme\'s people and agents take it: chat, tickets, data lake, other MCPs. <b>Ravelin has no visibility and no control.</b>',
  'The MCP server is Ravelin\'s. <b>How it is used, and what happens to the output, is Acme\'s responsibility.</b>'
@@ -314,7 +321,7 @@ function reset(){
   ['#acme','#rav'].forEach(s=>$(s).classList.remove('on','flash','dim'));
   $('#rav').classList.remove('dim');
   $$('.lbl').forEach(l=>l.classList.remove('show'));$('#start').classList.remove('show');$('#mcp').style.opacity=0;$('#db').style.opacity=0;
-  ['#scrim','#win','#conn','#c1','#c2','#mcplabel','#xbadge','#blind','#final','#tools','#authchip','#mcp-db','#legend']
+  ['#anth','#scrim','#win','#conn','#c1','#c2','#mcplabel','#xbadge','#blind','#final','#tools','#authchip','#mcp-db','#legend']
     .forEach(s=>$(s)&&$(s).classList.remove('on'));
   $$('#tl div').forEach(d=>d.classList.remove('on','use'));
   $$('.col li').forEach(l=>l.classList.remove('on'));
@@ -332,6 +339,8 @@ async function play(){
   const sleep=(ms,raw)=>new Promise((res,rej)=>{ms=raw?ms:ms*SLOW;let t=0;const iv=setInterval(()=>{if(tk.dead){clearInterval(iv);rej('x')}else if(!paused){t+=30;if(t>=ms){clearInterval(iv);res()}}},30)});
   const anim=async(el,kf,o)=>{chk();const a=el.animate(kf,{fill:'forwards',...o});anims.add(a);if(paused)a.pause();try{await a.finished}catch(e){}anims.delete(a);chk()};
   const fly=async(text,cls,from,to,dur=1300,keep=false)=>{dur*=SLOW;
+    // light up the Anthropic relay as a packet passes through the middle
+    if((from.x<855)!==(to.x<855)){setTimeout(()=>{const a=$('#anth');a.classList.add('hot');setTimeout(()=>a.classList.remove('hot'),600)},dur*.5)}
     const p=document.createElement('div');p.className='pk '+cls;p.textContent=text;stage.appendChild(p);
     const w=p.offsetWidth,h=p.offsetHeight;
     await anim(p,[{transform:`translate(${Math.round(from.x-w/2)}px,${Math.round(from.y-h/2)}px)`,opacity:0},
@@ -346,7 +355,7 @@ async function play(){
   /* 0 — connect */
   setCap(0);
   // scene is already on screen from the intro: hold with the labels showing so viewers can read it
-  ['#acme','#rav','#win'].forEach(q=>$(q).classList.add('on'));
+  ['#acme','#rav','#win','#anth'].forEach(q=>$(q).classList.add('on'));
   $('#mcp').style.opacity=1;$('#db').style.opacity=1;
   $$('.lbl').forEach(l=>l.classList.add('show'));
   await sleep(1000,true);
@@ -354,11 +363,11 @@ async function play(){
   await sleep(1000,true);
   $('#c1').classList.add('on');$('#c2').classList.add('on');$('#mcplabel').classList.add('on');
   $('#conn').classList.add('on');
-  await fly('tools/list','req',{x:540,y:210},{x:860,y:210},1200);
+  await fly('tools/list','req',{x:540,y:210},{x:928,y:210},1200);
   $('#mcp').classList.add('hot');
   for(const d of $$('#tl div')){d.classList.add('on');await sleep(260)}
   $('#authchip').classList.add('on');
-  await fly('[ get_block_rate, list_blocked_orders, … ]','ok',{x:860,y:292},{x:560,y:292},1500);
+  await fly('[ get_block_rate, list_blocked_orders, … ]','ok',{x:928,y:292},{x:560,y:292},1500);
   $('#mcp').classList.remove('hot');
   await sleep(1800);
 
@@ -380,26 +389,26 @@ async function play(){
   th.remove();
   const tc=add('<span class="tool" id="t1">⚙ get_block_rate(30m) <em>✓</em></span><span class="tool" id="t2">⚙ list_blocked_orders(10, by value) <em>✓</em></span>','');
   await sleep(900);
-  const callP=[fly('get_block_rate(30m)','req',{x:540,y:200},{x:860,y:200},1700),
-               fly('list_blocked_orders(10)','req',{x:540,y:222},{x:860,y:222},1900)];
+  const callP=[fly('get_block_rate(30m)','req',{x:540,y:200},{x:928,y:200},1700),
+               fly('list_blocked_orders(10)','req',{x:540,y:222},{x:928,y:222},1900)];
   await Promise.all(callP);
   $('#mcp').classList.add('hot');
   $$('#tl div')[0].classList.add('use');$$('#tl div')[1].classList.add('use');
   await sleep(700);
   $('#mcp-db').classList.add('on');
-  await fly('SELECT …','req',{x:1048,y:360},{x:1048,y:446},900);
+  await fly('SELECT …','req',{x:1080,y:360},{x:1080,y:446},900);
   $('#db').classList.add('hot');await sleep(900);
 
   /* 3 — response with PII */
   await sleep(2500,true);
   setCap(3);
   $('#db').classList.remove('hot');
-  await fly('rows','res',{x:1048,y:446},{x:1048,y:360},800);
+  await fly('rows','res',{x:1080,y:446},{x:1080,y:360},800);
   await sleep(200);
   $('#mcp').classList.remove('hot');
-  const r1=fly('{ block_rate: 1.2% }','ok',{x:860,y:292},{x:560,y:292},2200);
+  const r1=fly('{ block_rate: 1.2% }','ok',{x:928,y:292},{x:560,y:292},2200);
   setTimeout(()=>{ if(!tk.dead){$('#rav').classList.add('flash');$('#xbadge').classList.add('on')}},700*SLOW);
-  const r2=fly('10 × { name, email, card, value }','res',{x:860,y:312},{x:560,y:312},2400);
+  const r2=fly('10 × { name, email, card, value }','res',{x:928,y:312},{x:560,y:312},2400);
   await Promise.all([r1,r2]);
   $$('#tl div').forEach(d=>d.classList.remove('use'));
   $('#t1').classList.add('done');$('#t2').classList.add('done');
@@ -456,7 +465,7 @@ addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();$('#bp').
 let isIdle=true;
 function idle(){
   reset();
-  ['#acme','#rav','#win','#tools'].forEach(q=>$(q).classList.add('on'));
+  ['#acme','#rav','#win','#tools','#anth'].forEach(q=>$(q).classList.add('on'));
   $('#mcp').style.opacity=1;$('#db').style.opacity=1;
   $$('.lbl').forEach(l=>l.classList.add('show'));$('#start').classList.add('show');
   $('#capn').textContent='▶';$('#capt').innerHTML='<b>MCP (Model Context Protocol)</b> lets an AI app use tools and data that live on another system. Meet the players below, then press <b>Play</b> when you are ready.';

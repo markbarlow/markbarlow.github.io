@@ -24,7 +24,7 @@ At the top of the script, edit `CONFIG`:
 
 ```js
 expected: {
-  'product-team-2026-11': 12
+  'product-team-2026-11': 10
 }
 ```
 

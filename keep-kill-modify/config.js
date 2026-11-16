@@ -32,7 +32,7 @@ window.KKM_CONFIG = {
   /* How many people you asked, so the results read "7 of 12 responded".
      In a live session this is your "are we done yet?" signal, so it is
      worth getting right. Set to 0 to show a bare count instead. */
-  EXPECTED_RESPONDENTS: 12,
+  EXPECTED_RESPONDENTS: 10,
 
   /* ---- The list -------------------------------------------------------- */
 

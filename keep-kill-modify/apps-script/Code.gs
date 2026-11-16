@@ -35,7 +35,7 @@ var CONFIG = {
 
   /* How many people were asked, per session. Shown as "7 of 12". */
   expected: {
-    'product-team-2026-11': 12
+    'product-team-2026-11': 10
   },
 
   /* Hard ceiling on how many activities one ballot may carry. */

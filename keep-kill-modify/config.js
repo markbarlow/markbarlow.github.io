@@ -63,6 +63,7 @@ window.KKM_CONFIG = {
     { id: 'weekly-team-meeting',        name: 'Weekly team meeting',                   meta: 'Weekly, 15–60 min, 9 people' },
     { id: 'biweekly-design-catchup',    name: 'Biweekly design catchup',               meta: 'Fortnightly, 1 hour, 10–15 people' },
     { id: 'design-team-catchup',        name: 'Design team catchup',                   meta: 'Fortnightly, 1 hour, 3 people' },
+    { id: 'frontend-catchup',           name: 'Frontend catchup',                      meta: 'Monthly, 1 hour, 6 people' },
     { id: 'product-psa',                name: 'Product <> PSA',                        meta: 'Fortnightly, 1 hour, 4–8 people' },
     { id: 'ai-agentic-marketing',       name: 'AI and Agentic marketing',              meta: 'Monthly, 30 min, 6 people' },
     { id: 'sausage-sandwich-game',      name: 'Sausage sandwich game',                 meta: 'Monthly, 30 min, 9 people' },

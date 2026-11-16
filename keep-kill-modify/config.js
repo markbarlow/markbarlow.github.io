@@ -5,12 +5,23 @@ window.KKM_CONFIG = {
 
   /* ---- Which review this is -------------------------------------------- */
 
-  /* A short id. Change it to start a fresh round; old rounds stay in the
-     Sheet under their own id and are not mixed in. No spaces. */
-  SESSION_ID: 'product-team-2026-11',
+  /* >>> CURRENTLY IN REHEARSAL MODE <<<
+     Practice ballots go to their own id, so they never mix into the real
+     tally and #results starts empty on the day.
+
+     ON THE DAY, change BOTH of these back:
+         SESSION_ID:   'product-team-rehearsal'  ->  'product-team-2026-11'
+         SESSION_NAME: 'Rehearsal ...'           ->  'Product team away day'
+
+     Leave it in rehearsal mode and the away day's answers land in the
+     practice bucket on top of the practice votes. The name below says
+     "Rehearsal" on the page itself so this is visible, not just a comment.
+
+     Changing the id needs no change to the Apps Script and no redeploy. */
+  SESSION_ID: 'product-team-rehearsal',
 
   /* Shown on the page. */
-  SESSION_NAME: 'Product team away day',
+  SESSION_NAME: 'Rehearsal — Product team away day',
 
   /* ---- Where the answers go -------------------------------------------- */
 

@@ -68,6 +68,36 @@ Commit and push. Done.
 Do this once yourself before the session. It is the only step that proves the
 whole round trip, and it takes a minute.
 
+## Before the day: switch out of rehearsal mode
+
+`config.js` currently uses a **rehearsal** session, so you can deploy, play
+through and show people without any of it counting:
+
+```js
+SESSION_ID: 'product-team-rehearsal',
+SESSION_NAME: 'Rehearsal — Product team away day',
+```
+
+Practice ballots are stored under that id and are never mixed into the real
+round. The page says "Rehearsal" at the top, so you can see which mode you are
+in without opening a file.
+
+**On the day, change both back:**
+
+```js
+SESSION_ID: 'product-team-2026-11',
+SESSION_NAME: 'Product team away day',
+```
+
+Commit, push, wait for the cache (see below), and `#results` starts empty.
+
+Two things that make this cheap: the Apps Script never sees the activity list
+or the session names, so **none of this needs a redeploy**; and
+`product-team-2026-11` is already in the script's `expected` as 10, so the
+headcount works the moment you switch. A rehearsal session is not listed there,
+which is why rehearsal results show a bare count rather than "7 of 10" — that
+is the only difference, and it is the tell that you are still in rehearsal.
+
 ## Running it live
 
 For an away-day session where everyone votes in the room and you show the

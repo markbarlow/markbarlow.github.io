@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MCP explained: who controls the data?</title>
+<style>
+:root{
+  --bg:#0b1020; --ink:#e8ecf6; --mute:#8b95b3;
+  --aws:#ffb547; --gcp:#5aa2ff; --rav:#8f7bff; --claude:#d97757;
+  --pii:#ff5d73; --ok:#3ddc97;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(1200px 700px at 50% 30%,#141b36 0%,#0b1020 70%)}
+#wrap{width:1280px;height:720px;position:relative;transform-origin:center center;flex:none}
+#stage{position:absolute;inset:0}
+.abs{position:absolute}
+
+/* header */
+#title{left:28px;top:18px;font-size:22px;font-weight:700;letter-spacing:.2px}
+#title small{display:block;font-size:13px;font-weight:500;color:var(--mute);margin-top:2px}
+#dummy{right:28px;top:22px;font-size:11px;color:var(--mute);border:1px solid #2a3358;border-radius:99px;padding:4px 10px}
+
+/* zones */
+.zone{border:2px dashed;border-radius:22px;transition:opacity .8s, filter .8s, box-shadow .6s, border-color .6s;opacity:0}
+.zone.on{opacity:1}
+.zone .zl{position:absolute;top:-13px;left:22px;background:var(--bg);padding:0 10px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
+#acme{left:20px;top:84px;width:790px;height:540px;border-color:rgba(255,181,71,.55);background:rgba(255,181,71,.035)}
+#acme .zl{color:var(--aws)}
+#rav{left:836px;top:84px;width:424px;height:540px;border-color:rgba(90,162,255,.6);background:rgba(90,162,255,.04)}
+#rav .zl{color:var(--gcp)}
+#rav.flash{box-shadow:0 0 0 3px rgba(255,93,115,.55),0 0 40px rgba(255,93,115,.35);border-color:var(--pii)}
+#rav.dim ~ #mcp,#rav.dim ~ #db{filter:grayscale(1) brightness(.5)}
+#mcp,#db{transition:filter 1s,box-shadow .4s,transform .4s,opacity .6s}
+#rav .inner{transition:filter 1s;position:absolute;inset:0}
+
+/* Claude window */
+#win{left:42px;top:112px;width:488px;height:494px;border-radius:14px;background:#faf6f1;color:#2b2622;
+  box-shadow:0 18px 50px rgba(0,0,0,.5);overflow:hidden;opacity:0;transform:translateY(12px);transition:all .7s;display:flex;flex-direction:column}
+#win.on{opacity:1;transform:none}
+#bar{height:38px;background:#efe8df;display:flex;align-items:center;padding:0 12px;gap:7px;border-bottom:1px solid #e1d7ca;flex:none}
+#bar i{width:10px;height:10px;border-radius:50%;background:#d4c9ba}
+#bar b{margin-left:8px;font-size:12.5px;color:#5b5147}
+#bar .spark{color:var(--claude);font-size:15px}
+#conn{margin-left:auto;font-size:10.5px;font-weight:600;background:#fff;border:1px solid #e3d9cc;color:#6b6157;border-radius:99px;padding:3px 9px;display:flex;gap:6px;align-items:center;opacity:0;transition:opacity .5s}
+#conn.on{opacity:1}
+#conn s{width:7px;height:7px;border-radius:50%;background:var(--ok);display:block;text-decoration:none}
+#who{padding:9px 14px 0;font-size:10.5px;color:#9a8e80;display:flex;align-items:center;gap:7px;flex:none}
+#who .av{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#ffb547,#ff7a59);display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700}
+#chat{flex:1;padding:8px 14px;overflow:hidden;display:flex;flex-direction:column;gap:9px;font-size:12.5px;line-height:1.4;justify-content:flex-start}
+.msg{opacity:0;transform:translateY(6px);transition:all .4s}
+.msg.on{opacity:1;transform:none}
+.user{align-self:flex-end;background:#ece3d8;border-radius:12px 12px 3px 12px;padding:8px 11px;max-width:92%}
+.caret{display:inline-block;width:1.5px;height:13px;background:#2b2622;vertical-align:-2px;margin-left:1px;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+.think{color:#8c8174;font-size:11.5px;display:flex;align-items:center;gap:7px}
+.dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--claude);margin-right:2px;animation:dp 1s infinite}
+.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+@keyframes dp{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.tool{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;background:#fff;border:1px solid #e3d9cc;border-left:3px solid var(--rav);border-radius:8px;padding:5px 9px;font:10.5px ui-monospace,Menlo,Consolas,monospace;color:#4a4036;margin-right:2px;margin-bottom:4px}
+.tool em{font-style:normal;color:var(--ok);font-weight:700;display:none}
+.tool.done em{display:inline}
+.tool.done{border-left-color:var(--ok)}
+.ans b.big{font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:10.5px;margin-top:6px;background:#fff;border:1px solid #e8dfd2;border-radius:8px;overflow:hidden}
+th{background:#f4ede3;text-align:left;font-weight:600;color:#7a6e60;padding:3px 6px;font-size:9.5px;text-transform:uppercase;letter-spacing:.4px}
+td{padding:2px 6px;border-top:1px solid #f0e8dc;white-space:nowrap;opacity:0;transition:opacity .25s}
+td.v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+tr.show td{opacity:1}
+.pii-on td.p{background:rgba(255,93,115,.14);color:#b3182f;box-shadow:inset 0 -2px 0 rgba(255,93,115,.55)}
+td.p{transition:all .6s}
+#legend{font-size:10px;color:#b3182f;margin-top:5px;opacity:0;transition:opacity .5s;display:flex;align-items:center;gap:6px}
+#legend.on{opacity:1}
+#legend i{width:10px;height:10px;background:rgba(255,93,115,.3);border-bottom:2px solid var(--pii);display:block}
+#inputbar{margin:0 12px 12px;border:1px solid #ddd2c4;border-radius:12px;background:#fff;padding:9px 11px;font-size:12px;color:#aaa093;flex:none;display:flex;justify-content:space-between}
+#inputbar.typing{color:#2b2622;border-color:var(--claude);box-shadow:0 0 0 3px rgba(217,119,87,.18)}
+#inputbar .send{width:22px;height:22px;border-radius:7px;background:var(--claude);color:#fff;display:grid;place-items:center;font-size:12px;opacity:.4}
+#inputbar.typing .send{opacity:1}
+
+/* Ravelin side */
+#mcp{left:864px;top:122px;width:368px;height:236px;border-radius:16px;background:linear-gradient(160deg,#1c2250,#171c40);border:1.5px solid rgba(143,123,255,.7);box-shadow:0 12px 36px rgba(0,0,0,.4);padding:14px 16px;transition:box-shadow .4s, transform .4s}
+#mcp.hot{box-shadow:0 0 0 2px var(--rav),0 0 40px rgba(143,123,255,.6);transform:scale(1.015)}
+#mcp h4{font-size:14px;display:flex;align-items:center;gap:8px}
+#mcp h4 span{font-size:10px;background:rgba(143,123,255,.25);color:#c9bfff;border-radius:99px;padding:2px 8px;font-weight:600}
+#mcp p.sub{font-size:11px;color:var(--mute);margin:3px 0 10px}
+.tl{font:11.5px ui-monospace,Menlo,Consolas,monospace;display:flex;flex-direction:column;gap:5px}
+.tl div{background:rgba(255,255,255,.06);border-radius:7px;padding:5px 9px;display:flex;justify-content:space-between;opacity:0;transform:translateX(10px);transition:all .45s}
+.tl div.on{opacity:1;transform:none}
+.tl div.use{background:rgba(143,123,255,.35);box-shadow:0 0 0 1px var(--rav)}
+.tl div small{color:var(--mute);font-family:inherit}
+#authchip{position:absolute;left:16px;bottom:12px;font-size:10px;color:#a5f3cf;border:1px solid rgba(61,220,151,.4);border-radius:99px;padding:2px 8px;opacity:0;transition:opacity .5s}
+#authchip.on{opacity:1}
+#db{left:864px;top:446px;width:368px;height:150px;border-radius:16px;background:#12203d;border:1.5px solid rgba(90,162,255,.5);padding:14px 16px;transition:box-shadow .4s}
+#db.hot{box-shadow:0 0 0 2px var(--gcp),0 0 34px rgba(90,162,255,.5)}
+#db h4{font-size:13.5px}
+#db p{font-size:11px;color:var(--mute);margin:3px 0 10px}
+.rows{display:flex;flex-direction:column;gap:4px}
+.rows i{display:block;height:7px;border-radius:4px;background:rgba(90,162,255,.28)}
+#mcp-db{left:1048px;top:358px;width:0;height:88px;border-left:2px dashed rgba(143,123,255,.6);opacity:.0;transition:opacity .4s}
+#mcp-db.on{opacity:1}
+
+/* tools panel (acme) */
+#tools{left:556px;top:408px;width:240px;height:206px;border-radius:16px;background:rgba(255,181,71,.06);border:1.5px solid rgba(255,181,71,.35);padding:12px;opacity:0;transition:opacity .7s}
+#tools.on{opacity:1}
+#tools h5{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--aws);margin-bottom:9px}
+#tgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.t{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:7px 9px;font-size:11px;display:flex;flex-direction:column;gap:1px;transition:all .5s;min-height:46px}
+.t small{font-size:9.5px;color:var(--mute)}
+.t.hit{background:rgba(255,93,115,.16);border-color:var(--pii);box-shadow:0 0 18px rgba(255,93,115,.35)}
+.t.hit small{color:#ffb3bd}
+
+/* connection */
+.conn{height:0;border-top:2px dashed rgba(255,255,255,.18);transform-origin:left;opacity:0;transition:opacity .5s}
+.conn.on{opacity:1}
+#c1{left:530px;top:210px;width:334px}
+#c2{left:530px;top:292px;width:334px}
+#mcplabel{left:556px;top:130px;width:260px;font-size:11px;color:var(--mute);line-height:1.5;opacity:0;transition:opacity .6s;text-align:center}
+#mcplabel b{color:#fff;font-size:12px;display:block;letter-spacing:.5px}
+#mcplabel.on{opacity:1}
+#xbadge{left:566px;top:236px;width:250px;text-align:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--pii);padding:6px 10px;border-radius:99px;box-shadow:0 0 24px rgba(255,93,115,.6);opacity:0;transform:scale(.8);transition:all .4s;z-index:5}
+#xbadge.on{opacity:1;transform:none}
+
+/* packets */
+.pk{position:absolute;left:0;top:0;white-space:nowrap;font:600 11px ui-monospace,Menlo,Consolas,monospace;padding:5px 10px;border-radius:8px;z-index:6;pointer-events:none}
+.pk.req{background:#2a2f63;color:#cfc8ff;border:1px solid var(--rav)}
+.pk.res{background:#3a1d2d;color:#ffc1cb;border:1px solid var(--pii);box-shadow:0 0 16px rgba(255,93,115,.4)}
+.pk.ok{background:#12352b;color:#a5f3cf;border:1px solid var(--ok)}
+.pk.pii{background:#3a1d2d;color:#ffd0d6;border:1px solid var(--pii);font-weight:500;font-size:10.5px;box-shadow:0 0 14px rgba(255,93,115,.45)}
+
+/* overlays */
+#blind{left:836px;top:84px;width:424px;height:540px;border-radius:22px;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .8s;z-index:4}
+#blind.on{opacity:1}
+#blind div{background:rgba(11,16,32,.9);border:1px solid var(--pii);color:#ffd0d6;border-radius:14px;padding:14px 18px;text-align:center;font-size:13px;line-height:1.45;max-width:300px;box-shadow:0 0 40px rgba(255,93,115,.25)}
+#blind b{display:block;color:#fff;font-size:15px;margin-bottom:4px}
+#final{left:150px;top:150px;width:980px;border-radius:22px;background:#0b1020;border:1px solid #2d3766;box-shadow:0 30px 90px rgba(0,0,0,.7);padding:28px 34px;opacity:0;pointer-events:none;transition:opacity .8s;z-index:10}
+#final.on{opacity:1}
+#final h2{font-size:26px;line-height:1.25;margin-bottom:18px}
+#final h2 span{color:var(--pii)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.col{border-radius:16px;padding:16px 18px;border:1px solid}
+.col h3{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px}
+.col ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:7px;font-size:13.5px;line-height:1.4}
+.col li{padding-left:20px;position:relative;opacity:0;transform:translateY(6px);transition:all .5s}
+.col li.on{opacity:1;transform:none}
+.col li:before{content:"";position:absolute;left:2px;top:6px;width:8px;height:8px;border-radius:50%}
+.colr{border-color:rgba(90,162,255,.5);background:rgba(90,162,255,.07)}
+.colr h3{color:var(--gcp)}.colr li:before{background:var(--gcp)}
+.cola{border-color:rgba(255,181,71,.55);background:rgba(255,181,71,.07)}
+.cola h3{color:var(--aws)}.cola li:before{background:var(--aws)}
+#final p.foot{margin-top:16px;font-size:13px;color:var(--mute);text-align:center}
+
+/* caption */
+#cap{left:0;right:0;bottom:0;height:86px;display:flex;align-items:center;justify-content:center;padding:0 210px 0 60px;gap:18px}
+#cap .n{flex:none;width:36px;height:36px;border-radius:50%;background:var(--claude);color:#fff;font-weight:800;display:grid;place-items:center;font-size:16px}
+#cap .tx{font-size:18px;line-height:1.35;max-width:1050px;transition:opacity .4s}
+#cap .tx b{color:#fff}
+#cap .tx em{font-style:normal;color:var(--pii);font-weight:700}
+
+/* controls */
+#ctl{position:absolute;right:20px;bottom:22px;display:flex;gap:8px;z-index:20}
+#ctl button{background:#1a2142;border:1px solid #333f72;color:var(--ink);border-radius:10px;padding:7px 13px;font-size:12.5px;cursor:pointer}
+#ctl button:hover{background:#252e5e}
+#dots{position:absolute;left:50%;transform:translateX(-50%);bottom:8px;display:flex;gap:7px;z-index:20}
+#dots i{width:26px;height:4px;border-radius:3px;background:#2a3358;transition:background .4s}
+#dots i.on{background:var(--claude)}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+
+  <div id="title" class="abs">What is an MCP server, really?<small>An AI app plugged into a vendor's data and tools: and where the data goes next</small></div>
+  <div id="dummy" class="abs">All data shown is dummy data</div>
+
+  <div id="acme" class="zone abs"><span class="zl">Acme Ltd · Amazon (AWS)</span></div>
+  <div id="rav" class="zone abs"><span class="zl">Ravelin · Google Cloud (GCP)</span><div class="inner"></div></div>
+
+  <!-- Claude window -->
+  <div id="win" class="abs">
+    <div id="bar"><i></i><i></i><i></i><b><span class="spark">✺</span> Claude Desktop</b>
+      <div id="conn"><s></s>ravelin · MCP connected</div></div>
+    <div id="who"><div class="av">F</div>Fraud analyst, Acme Ltd</div>
+    <div id="chat"></div>
+    <div id="inputbar"><span id="typed">Message Claude…</span><div class="send">↑</div></div>
+  </div>
+
+  <div id="mcplabel" class="abs"><b>MCP CONNECTION</b>remote · over the internet<br>authenticated as Acme</div>
+  <div id="c1" class="conn abs"></div>
+  <div id="c2" class="conn abs"></div>
+
+  <!-- Ravelin -->
+  <div id="mcp" class="abs">
+    <h4>Ravelin MCP server <span>remote · hosted</span></h4>
+    <p class="sub">Tells Claude which tools exist, then runs them on request</p>
+    <div class="tl" id="tl">
+      <div data-t="get_block_rate"><span>get_block_rate</span><small>window, segment</small></div>
+      <div data-t="list_blocked_orders"><span>list_blocked_orders</span><small>limit, sort_by</small></div>
+      <div data-t="get_customer"><span>get_customer</span><small>customer_id</small></div>
+      <div data-t="…"><span>… more tools</span><small></small></div>
+    </div>
+    <div id="authchip">🔒 OAuth · scoped to Acme</div>
+  </div>
+  <div id="mcp-db" class="abs"></div>
+  <div id="db" class="abs">
+    <h4>Ravelin platform data</h4>
+    <p>Orders, customers & decisions Acme sent for fraud checks</p>
+    <div class="rows"><i style="width:92%"></i><i style="width:70%"></i><i style="width:84%"></i><i style="width:58%"></i></div>
+  </div>
+
+  <!-- Acme internal -->
+  <div id="tools" class="abs"><h5>Acme internal tools & agents</h5>
+    <div id="tgrid">
+      <div class="t" data-k="slack">💬 Slack<small>#fraud-ops</small></div>
+      <div class="t" data-k="jira">🎫 Jira<small>case tickets</small></div>
+      <div class="t" data-k="lake">🗄️ Data lake<small>S3 · analytics</small></div>
+      <div class="t" data-k="agent">🤖 Internal agent<small>chargeback bot</small></div>
+      <div class="t" data-k="mcp">🔌 Other MCPs<small>CRM, support, ERP</small></div>
+      <div class="t" data-k="mail">✉️ Email / docs<small>exports, pastes</small></div>
+    </div>
+  </div>
+
+  <div id="xbadge" class="abs">⚠ Customer PII leaves Ravelin</div>
+  <div id="blind" class="abs"><div><b>Ravelin's view ends here</b>It saw two tool calls. It cannot see, trace or recall where this data goes next.</div></div>
+
+  <div id="final" class="abs">
+    <h2>The server is Ravelin's. <span>What it hands over is Acme's to protect.</span></h2>
+    <div class="cols">
+      <div class="col colr"><h3>Ravelin controls</h3><ul>
+        <li>Authenticating callers & scoping access to Acme's data only</li>
+        <li>Which tools exist and what each can return</li>
+        <li>Logging and rate-limiting the calls it receives</li></ul></div>
+      <div class="col cola"><h3>Acme is responsible for</h3><ul>
+        <li>Who in Acme can connect, and with which permissions</li>
+        <li>Everything that happens once the data is in the chat: copies, shares, other agents & MCPs</li>
+        <li>Storage, retention, DPIA & legal basis for the PII now in its own systems</li></ul></div>
+    </div>
+    <p class="foot">Treat an MCP connection like giving a person an export button: grant least privilege, minimise PII in tool outputs, and log what leaves.</p>
+  </div>
+
+  <div id="cap" class="abs"><div class="n" id="capn">1</div><div class="tx" id="capt"></div></div>
+  <div id="dots"></div>
+</div>
+<div id="ctl"><button id="bp">❚❚ Pause</button><button id="br">↺ Restart</button></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const wrap=$('#wrap'), stage=$('#stage');
+let scale=1,paused=false,cur=null;
+function fit(){scale=Math.min(innerWidth/1280,(innerHeight-6)/720);wrap.style.transform=`scale(${scale})`;wrap.style.margin=`${(720*scale-720)/2}px ${(1280*scale-1280)/2}px`}
+addEventListener('resize',fit);fit();
+const anims=new Set();
+
+const ROWS=[
+ ['RV-88213','Sarah Jenkins','s.jenkins@example.com','•••• 4417','£2,480'],
+ ['RV-88190','Marcus Oyelaran','m.oyelaran@example.com','•••• 9032','£2,150'],
+ ['RV-88177','Priya Raman','priya.r@example.com','•••• 1156','£1,940'],
+ ['RV-88241','Tom Hendricks','t.hendricks@example.com','•••• 7780','£1,865'],
+ ['RV-88102','Elena Vasquez','e.vasquez@example.com','•••• 3301','£1,720'],
+ ['RV-88256','Daniel Okafor','d.okafor@example.com','•••• 6628','£1,655'],
+ ['RV-88133','Chloe Whitfield','chloe.w@example.com','•••• 2094','£1,590'],
+ ['RV-88219','Jamal Rahimi','j.rahimi@example.com','•••• 5517','£1,480'],
+ ['RV-88160','Hannah Lindqvist','h.lindqvist@example.com','•••• 8843','£1,410'],
+ ['RV-88268','Oscar Bellamy','o.bellamy@example.com','•••• 1927','£1,375'],
+];
+const PROMPT='What is our block rate over the last 30 minutes, and send me the top 10 highest value blocked orders';
+const STEPS=[
+ 'Acme\'s fraud analyst has added Ravelin\'s <b>remote MCP server</b> to Claude. On connect, the server lists the <b>tools</b> Claude is allowed to call.',
+ 'The analyst asks a plain-English question. <b>No dashboard, no query language.</b>',
+ 'Claude picks the right tools and sends two <b>tool calls</b> over the MCP connection to Ravelin on GCP, authenticated as Acme.',
+ 'Ravelin\'s server runs them against Acme\'s data and returns the results: <em>including real customer PII.</em>',
+ 'The answer lands in Claude, on Acme\'s side of the line: names, emails, card digits. <b>A copy now exists outside Ravelin.</b>',
+ 'From here it can go anywhere Acme\'s people and agents take it: chat, tickets, data lake, other MCPs. <b>Ravelin has no visibility and no control.</b>',
+ 'The MCP server is Ravelin\'s. <b>How it is used, and what happens to the output, is Acme\'s responsibility.</b>'
+];
+const dots=$('#dots');STEPS.forEach(()=>dots.appendChild(document.createElement('i')));
+
+function setCap(i){
+  const t=$('#capt');t.style.opacity=0;
+  setTimeout(()=>{$('#capn').textContent=i+1;t.innerHTML=STEPS[i];t.style.opacity=1},350);
+  [...dots.children].forEach((d,j)=>d.classList.toggle('on',j<=i));
+}
+function pos(el){const r=el.getBoundingClientRect(),s=stage.getBoundingClientRect();return{x:(r.left-s.left)/scale,y:(r.top-s.top)/scale,w:r.width/scale,h:r.height/scale}}
+
+function reset(){
+  anims.forEach(a=>a.cancel());anims.clear();
+  $$('.pk').forEach(e=>e.remove());
+  ['#acme','#rav'].forEach(s=>$(s).classList.remove('on','flash','dim'));
+  $('#rav').classList.remove('dim');
+  ['#win','#conn','#c1','#c2','#mcplabel','#xbadge','#blind','#final','#tools','#authchip','#mcp-db','#legend']
+    .forEach(s=>$(s)&&$(s).classList.remove('on'));
+  $$('#tl div').forEach(d=>d.classList.remove('on','use'));
+  $$('.col li').forEach(l=>l.classList.remove('on'));
+  $$('.t').forEach(t=>t.classList.remove('hit'));
+  $('#mcp').classList.remove('hot');$('#db').classList.remove('hot');
+  $('#chat').innerHTML='';$('#typed').textContent='Message Claude…';$('#inputbar').classList.remove('typing');
+  [...dots.children].forEach(d=>d.classList.remove('on'));$('#capt').innerHTML='';
+}
+
+async function play(){
+  if(cur)cur.dead=true;
+  const tk={dead:false};cur=tk;reset();paused=false;$('#bp').textContent='❚❚ Pause';
+  const chk=()=>{if(tk.dead)throw'x'};
+  const sleep=ms=>new Promise((res,rej)=>{let t=0;const iv=setInterval(()=>{if(tk.dead){clearInterval(iv);rej('x')}else if(!paused){t+=30;if(t>=ms){clearInterval(iv);res()}}},30)});
+  const anim=async(el,kf,o)=>{chk();const a=el.animate(kf,{fill:'forwards',...o});anims.add(a);if(paused)a.pause();try{await a.finished}catch(e){}anims.delete(a);chk()};
+  const fly=async(text,cls,from,to,dur=1300,keep=false)=>{
+    const p=document.createElement('div');p.className='pk '+cls;p.textContent=text;stage.appendChild(p);
+    const w=p.offsetWidth,h=p.offsetHeight;
+    await anim(p,[{transform:`translate(${from.x-w/2}px,${from.y-h/2}px) scale(.7)`,opacity:0},
+      {transform:`translate(${from.x-w/2}px,${from.y-h/2}px) scale(1)`,opacity:1,offset:.12},
+      {transform:`translate(${to.x-w/2}px,${to.y-h/2}px) scale(1)`,opacity:1,offset:.88},
+      {transform:`translate(${to.x-w/2}px,${to.y-h/2}px) scale(.8)`,opacity:keep?1:0}],{duration:dur,easing:'ease-in-out'});
+    if(!keep)p.remove();return p};
+  const type=async(el,txt,ms)=>{for(let i=1;i<=txt.length;i++){el.textContent=txt.slice(0,i);await sleep(ms)}};
+  const add=(html,cls)=>{const d=document.createElement('div');d.className='msg '+cls;d.innerHTML=html;$('#chat').appendChild(d);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('on')));return d};
+
+  try{
+  /* 0 — connect */
+  setCap(0);
+  await sleep(300);$('#acme').classList.add('on');$('#rav').classList.add('on');await sleep(500);
+  $('#win').classList.add('on');await sleep(600);
+  $('#mcp').style.opacity=1;$('#db').style.opacity=1;
+  $('#c1').classList.add('on');$('#c2').classList.add('on');$('#mcplabel').classList.add('on');
+  $('#conn').classList.add('on');
+  await fly('tools/list','req',{x:540,y:210},{x:860,y:210},1200);
+  $('#mcp').classList.add('hot');
+  for(const d of $$('#tl div')){d.classList.add('on');await sleep(260)}
+  $('#authchip').classList.add('on');
+  await fly('[ get_block_rate, list_blocked_orders, … ]','ok',{x:860,y:292},{x:560,y:292},1500);
+  $('#mcp').classList.remove('hot');
+  await sleep(1800);
+
+  /* 1 — ask */
+  setCap(1);
+  const ib=$('#inputbar');ib.classList.add('typing');
+  await type($('#typed'),PROMPT,28);
+  await sleep(600);
+  $('#typed').textContent='Message Claude…';ib.classList.remove('typing');
+  add(PROMPT,'user');
+  await sleep(1400);
+
+  /* 2 — tool calls out */
+  setCap(2);
+  const th=add('<div class="think"><span class="dots"><span></span><span></span><span></span></span>Claude is choosing tools…</div>','');
+  await sleep(1300);
+  th.remove();
+  const tc=add('<span class="tool" id="t1">⚙ get_block_rate(30m) <em>✓</em></span><span class="tool" id="t2">⚙ list_blocked_orders(10, by value) <em>✓</em></span>','');
+  await sleep(900);
+  const callP=[fly('get_block_rate(30m)','req',{x:540,y:200},{x:860,y:200},1700),
+               fly('list_blocked_orders(10)','req',{x:540,y:222},{x:860,y:222},1900)];
+  await Promise.all(callP);
+  $('#mcp').classList.add('hot');
+  $$('#tl div')[0].classList.add('use');$$('#tl div')[1].classList.add('use');
+  await sleep(700);
+  $('#mcp-db').classList.add('on');
+  await fly('SELECT …','req',{x:1048,y:360},{x:1048,y:446},900);
+  $('#db').classList.add('hot');await sleep(900);
+
+  /* 3 — response with PII */
+  setCap(3);
+  $('#db').classList.remove('hot');
+  await fly('rows','res',{x:1048,y:446},{x:1048,y:360},800);
+  await sleep(200);
+  $('#mcp').classList.remove('hot');
+  const r1=fly('{ block_rate: 4.1% }','ok',{x:860,y:292},{x:560,y:292},2200);
+  setTimeout(()=>{ if(!tk.dead){$('#rav').classList.add('flash');$('#xbadge').classList.add('on')}},700);
+  const r2=fly('10 × { name, email, card, value }','res',{x:860,y:312},{x:560,y:312},2400);
+  await Promise.all([r1,r2]);
+  $$('#tl div').forEach(d=>d.classList.remove('use'));
+  $('#t1').classList.add('done');$('#t2').classList.add('done');
+  await sleep(1400);
+  $('#rav').classList.remove('flash');$('#xbadge').classList.remove('on');
+
+  /* 4 — answer rendered */
+  setCap(4);
+  let html='<div class="ans"><b class="big">4.1%</b> of orders were blocked in the last 30 minutes (37 of 902).<br>Top 10 blocked orders by value:</div><table><tr><th>Order</th><th>Customer</th><th>Email</th><th>Card</th><th style="text-align:right">Value</th></tr>';
+  ROWS.forEach(r=>html+=`<tr>${r.map((c,i)=>`<td class="${i==1||i==2||i==3?'p':''}${i==4?' v':''}">${c}</td>`).join('')}</tr>`);
+  html+='</table><div id="legend"><i></i>Personal data (PII) now held outside Ravelin</div>';
+  const ans=add(html,'');
+  await sleep(500);
+  for(const tr of $$('#chat tr')){tr.classList.add('show');await sleep(130)}
+  await sleep(500);
+  ans.classList.add('pii-on');$('#legend').classList.add('on');
+  await sleep(2800);
+
+  /* 5 — spreads */
+  setCap(5);
+  $('#tools').classList.add('on');await sleep(900);
+  const src=pos($('#chat table'));
+  const targets=[['slack','Sarah J. · s.jenkins@…'],['jira','RV-88213 · 14 Elm Rd, Leeds'],['lake','10 rows · full PII export'],
+                 ['agent','card •••• 4417 · £2,480'],['mcp','m.oyelaran@example.com'],['mail','orders.csv (names, emails)']];
+  const flights=[];
+  for(const [k,txt] of targets){
+    const tEl=$(`.t[data-k="${k}"]`),tp=pos(tEl);
+    flights.push((async()=>{await fly(txt,'pii',{x:src.x+src.w/2,y:src.y+src.h/2},{x:tp.x+tp.w/2,y:tp.y+tp.h/2},1700+Math.random()*500,false);tEl.classList.add('hit')})());
+    await sleep(380);
+  }
+  await Promise.all(flights);
+  $('#rav').classList.add('dim');$('#blind').classList.add('on');
+  await sleep(4500);
+
+  /* 6 — takeaway */
+  setCap(6);
+  $('#final').classList.add('on');$('#blind').classList.remove('on');
+  await sleep(900);
+  for(const l of $$('.col li')){l.classList.add('on');await sleep(650)}
+  await sleep(6000);
+  $('#bp').textContent='▶ Replay';paused=true;
+  }catch(e){if(e!=='x')throw e}
+}
+$('#bp').onclick=()=>{
+  if($('#bp').textContent.includes('Replay')){play();return}
+  paused=!paused;$('#bp').textContent=paused?'▶ Play':'❚❚ Pause';
+  anims.forEach(a=>paused?a.pause():a.play());
+};
+$('#br').onclick=play;
+addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();$('#bp').click()}});
+$('#mcp').style.opacity=0;$('#db').style.opacity=0;
+play();
+</script>
+</body>
+</html>

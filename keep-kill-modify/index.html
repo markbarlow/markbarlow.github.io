@@ -53,11 +53,11 @@ h1,h2,h3{font-family:var(--font-display); font-weight:400; line-height:1.1; marg
 p{margin:0}
 button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 :focus-visible{outline:3px solid var(--spot); outline-offset:3px}
-/* Hyde's note fields already sit inside a violet box, so an ember focus ring
-   put two colours in the same small space. Focus stays visible — it just
-   stops arguing. */
+/* Hyde's note fields carry no focus ring at all: Mark'''s call, and the one
+   place it is defensible, because a focused text input still shows a caret.
+   Do not copy this to buttons, which show nothing without a ring. */
 .notebar input:focus-visible,
-.chip input:focus-visible{outline:2px solid var(--modify); outline-offset:2px}
+.chip input:focus-visible{outline:none}
 
 .eyebrow{
   font-size:12px; letter-spacing:.26em; text-transform:uppercase;

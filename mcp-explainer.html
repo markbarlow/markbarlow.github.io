@@ -163,9 +163,11 @@ td.p{transition:all .6s}
 
 /* controls */
 #ctl{position:absolute;right:28px;bottom:14px;display:flex;gap:8px;z-index:20}
+#ctl #bp{transition:opacity 1s}
+#scrim.on ~ #ctl #bp{opacity:.12;pointer-events:none}
 #ctl button{background:#1a2142;border:1px solid #333f72;color:var(--ink);border-radius:10px;padding:7px 13px;font-size:12.5px;cursor:pointer}
 #ctl button:hover{background:#252e5e}
-#dots{position:absolute;left:28px;bottom:26px;display:flex;gap:7px;z-index:20}
+#dots{position:absolute;left:28px;bottom:26px;display:flex;gap:7px;z-index:1}
 #dots i{width:26px;height:4px;border-radius:3px;background:#2a3358;transition:background .4s}
 #dots i.on{background:var(--claude)}
 </style>

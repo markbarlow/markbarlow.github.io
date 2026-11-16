@@ -102,6 +102,8 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 
 /* ---- sort ------------------------------------------------------------ */
 .topbar{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap}
+.note-small a{color:var(--bone-dim); text-underline-offset:3px}
+.note-small a:hover{color:var(--bone)}
 
 /* sound toggle, pinned to the corner of the page rather than any one screen */
 .mute{
@@ -358,6 +360,10 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       <button class="btn-quiet" id="resume" hidden>Resume where I left off</button>
       <span class="hint" id="intro-time"></span>
     </div>
+
+    <p class="note-small" style="margin-top:18px">Sound is on &mdash; mute it with the
+      speaker in the corner. Sounds from
+      <a href="https://freesound.org/" target="_blank" rel="noopener">Freesound.org</a>.</p>
   </div>
 </section>
 

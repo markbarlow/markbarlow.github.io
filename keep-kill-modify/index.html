@@ -341,7 +341,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
         <div>
           <p class="verdict-tag tag-keep">I · Keep</p>
           <p class="cast-name">Van Helsing</p>
-          <p class="note-small">He defends what earns its place.</p>
+          <p class="note-small">He defends that which earns its place.</p>
         </div>
       </div>
       <div class="cast-item">
@@ -349,7 +349,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
         <div>
           <p class="verdict-tag tag-modify">II · Modify</p>
           <p class="cast-name">Jekyll &amp; Hyde</p>
-          <p class="note-small">Some good in it. Needs reworking.</p>
+          <p class="note-small">Some good, some bad. A little off-kilter.</p>
         </div>
       </div>
       <div class="cast-item">
@@ -363,9 +363,9 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     </div>
 
     <p>Every activity goes to one of the three. Drag the card onto a figure, or press
-      <b>1</b>, <b>2</b> or <b>3</b>. Nothing is sent until you look over the lot at the end,
+      <b>1</b>, <b>2</b> or <b>3</b>. Nothing is saved until you review the lot at the end,
       so change your mind freely.</p>
-    <p class="note-small" style="margin-top:10px">Your answers are anonymous &mdash; no name,
+    <p class="note-small" style="margin-top:10px">Your answers are anonymous: no name,
       no email, nothing identifying. <span id="intro-close"></span></p>
 
     <div id="setup-warning" class="banner" hidden>
@@ -425,7 +425,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
         <svg class="fig fig-kill" viewBox="0 0 126 132" aria-hidden="true"><use href="#fig-kill"/></svg>
         <span class="verdict-tag tag-kill">3 · Kill</span>
         <span class="target-name">The Zombie</span>
-        <span class="target-line">Already deceased</span>
+        <span class="target-line">Already dead</span>
       </button>
     </div>
 
@@ -441,7 +441,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       <button class="btn-quiet" id="skip" type="button">Skip this one</button>
       <button class="btn-quiet" id="restart" type="button">Start over</button>
       <span class="hint">Drag the card onto a figure, or press 1, 2 or 3.
-        Press S to skip anything you do not attend.</span>
+        Press S to skip anything you don't do or attend.</span>
     </div>
   </div>
 </section>
@@ -453,8 +453,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       <p class="eyebrow">Before you send it</p>
       <h2 style="font-size:clamp(24px,4vw,38px)">Your verdicts</h2>
       <p class="note-small" style="margin-top:6px">Drag a card to another column, or use its
-        buttons. Add a line to anything you would rework &mdash; optional, and the most useful
-        thing in the whole exercise.</p>
+        buttons. Add a note to anything you would rework.</p>
     </div>
 
     <div class="cols">
@@ -518,7 +517,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       <p class="eyebrow">Sealed and delivered</p>
       <h2 class="intro-title">Thank you</h2>
     </div>
-    <p style="margin-top:14px">Your verdicts are in, with no name attached to them.</p>
+    <p style="margin-top:14px">Your verdicts are in, mysterious person with no name.</p>
     <div class="tally" id="done-tally"></div>
     <p class="note-small" id="done-close"></p>
   </div>
@@ -1191,7 +1190,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     $('done-close').textContent = hasClose()
       ? ("The team's results unlock on " + closeDateText() +
          '. Until then nobody can see the split \u2014 not even the facilitator.')
-      : 'Sit tight \u2014 the results go up on the screen once everyone has sorted.';
+      : 'Sit tight, the results will go up on the screen once everyone has sorted.';
   }
 
   /* ---------- results -------------------------------------------------- */

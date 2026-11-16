@@ -137,6 +137,11 @@ td.p{transition:all .6s}
 #blind b{display:block;color:#fff;font-size:15px;margin-bottom:4px}
 #scrim{left:0;top:0;width:1280px;height:770px;background:rgba(3,5,12,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity 1s;z-index:9}
 #scrim.on{opacity:1}
+#scrim.idle{opacity:1;background:rgba(3,5,12,.5);backdrop-filter:none;-webkit-backdrop-filter:none}
+#start{position:absolute;left:50%;top:410px;transform:translate(-50%,-50%);z-index:11;display:none;flex-direction:column;align-items:center;gap:12px;background:none;border:0;color:#fff;cursor:pointer;font-size:16px;font-weight:600;font-family:inherit}
+#start.show{display:flex}
+#start span{width:104px;height:104px;border-radius:50%;background:var(--claude);display:grid;place-items:center;font-size:42px;padding-left:8px;box-shadow:0 0 0 10px rgba(217,119,87,.22),0 14px 50px rgba(217,119,87,.5);transition:transform .2s}
+#start:hover span{transform:scale(1.06)}
 #final{left:150px;top:150px;width:980px;border-radius:22px;background:#0b1020;border:1px solid #2d3766;box-shadow:0 30px 90px rgba(0,0,0,.7);padding:28px 34px;opacity:0;pointer-events:none;transition:opacity .8s;z-index:10}
 #final.on{opacity:1}
 #final h2{font-size:26px;line-height:1.25;margin-bottom:18px}
@@ -248,6 +253,7 @@ td.p{transition:all .6s}
 
 </div>
   <div id="scrim" class="abs"></div>
+<button id="start"><span>▶</span>Play the walkthrough</button>
 <div id="ctl"><button id="bp">❚❚ Pause</button><button id="br">↺ Restart</button></div>
 </div>
 
@@ -296,6 +302,7 @@ function reset(){
   $$('.pk').forEach(e=>e.remove());
   ['#acme','#rav'].forEach(s=>$(s).classList.remove('on','flash','dim'));
   $('#rav').classList.remove('dim');
+  $('#scrim').classList.remove('idle');$('#start').classList.remove('show');$('#mcp').style.opacity=0;$('#db').style.opacity=0;
   ['#scrim','#win','#conn','#c1','#c2','#mcplabel','#xbadge','#blind','#final','#tools','#authchip','#mcp-db','#legend']
     .forEach(s=>$(s)&&$(s).classList.remove('on'));
   $$('#tl div').forEach(d=>d.classList.remove('on','use'));
@@ -308,7 +315,7 @@ function reset(){
 
 async function play(){
   if(cur)cur.dead=true;
-  const tk={dead:false};cur=tk;reset();paused=false;$('#bp').textContent='❚❚ Pause';
+  isIdle=false;const tk={dead:false};cur=tk;reset();paused=false;$('#bp').textContent='❚❚ Pause';
   const chk=()=>{if(tk.dead)throw'x'};
   const SLOW=1.32;
   const sleep=(ms,raw)=>new Promise((res,rej)=>{ms=raw?ms:ms*SLOW;let t=0;const iv=setInterval(()=>{if(tk.dead){clearInterval(iv);rej('x')}else if(!paused){t+=30;if(t>=ms){clearInterval(iv);res()}}},30)});
@@ -425,14 +432,23 @@ async function play(){
   }catch(e){if(e!=='x')throw e}
 }
 $('#bp').onclick=()=>{
-  if($('#bp').textContent.includes('Replay')){play();return}
+  if(isIdle||$('#bp').textContent.includes('Replay')){play();return}
   paused=!paused;$('#bp').textContent=paused?'▶ Play':'❚❚ Pause';
   anims.forEach(a=>paused?a.pause():a.play());
 };
 $('#br').onclick=play;
 addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();$('#bp').click()}});
-$('#mcp').style.opacity=0;$('#db').style.opacity=0;
-play();
+let isIdle=true;
+function idle(){
+  reset();
+  ['#acme','#rav','#win'].forEach(q=>$(q).classList.add('on'));
+  $('#mcp').style.opacity=1;$('#db').style.opacity=1;
+  $('#scrim').classList.add('idle');$('#start').classList.add('show');
+  $('#capn').textContent='▶';$('#capt').innerHTML='Everything is loaded. <b>Press Play</b> to start the walkthrough.';
+  $('#bp').textContent='▶ Play';
+}
+$('#start').onclick=play;
+idle();
 </script>
 </body>
 </html>

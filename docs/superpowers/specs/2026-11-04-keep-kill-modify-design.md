@@ -151,12 +151,19 @@ decoded buffers including the first card, twenty sounds across a full sort,
 overlapping output measured, mute silences a peal mid-ring and blocks new
 drops, the setting survives a reload, and the default is unmuted.
 
-### Still open
+### Licence — settled, all CC0
 
-`sounds/README.md` records where each file came from and under what licence,
-and those lines are **not yet filled in**. These are served from a public
-website, so the licence has to permit redistribution — "free to download" is
-not enough. If Mark recorded them himself, saying so closes it.
+All three came from Freesound and all three are CC0: bells #870015 by
+SignatureSoundsOrg, bubbles #145797 by 211redman112, zombie #196723 by
+PaulMorek. CC0 permits redistribution, modification and commercial use and
+requires no attribution, so there is nothing outstanding. `sounds/README.md`
+credits them anyway, as courtesy rather than obligation, and the page carries
+a one-line Freesound credit that could be removed without consequence.
+
+Identifying them took the original filenames from Mark. The MP3s' own ID3 tags
+are worthless here: all three carry a byte-identical block naming a title and
+uploader belonging to none of them, left by whatever tool did the conversion.
+Do not trust embedded metadata as provenance.
 
 #### Reference sounds — audio.com, cannot ship, kept on purpose
 

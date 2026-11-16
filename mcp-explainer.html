@@ -14,12 +14,12 @@
 html,body{height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
 body{display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:radial-gradient(1200px 700px at 50% 30%,#141b36 0%,#0b1020 70%)}
-#wrap{width:1280px;height:720px;position:relative;transform-origin:center center;flex:none}
-#stage{position:absolute;inset:0}
+#wrap{width:1280px;height:770px;position:relative;transform-origin:center center;flex:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+#stage{position:absolute;left:0;top:56px;width:1280px;height:714px}
 .abs{position:absolute}
 
 /* header */
-#title{left:28px;top:18px;font-size:22px;font-weight:700;letter-spacing:.2px}
+#title{left:28px;top:14px;font-size:22px;font-weight:700;letter-spacing:.2px}
 #title small{display:block;font-size:13px;font-weight:500;color:var(--mute);margin-top:2px}
 #dummy{right:28px;top:22px;font-size:11px;color:var(--mute);border:1px solid #2a3358;border-radius:99px;padding:4px 10px}
 
@@ -39,7 +39,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 /* Claude window */
 #win{left:42px;top:112px;width:488px;height:494px;border-radius:14px;background:#faf6f1;color:#2b2622;
   box-shadow:0 18px 50px rgba(0,0,0,.5);overflow:hidden;opacity:0;transform:translateY(12px);transition:all .7s;display:flex;flex-direction:column}
-#win.on{opacity:1;transform:none}
+#win.on{opacity:1;transform:none;will-change:auto}
 #bar{height:38px;background:#efe8df;display:flex;align-items:center;padding:0 12px;gap:7px;border-bottom:1px solid #e1d7ca;flex:none}
 #bar i{width:10px;height:10px;border-radius:50%;background:#d4c9ba}
 #bar b{margin-left:8px;font-size:12.5px;color:#5b5147}
@@ -81,7 +81,7 @@ td.p{transition:all .6s}
 
 /* Ravelin side */
 #mcp{left:864px;top:122px;width:368px;height:236px;border-radius:16px;background:linear-gradient(160deg,#1c2250,#171c40);border:1.5px solid rgba(143,123,255,.7);box-shadow:0 12px 36px rgba(0,0,0,.4);padding:14px 16px;transition:box-shadow .4s, transform .4s}
-#mcp.hot{box-shadow:0 0 0 2px var(--rav),0 0 40px rgba(143,123,255,.6);transform:scale(1.015)}
+#mcp.hot{box-shadow:0 0 0 2px var(--rav),0 0 40px rgba(143,123,255,.6);}
 #mcp h4{font-size:14px;display:flex;align-items:center;gap:8px}
 #mcp h4 span{font-size:10px;background:rgba(143,123,255,.25);color:#c9bfff;border-radius:99px;padding:2px 8px;font-weight:600}
 #mcp p.sub{font-size:11px;color:var(--mute);margin:3px 0 10px}
@@ -102,11 +102,11 @@ td.p{transition:all .6s}
 #mcp-db.on{opacity:1}
 
 /* tools panel (acme) */
-#tools{left:556px;top:408px;width:240px;height:206px;border-radius:16px;background:rgba(255,181,71,.06);border:1.5px solid rgba(255,181,71,.35);padding:12px;opacity:0;transition:opacity .7s}
+#tools{left:556px;top:350px;width:240px;height:264px;border-radius:16px;background:rgba(255,181,71,.06);border:1.5px solid rgba(255,181,71,.35);padding:12px;opacity:0;transition:opacity .7s}
 #tools.on{opacity:1}
 #tools h5{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--aws);margin-bottom:9px}
-#tgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.t{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:7px 9px;font-size:11px;display:flex;flex-direction:column;gap:1px;transition:all .5s;min-height:46px}
+#tgrid{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:62px;gap:8px}
+.t{justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:7px 9px;font-size:11px;display:flex;flex-direction:column;gap:1px;transition:all .5s;min-height:46px}
 .t small{font-size:9.5px;color:var(--mute)}
 .t.hit{background:rgba(255,93,115,.16);border-color:var(--pii);box-shadow:0 0 18px rgba(255,93,115,.35)}
 .t.hit small{color:#ffb3bd}
@@ -119,8 +119,9 @@ td.p{transition:all .6s}
 #mcplabel{left:556px;top:130px;width:260px;font-size:11px;color:var(--mute);line-height:1.5;opacity:0;transition:opacity .6s;text-align:center}
 #mcplabel b{color:#fff;font-size:12px;display:block;letter-spacing:.5px}
 #mcplabel.on{opacity:1}
-#xbadge{left:566px;top:236px;width:250px;text-align:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--pii);padding:6px 10px;border-radius:99px;box-shadow:0 0 24px rgba(255,93,115,.6);opacity:0;transform:scale(.8);transition:all .4s;z-index:5}
+#xbadge{left:566px;top:236px;width:250px;text-align:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--pii);padding:6px 10px;border-radius:99px;box-shadow:0 0 24px rgba(255,93,115,.6);opacity:0;transition:opacity .4s;z-index:5}
 #xbadge.on{opacity:1;transform:none}
+.msg.on,#win.on{transform:none}
 
 /* packets */
 .pk{position:absolute;left:0;top:0;white-space:nowrap;font:600 11px ui-monospace,Menlo,Consolas,monospace;padding:5px 10px;border-radius:8px;z-index:6;pointer-events:none}
@@ -134,6 +135,8 @@ td.p{transition:all .6s}
 #blind.on{opacity:1}
 #blind div{background:rgba(11,16,32,.9);border:1px solid var(--pii);color:#ffd0d6;border-radius:14px;padding:14px 18px;text-align:center;font-size:13px;line-height:1.45;max-width:300px;box-shadow:0 0 40px rgba(255,93,115,.25)}
 #blind b{display:block;color:#fff;font-size:15px;margin-bottom:4px}
+#scrim{left:0;top:0;width:1280px;height:770px;background:rgba(3,5,12,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity 1s;z-index:9}
+#scrim.on{opacity:1}
 #final{left:150px;top:150px;width:980px;border-radius:22px;background:#0b1020;border:1px solid #2d3766;box-shadow:0 30px 90px rgba(0,0,0,.7);padding:28px 34px;opacity:0;pointer-events:none;transition:opacity .8s;z-index:10}
 #final.on{opacity:1}
 #final h2{font-size:26px;line-height:1.25;margin-bottom:18px}
@@ -152,26 +155,29 @@ td.p{transition:all .6s}
 #final p.foot{margin-top:16px;font-size:13px;color:var(--mute);text-align:center}
 
 /* caption */
-#cap{left:0;right:0;bottom:0;height:86px;display:flex;align-items:center;justify-content:center;padding:0 210px 0 60px;gap:18px}
-#cap .n{flex:none;width:36px;height:36px;border-radius:50%;background:var(--claude);color:#fff;font-weight:800;display:grid;place-items:center;font-size:16px}
-#cap .tx{font-size:18px;line-height:1.35;max-width:1050px;transition:opacity .4s}
+#cap{left:28px;right:28px;top:70px;height:56px;display:flex;align-items:center;justify-content:flex-start;gap:14px}
+#cap .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--claude);color:#fff;font-weight:800;display:grid;place-items:center;font-size:16px}
+#cap .tx{font-size:17px;line-height:1.35;max-width:1050px;transition:opacity .4s}
 #cap .tx b{color:#fff}
 #cap .tx em{font-style:normal;color:var(--pii);font-weight:700}
 
 /* controls */
-#ctl{position:absolute;right:20px;bottom:22px;display:flex;gap:8px;z-index:20}
+#ctl{position:absolute;right:28px;bottom:14px;display:flex;gap:8px;z-index:20}
 #ctl button{background:#1a2142;border:1px solid #333f72;color:var(--ink);border-radius:10px;padding:7px 13px;font-size:12.5px;cursor:pointer}
 #ctl button:hover{background:#252e5e}
-#dots{position:absolute;left:50%;transform:translateX(-50%);bottom:8px;display:flex;gap:7px;z-index:20}
+#dots{position:absolute;left:28px;bottom:26px;display:flex;gap:7px;z-index:20}
 #dots i{width:26px;height:4px;border-radius:3px;background:#2a3358;transition:background .4s}
 #dots i.on{background:var(--claude)}
 </style>
 </head>
 <body>
-<div id="wrap"><div id="stage">
-
+<div id="wrap">
   <div id="title" class="abs">What is an MCP server, really?<small>An AI app plugged into a vendor's data and tools: and where the data goes next</small></div>
   <div id="dummy" class="abs">All data shown is dummy data</div>
+  <div id="cap" class="abs"><div class="n" id="capn">1</div><div class="tx" id="capt"></div></div>
+  <div id="dots"></div>
+<div id="stage">
+
 
   <div id="acme" class="zone abs"><span class="zl">Acme Ltd · Amazon (AWS)</span></div>
   <div id="rav" class="zone abs"><span class="zl">Ravelin · Google Cloud (GCP)</span><div class="inner"></div></div>
@@ -238,9 +244,8 @@ td.p{transition:all .6s}
     <p class="foot">Treat an MCP connection like giving a person an export button: grant least privilege, minimise PII in tool outputs, and log what leaves.</p>
   </div>
 
-  <div id="cap" class="abs"><div class="n" id="capn">1</div><div class="tx" id="capt"></div></div>
-  <div id="dots"></div>
 </div>
+  <div id="scrim" class="abs"></div>
 <div id="ctl"><button id="bp">❚❚ Pause</button><button id="br">↺ Restart</button></div>
 </div>
 
@@ -248,7 +253,8 @@ td.p{transition:all .6s}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const wrap=$('#wrap'), stage=$('#stage');
 let scale=1,paused=false,cur=null;
-function fit(){scale=Math.min(innerWidth/1280,(innerHeight-6)/720);wrap.style.transform=`scale(${scale})`;wrap.style.margin=`${(720*scale-720)/2}px ${(1280*scale-1280)/2}px`}
+const Z=CSS.supports('zoom','2');
+function fit(){scale=Math.min(innerWidth/1280,(innerHeight-4)/770);if(Z){wrap.style.zoom=scale}else{wrap.style.transform=`scale(${scale})`;wrap.style.margin=`${(770*scale-770)/2}px ${(1280*scale-1280)/2}px`}}
 addEventListener('resize',fit);fit();
 const anims=new Set();
 
@@ -288,7 +294,7 @@ function reset(){
   $$('.pk').forEach(e=>e.remove());
   ['#acme','#rav'].forEach(s=>$(s).classList.remove('on','flash','dim'));
   $('#rav').classList.remove('dim');
-  ['#win','#conn','#c1','#c2','#mcplabel','#xbadge','#blind','#final','#tools','#authchip','#mcp-db','#legend']
+  ['#scrim','#win','#conn','#c1','#c2','#mcplabel','#xbadge','#blind','#final','#tools','#authchip','#mcp-db','#legend']
     .forEach(s=>$(s)&&$(s).classList.remove('on'));
   $$('#tl div').forEach(d=>d.classList.remove('on','use'));
   $$('.col li').forEach(l=>l.classList.remove('on'));
@@ -302,17 +308,18 @@ async function play(){
   if(cur)cur.dead=true;
   const tk={dead:false};cur=tk;reset();paused=false;$('#bp').textContent='❚❚ Pause';
   const chk=()=>{if(tk.dead)throw'x'};
-  const sleep=ms=>new Promise((res,rej)=>{let t=0;const iv=setInterval(()=>{if(tk.dead){clearInterval(iv);rej('x')}else if(!paused){t+=30;if(t>=ms){clearInterval(iv);res()}}},30)});
+  const SLOW=1.32;
+  const sleep=(ms,raw)=>new Promise((res,rej)=>{ms=raw?ms:ms*SLOW;let t=0;const iv=setInterval(()=>{if(tk.dead){clearInterval(iv);rej('x')}else if(!paused){t+=30;if(t>=ms){clearInterval(iv);res()}}},30)});
   const anim=async(el,kf,o)=>{chk();const a=el.animate(kf,{fill:'forwards',...o});anims.add(a);if(paused)a.pause();try{await a.finished}catch(e){}anims.delete(a);chk()};
-  const fly=async(text,cls,from,to,dur=1300,keep=false)=>{
+  const fly=async(text,cls,from,to,dur=1300,keep=false)=>{dur*=SLOW;
     const p=document.createElement('div');p.className='pk '+cls;p.textContent=text;stage.appendChild(p);
     const w=p.offsetWidth,h=p.offsetHeight;
-    await anim(p,[{transform:`translate(${from.x-w/2}px,${from.y-h/2}px) scale(.7)`,opacity:0},
-      {transform:`translate(${from.x-w/2}px,${from.y-h/2}px) scale(1)`,opacity:1,offset:.12},
-      {transform:`translate(${to.x-w/2}px,${to.y-h/2}px) scale(1)`,opacity:1,offset:.88},
-      {transform:`translate(${to.x-w/2}px,${to.y-h/2}px) scale(.8)`,opacity:keep?1:0}],{duration:dur,easing:'ease-in-out'});
+    await anim(p,[{transform:`translate(${Math.round(from.x-w/2)}px,${Math.round(from.y-h/2)}px)`,opacity:0},
+      {transform:`translate(${Math.round(from.x-w/2)}px,${Math.round(from.y-h/2)}px)`,opacity:1,offset:.12},
+      {transform:`translate(${Math.round(to.x-w/2)}px,${Math.round(to.y-h/2)}px)`,opacity:1,offset:.88},
+      {transform:`translate(${Math.round(to.x-w/2)}px,${Math.round(to.y-h/2)}px)`,opacity:keep?1:0}],{duration:dur,easing:'ease-in-out'});
     if(!keep)p.remove();return p};
-  const type=async(el,txt,ms)=>{for(let i=1;i<=txt.length;i++){el.textContent=txt.slice(0,i);await sleep(ms)}};
+  const type=async(el,txt,ms)=>{for(let i=1;i<=txt.length;i++){el.textContent=txt.slice(0,i);await sleep(ms,true)}};
   const add=(html,cls)=>{const d=document.createElement('div');d.className='msg '+cls;d.innerHTML=html;$('#chat').appendChild(d);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('on')));return d};
 
   try{
@@ -332,15 +339,17 @@ async function play(){
   await sleep(1800);
 
   /* 1 — ask */
+  await sleep(2500,true);
   setCap(1);
   const ib=$('#inputbar');ib.classList.add('typing');
   await type($('#typed'),PROMPT,28);
-  await sleep(600);
+  await sleep(600,true);
   $('#typed').textContent='Message Claude…';ib.classList.remove('typing');
   add(PROMPT,'user');
   await sleep(1400);
 
   /* 2 — tool calls out */
+  await sleep(2500,true);
   setCap(2);
   const th=add('<div class="think"><span class="dots"><span></span><span></span><span></span></span>Claude is choosing tools…</div>','');
   await sleep(1300);
@@ -358,13 +367,14 @@ async function play(){
   $('#db').classList.add('hot');await sleep(900);
 
   /* 3 — response with PII */
+  await sleep(2500,true);
   setCap(3);
   $('#db').classList.remove('hot');
   await fly('rows','res',{x:1048,y:446},{x:1048,y:360},800);
   await sleep(200);
   $('#mcp').classList.remove('hot');
   const r1=fly('{ block_rate: 1.2% }','ok',{x:860,y:292},{x:560,y:292},2200);
-  setTimeout(()=>{ if(!tk.dead){$('#rav').classList.add('flash');$('#xbadge').classList.add('on')}},700);
+  setTimeout(()=>{ if(!tk.dead){$('#rav').classList.add('flash');$('#xbadge').classList.add('on')}},700*SLOW);
   const r2=fly('10 × { name, email, card, value }','res',{x:860,y:312},{x:560,y:312},2400);
   await Promise.all([r1,r2]);
   $$('#tl div').forEach(d=>d.classList.remove('use'));
@@ -373,18 +383,20 @@ async function play(){
   $('#rav').classList.remove('flash');$('#xbadge').classList.remove('on');
 
   /* 4 — answer rendered */
+  await sleep(2500,true);
   setCap(4);
   let html='<div class="ans"><b class="big">1.2%</b> of orders were blocked in the last 30 minutes (11 of 902).<br>Top 10 blocked orders by value:</div><table><tr><th>Order</th><th>Customer</th><th>Email</th><th>Card</th><th style="text-align:right">Value</th></tr>';
   ROWS.forEach(r=>html+=`<tr>${r.map((c,i)=>`<td class="${i==1||i==2||i==3?'p':''}${i==4?' v':''}">${c}</td>`).join('')}</tr>`);
   html+='</table><div id="legend"><i></i>Personal data (PII) now held outside Ravelin</div>';
   const ans=add(html,'');
   await sleep(500);
-  for(const tr of $$('#chat tr')){tr.classList.add('show');await sleep(130)}
+  for(const tr of $$('#chat tr')){tr.classList.add('show');await sleep(130,true)}
   await sleep(500);
   ans.classList.add('pii-on');$('#legend').classList.add('on');
   await sleep(2800);
 
   /* 5 — spreads */
+  await sleep(2500,true);
   setCap(5);
   $('#tools').classList.add('on');await sleep(900);
   const src=pos($('#chat table'));
@@ -401,8 +413,9 @@ async function play(){
   await sleep(4500);
 
   /* 6 — takeaway */
+  await sleep(2500,true);
   setCap(6);
-  $('#final').classList.add('on');$('#blind').classList.remove('on');
+  $('#scrim').classList.add('on');$('#final').classList.add('on');$('#blind').classList.remove('on');
   await sleep(900);
   for(const l of $$('.col li')){l.classList.add('on');await sleep(650)}
   await sleep(6000);

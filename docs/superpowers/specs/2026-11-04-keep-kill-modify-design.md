@@ -77,6 +77,14 @@ Each activity is dragged onto one of three characters:
   every colour, the body background and `color-scheme` are set explicitly.
 - **Colour is never the only signal** — each bucket also carries its character,
   its label and its number.
+- **Violet means Hyde, and nothing else** (changed 2026-11-16). The ground and
+  rules were originally violet-tinted (`--ink:#14101A`, `--rule:#4A3F55`), so
+  purple read twice: once as Modify, once as the furniture, across fourteen
+  dividers and borders. Ground and rules are now neutral warm charcoal
+  (`--ink:#141211`, `--rule:#4C4642`). Mark chose to keep violet on the note
+  box and the results note stripe, since those are Hyde's own comments — so
+  every remaining use of `--modify` is semantic. Contrast re-measured across
+  56 text pairs afterwards: no failures, lowest 5.07 against 4.5 required.
 
 ## Shape
 

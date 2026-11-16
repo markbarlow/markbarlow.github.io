@@ -363,7 +363,7 @@ async function play(){
   await fly('rows','res',{x:1048,y:446},{x:1048,y:360},800);
   await sleep(200);
   $('#mcp').classList.remove('hot');
-  const r1=fly('{ block_rate: 4.1% }','ok',{x:860,y:292},{x:560,y:292},2200);
+  const r1=fly('{ block_rate: 1.2% }','ok',{x:860,y:292},{x:560,y:292},2200);
   setTimeout(()=>{ if(!tk.dead){$('#rav').classList.add('flash');$('#xbadge').classList.add('on')}},700);
   const r2=fly('10 × { name, email, card, value }','res',{x:860,y:312},{x:560,y:312},2400);
   await Promise.all([r1,r2]);
@@ -374,7 +374,7 @@ async function play(){
 
   /* 4 — answer rendered */
   setCap(4);
-  let html='<div class="ans"><b class="big">4.1%</b> of orders were blocked in the last 30 minutes (37 of 902).<br>Top 10 blocked orders by value:</div><table><tr><th>Order</th><th>Customer</th><th>Email</th><th>Card</th><th style="text-align:right">Value</th></tr>';
+  let html='<div class="ans"><b class="big">1.2%</b> of orders were blocked in the last 30 minutes (11 of 902).<br>Top 10 blocked orders by value:</div><table><tr><th>Order</th><th>Customer</th><th>Email</th><th>Card</th><th style="text-align:right">Value</th></tr>';
   ROWS.forEach(r=>html+=`<tr>${r.map((c,i)=>`<td class="${i==1||i==2||i==3?'p':''}${i==4?' v':''}">${c}</td>`).join('')}</tr>`);
   html+='</table><div id="legend"><i></i>Personal data (PII) now held outside Ravelin</div>';
   const ans=add(html,'');

@@ -17,7 +17,11 @@ window.KKM_CONFIG = {
      practice bucket on top of the practice votes. The name below says
      "Rehearsal" on the page itself so this is visible, not just a comment.
 
-     Changing the id needs no change to the Apps Script and no redeploy. */
+     The Apps Script has a matching list in its CONFIG.expected, holding
+     BOTH ids. So long as both are there, switching between them needs no
+     script change and no redeploy. If you ever add a new session id,
+     add it there too, or the results show a bare count instead of
+     "7 of 10" -- and adding one means redeploying the script. */
   SESSION_ID: 'product-team-rehearsal',
 
   /* Shown on the page. */
@@ -28,7 +32,7 @@ window.KKM_CONFIG = {
   /* Paste the Apps Script /exec URL here. See SETUP.md — about three
      minutes, once. Left empty, the page still plays through but says it
      cannot send anything. */
-  ENDPOINT_URL: '',
+  ENDPOINT_URL: 'https://script.google.com/macros/s/AKfycbzYyx_gJtrg6GlNMn8dE63gc3-cZX5a7V6ZYdDkrKj8OwDavW71xefOIrl9WDG4ob_9/exec',
 
   /* Leave this EMPTY for a live session (everyone votes in the room, you
      put the results on the screen there and then). Results are then
@@ -40,7 +44,7 @@ window.KKM_CONFIG = {
      actually withholds it; this one is only what the page displays. */
   CLOSE_DATE: '',
 
-  /* How many people you asked, so the results read "7 of 12 responded".
+  /* How many people you asked, so the results read "7 of 10 responded".
      In a live session this is your "are we done yet?" signal, so it is
      worth getting right. Set to 0 to show a bare count instead. */
   EXPECTED_RESPONDENTS: 10,

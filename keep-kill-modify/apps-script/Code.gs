@@ -33,8 +33,14 @@ var CONFIG = {
   /* Sessions not listed above: '' means never sealed. */
   defaultCloseDate: '',
 
-  /* How many people were asked, per session. Shown as "7 of 12". */
+  /* How many people were asked, per session. Shown as "7 of 10".
+     LIST EVERY SESSION ID YOU WILL USE, rehearsal included. A session that
+     is missing here is not broken -- it just shows a bare count instead of
+     "7 of 10". With both listed, switching config.js between rehearsal and
+     the live round needs no change here and no redeploy. Add a session and
+     you must redeploy: Deploy -> Manage deployments -> edit -> New version. */
   expected: {
+    'product-team-rehearsal': 10,
     'product-team-2026-11': 10
   },
 

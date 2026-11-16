@@ -24,12 +24,20 @@ At the top of the script, edit `CONFIG`:
 
 ```js
 expected: {
+  'product-team-rehearsal': 10,
   'product-team-2026-11': 10
 }
 ```
 
-The key must match `SESSION_ID` in [`config.js`](config.js) exactly. It is only
-used to render "7 of 12 responded".
+The keys must match `SESSION_ID` in [`config.js`](config.js) exactly. They are
+only used to render "7 of 10 responded".
+
+**List every session id you will use, and keep them all.** Both are here on
+purpose: with both listed, switching `config.js` from the rehearsal round to the
+live one needs no change to the script at all. Replace one with the other and
+the live round shows a bare count on the day — the kind of thing you notice at
+the worst possible moment. Adding a session id means redeploying
+(Deploy → Manage deployments → edit → Version: New version).
 
 `closeDates` is empty, which means **no gate**: results are readable as soon as
 ballots arrive. That is what you want for a live session. See "Running it live"
@@ -91,12 +99,24 @@ SESSION_NAME: 'Product team away day',
 
 Commit, push, wait for the cache (see below), and `#results` starts empty.
 
-Two things that make this cheap: the Apps Script never sees the activity list
-or the session names, so **none of this needs a redeploy**; and
-`product-team-2026-11` is already in the script's `expected` as 10, so the
-headcount works the moment you switch. A rehearsal session is not listed there,
-which is why rehearsal results show a bare count rather than "7 of 10" — that
-is the only difference, and it is the tell that you are still in rehearsal.
+**Check the script before the day.** Open the Apps Script and confirm its
+`CONFIG.expected` still holds **both** ids:
+
+```js
+expected: {
+  'product-team-rehearsal': 10,
+  'product-team-2026-11': 10
+}
+```
+
+If your deployed copy has only the rehearsal one — easy to do if you edited that
+line rather than added to it — put the live one back and redeploy
+(Deploy → Manage deployments → edit → Version: New version). Do it while you are
+thinking about it, not on the morning.
+
+With both listed, switching `config.js` is the whole job: the Apps Script never
+sees the activity list or the session names, so **nothing else needs a
+redeploy**.
 
 ## Running it live
 

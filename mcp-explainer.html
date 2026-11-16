@@ -137,11 +137,17 @@ td.p{transition:all .6s}
 #blind b{display:block;color:#fff;font-size:15px;margin-bottom:4px}
 #scrim{left:0;top:0;width:1280px;height:770px;background:rgba(3,5,12,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity 1s;z-index:9}
 #scrim.on{opacity:1}
-#scrim.idle{opacity:1;background:rgba(3,5,12,.5);backdrop-filter:none;-webkit-backdrop-filter:none}
-#start{position:absolute;left:50%;top:410px;transform:translate(-50%,-50%);z-index:11;display:none;flex-direction:column;align-items:center;gap:12px;background:none;border:0;color:#fff;cursor:pointer;font-size:16px;font-weight:600;font-family:inherit}
+#start{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:11;display:none;align-items:center;gap:10px;background:var(--claude);border:0;color:#fff;cursor:pointer;font-size:15px;font-weight:700;font-family:inherit;padding:11px 26px;border-radius:99px;box-shadow:0 0 0 6px rgba(217,119,87,.2),0 10px 34px rgba(217,119,87,.45);animation:pulse 2s ease-in-out infinite}
 #start.show{display:flex}
-#start span{width:104px;height:104px;border-radius:50%;background:var(--claude);display:grid;place-items:center;font-size:42px;padding-left:8px;box-shadow:0 0 0 10px rgba(217,119,87,.22),0 14px 50px rgba(217,119,87,.5);transition:transform .2s}
-#start:hover span{transform:scale(1.06)}
+#start:hover{filter:brightness(1.1)}
+@keyframes pulse{50%{box-shadow:0 0 0 12px rgba(217,119,87,.08),0 10px 34px rgba(217,119,87,.45)}}
+/* intro labels */
+.lbl{position:absolute;z-index:3;font-size:12.5px;font-weight:600;line-height:1.3;padding:6px 12px;border-radius:99px;color:#fff;background:#1d2550;border:1px solid #4a5aa8;box-shadow:0 6px 20px rgba(0,0,0,.45);opacity:0;transform:translateY(4px);transition:opacity .7s,transform .7s;pointer-events:none;white-space:nowrap}
+.lbl.show{opacity:1;transform:none}
+.lbl small{font-weight:500;color:#aab4dd;margin-left:4px}
+.lbl.aws{border-color:var(--aws);background:#3a2b10}
+.lbl.gcp{border-color:var(--gcp);background:#122a4d}
+.lbl.rav{border-color:var(--rav);background:#2a2260}
 #final{left:150px;top:150px;width:980px;border-radius:22px;background:#0b1020;border:1px solid #2d3766;box-shadow:0 30px 90px rgba(0,0,0,.7);padding:28px 34px;opacity:0;pointer-events:none;transition:opacity .8s;z-index:10}
 #final.on{opacity:1}
 #final h2{font-size:26px;line-height:1.25;margin-bottom:18px}
@@ -233,6 +239,11 @@ td.p{transition:all .6s}
     </div>
   </div>
 
+  <div class="lbl aws" style="left:270px;top:98px">① Acme's fraud analyst, using Claude Desktop</div>
+  <div class="lbl" style="left:568px;top:196px">② MCP connection <small>the link between the two</small></div>
+  <div class="lbl rav" style="left:906px;top:108px">③ Ravelin's MCP server <small>hosted on GCP</small></div>
+  <div class="lbl gcp" style="left:906px;top:432px">④ Ravelin's data <small>Acme's orders &amp; customers</small></div>
+  <div class="lbl aws" style="left:558px;top:480px;white-space:normal;width:236px;border-radius:16px">⑤ Acme's other internal tools &amp; agents <small>(they come into play later)</small></div>
   <div id="xbadge" class="abs">⚠ Customer PII leaves Ravelin</div>
   <div id="blind" class="abs"><div><b>Ravelin's view ends here</b>It saw two tool calls. It cannot see, trace or recall where this data goes next.</div></div>
 
@@ -253,7 +264,7 @@ td.p{transition:all .6s}
 
 </div>
   <div id="scrim" class="abs"></div>
-<button id="start"><span>▶</span>Play the walkthrough</button>
+<button id="start">▶ Start the walkthrough</button>
 <div id="ctl"><button id="bp">❚❚ Pause</button><button id="br">↺ Restart</button></div>
 </div>
 
@@ -302,7 +313,7 @@ function reset(){
   $$('.pk').forEach(e=>e.remove());
   ['#acme','#rav'].forEach(s=>$(s).classList.remove('on','flash','dim'));
   $('#rav').classList.remove('dim');
-  $('#scrim').classList.remove('idle');$('#start').classList.remove('show');$('#mcp').style.opacity=0;$('#db').style.opacity=0;
+  $$('.lbl').forEach(l=>l.classList.remove('show'));$('#start').classList.remove('show');$('#mcp').style.opacity=0;$('#db').style.opacity=0;
   ['#scrim','#win','#conn','#c1','#c2','#mcplabel','#xbadge','#blind','#final','#tools','#authchip','#mcp-db','#legend']
     .forEach(s=>$(s)&&$(s).classList.remove('on'));
   $$('#tl div').forEach(d=>d.classList.remove('on','use'));
@@ -334,9 +345,13 @@ async function play(){
   try{
   /* 0 — connect */
   setCap(0);
-  await sleep(300);$('#acme').classList.add('on');$('#rav').classList.add('on');await sleep(500);
-  $('#win').classList.add('on');await sleep(600);
+  // scene is already on screen from the intro: hold with the labels showing so viewers can read it
+  ['#acme','#rav','#win'].forEach(q=>$(q).classList.add('on'));
   $('#mcp').style.opacity=1;$('#db').style.opacity=1;
+  $$('.lbl').forEach(l=>l.classList.add('show'));
+  await sleep(7000,true);
+  $$('.lbl').forEach(l=>l.classList.remove('show'));
+  await sleep(1000,true);
   $('#c1').classList.add('on');$('#c2').classList.add('on');$('#mcplabel').classList.add('on');
   $('#conn').classList.add('on');
   await fly('tools/list','req',{x:540,y:210},{x:860,y:210},1200);
@@ -443,8 +458,8 @@ function idle(){
   reset();
   ['#acme','#rav','#win'].forEach(q=>$(q).classList.add('on'));
   $('#mcp').style.opacity=1;$('#db').style.opacity=1;
-  $('#scrim').classList.add('idle');$('#start').classList.add('show');
-  $('#capn').textContent='▶';$('#capt').innerHTML='Everything is loaded. <b>Press Play</b> to start the walkthrough.';
+  $$('.lbl').forEach(l=>l.classList.add('show'));$('#start').classList.add('show');
+  $('#capn').textContent='▶';$('#capt').innerHTML='<b>MCP (Model Context Protocol)</b> lets an AI app use tools and data that live on another system. Meet the players below, then press <b>Play</b> when you are ready.';
   $('#bp').textContent='▶ Play';
 }
 $('#start').onclick=play;

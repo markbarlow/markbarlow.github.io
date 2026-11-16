@@ -36,30 +36,28 @@ window.KKM_CONFIG = {
 
   /* ---- The list -------------------------------------------------------- */
 
-  /* Replace these with your real activities. Keep the ids stable once
-     people have started voting, or their answers will not line up.
-     "meta" is optional. */
+  /* Mark's list, 2026-11-16. Ids are names rather than numbers on purpose:
+     votes are stored against the id, so if you reorder or insert an
+     activity, numbered ids quietly attach old answers to the wrong thing.
+     Renaming the "name" is always safe; changing an "id" is not, once
+     anyone has voted. "meta" is optional. */
   ACTIVITIES: [
-    { id: 'a01', name: 'Daily stand-up',             meta: 'Weekdays, 15 min, 9 people' },
-    { id: 'a02', name: 'Sprint planning',            meta: 'Fortnightly, 90 min, whole team' },
-    { id: 'a03', name: 'Sprint retrospective',       meta: 'Fortnightly, 60 min, whole team' },
-    { id: 'a04', name: 'Backlog refinement',         meta: 'Weekly, 60 min, 6 people' },
-    { id: 'a05', name: 'Weekly metrics review',      meta: 'Thursdays, 60 min, 9 people' },
-    { id: 'a06', name: 'Weekly team meeting',        meta: 'Mondays, 45 min, whole team' },
-    { id: 'a07', name: 'Monthly all-hands',          meta: 'Monthly, 60 min, everyone' },
-    { id: 'a08', name: 'Quarterly OKR review',       meta: 'Quarterly, half a day' },
-    { id: 'a09', name: 'Weekly one-to-ones',         meta: 'Weekly, 30 min each' },
-    { id: 'a10', name: 'Design review forum',        meta: 'Weekly, 60 min, open invite' },
-    { id: 'a11', name: 'Architecture review board',  meta: 'Fortnightly, 90 min, 5 people' },
-    { id: 'a12', name: 'On-call handover',           meta: 'Weekly, 30 min, 4 people' },
-    { id: 'a13', name: 'Incident post-mortems',      meta: 'As needed, 60 min' },
-    { id: 'a14', name: 'Friday demo',                meta: 'Weekly, 45 min, open invite' },
-    { id: 'a15', name: 'Written status update',      meta: 'Weekly, written, everyone' },
-    { id: 'a16', name: 'Stand-up bot thread',        meta: 'Daily, in Slack, whole team' },
-    { id: 'a17', name: 'Lunch and learn',            meta: 'Monthly, 60 min, optional' },
-    { id: 'a18', name: 'Code review rota',           meta: 'Daily, ad hoc, whole team' },
-    { id: 'a19', name: 'Documentation day',          meta: 'Quarterly, full day' },
-    { id: 'a20', name: 'Team social',                meta: 'Monthly, evening, optional' }
+    { id: 'team-weekly-update',         name: 'Weekly update for our team',            meta: 'Weekly, 15 min, 9 people' },
+    { id: 'company-weekly-update',      name: 'Weekly update for the company',         meta: 'Weekly, 5 min, 9 people' },
+    { id: 'quarterly-product-review',   name: 'Quarterly product reviews',             meta: 'Quarterly, 4–5 hours including prep, 9 people' },
+    { id: 'weekly-team-meeting',        name: 'Weekly team meeting',                   meta: 'Weekly, 15–60 min, 9 people' },
+    { id: 'biweekly-design-catchup',    name: 'Biweekly design catchup',               meta: 'Fortnightly, 1 hour, 10–15 people' },
+    { id: 'design-team-catchup',        name: 'Design team catchup',                   meta: 'Fortnightly, 1 hour, 3 people' },
+    { id: 'product-psa',                name: 'Product <> PSA',                        meta: 'Fortnightly, 1 hour, 4–8 people' },
+    { id: 'ai-agentic-marketing',       name: 'AI and Agentic marketing',              meta: 'Monthly, 30 min, 6 people' },
+    { id: 'sausage-sandwich-game',      name: 'Sausage sandwich game',                 meta: 'Monthly, 30 min, 9 people' },
+    { id: 'sales-closed-lost-review',   name: 'Sales closed/lost review',              meta: 'Quarterly, 45 min, 10–20 people' },
+    { id: 'beamer-updates',             name: 'Beamer updates',                        meta: 'As needed, 30 min, 2 people' },
+    { id: 'product-feature-pages',      name: 'Product feature pages',                 meta: 'As needed, 30–60 min, 1 person' },
+    { id: 'integrating-clients-update', name: 'Integrating clients update',            meta: 'Fortnightly, 30 min, 10–20 people' },
+    { id: 'team-learning-sessions',     name: 'Team learning sessions',                meta: 'Occasional, 30–60 min, inside the team meeting' },
+    { id: 'product-detection-roadmap',  name: 'Product <> Detection roadmap planning', meta: 'Every 6 months, 45 min, 3–6 people' },
+    { id: 'product-team-away-day',      name: 'Product team away day',                 meta: 'Annual, a full day, 9 people' }
   ]
 
 };

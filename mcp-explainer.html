@@ -339,6 +339,7 @@ async function play(){
   await sleep(1800);
 
   /* 1 — ask */
+  await sleep(2500,true);
   setCap(1);
   const ib=$('#inputbar');ib.classList.add('typing');
   await type($('#typed'),PROMPT,28);
@@ -348,6 +349,7 @@ async function play(){
   await sleep(1400);
 
   /* 2 — tool calls out */
+  await sleep(2500,true);
   setCap(2);
   const th=add('<div class="think"><span class="dots"><span></span><span></span><span></span></span>Claude is choosing tools…</div>','');
   await sleep(1300);
@@ -365,6 +367,7 @@ async function play(){
   $('#db').classList.add('hot');await sleep(900);
 
   /* 3 — response with PII */
+  await sleep(2500,true);
   setCap(3);
   $('#db').classList.remove('hot');
   await fly('rows','res',{x:1048,y:446},{x:1048,y:360},800);
@@ -380,6 +383,7 @@ async function play(){
   $('#rav').classList.remove('flash');$('#xbadge').classList.remove('on');
 
   /* 4 — answer rendered */
+  await sleep(2500,true);
   setCap(4);
   let html='<div class="ans"><b class="big">4.1%</b> of orders were blocked in the last 30 minutes (37 of 902).<br>Top 10 blocked orders by value:</div><table><tr><th>Order</th><th>Customer</th><th>Email</th><th>Card</th><th style="text-align:right">Value</th></tr>';
   ROWS.forEach(r=>html+=`<tr>${r.map((c,i)=>`<td class="${i==1||i==2||i==3?'p':''}${i==4?' v':''}">${c}</td>`).join('')}</tr>`);
@@ -392,6 +396,7 @@ async function play(){
   await sleep(2800);
 
   /* 5 — spreads */
+  await sleep(2500,true);
   setCap(5);
   $('#tools').classList.add('on');await sleep(900);
   const src=pos($('#chat table'));
@@ -408,6 +413,7 @@ async function play(){
   await sleep(4500);
 
   /* 6 — takeaway */
+  await sleep(2500,true);
   setCap(6);
   $('#scrim').classList.add('on');$('#final').classList.add('on');$('#blind').classList.remove('on');
   await sleep(900);

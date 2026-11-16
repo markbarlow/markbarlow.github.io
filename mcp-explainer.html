@@ -243,7 +243,7 @@ td.p{transition:all .6s}
   <div class="lbl" style="left:568px;top:196px">② MCP connection <small>the link between the two</small></div>
   <div class="lbl rav" style="left:906px;top:108px">③ Ravelin's MCP server <small>hosted on GCP</small></div>
   <div class="lbl gcp" style="left:906px;top:432px">④ Ravelin's data <small>Acme's orders &amp; customers</small></div>
-  <div class="lbl aws" style="left:558px;top:480px;white-space:normal;width:236px;border-radius:16px">⑤ Acme's other internal tools &amp; agents <small>(they come into play later)</small></div>
+  <div class="lbl aws" style="left:558px;top:290px;white-space:normal;width:236px;border-radius:16px">⑤ Acme's other internal tools &amp; agents <small>(they come into play later)</small></div>
   <div id="xbadge" class="abs">⚠ Customer PII leaves Ravelin</div>
   <div id="blind" class="abs"><div><b>Ravelin's view ends here</b>It saw two tool calls. It cannot see, trace or recall where this data goes next.</div></div>
 
@@ -349,7 +349,7 @@ async function play(){
   ['#acme','#rav','#win'].forEach(q=>$(q).classList.add('on'));
   $('#mcp').style.opacity=1;$('#db').style.opacity=1;
   $$('.lbl').forEach(l=>l.classList.add('show'));
-  await sleep(7000,true);
+  await sleep(1000,true);
   $$('.lbl').forEach(l=>l.classList.remove('show'));
   await sleep(1000,true);
   $('#c1').classList.add('on');$('#c2').classList.add('on');$('#mcplabel').classList.add('on');
@@ -456,7 +456,7 @@ addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();$('#bp').
 let isIdle=true;
 function idle(){
   reset();
-  ['#acme','#rav','#win'].forEach(q=>$(q).classList.add('on'));
+  ['#acme','#rav','#win','#tools'].forEach(q=>$(q).classList.add('on'));
   $('#mcp').style.opacity=1;$('#db').style.opacity=1;
   $$('.lbl').forEach(l=>l.classList.add('show'));$('#start').classList.add('show');
   $('#capn').textContent='▶';$('#capt').innerHTML='<b>MCP (Model Context Protocol)</b> lets an AI app use tools and data that live on another system. Meet the players below, then press <b>Play</b> when you are ready.';

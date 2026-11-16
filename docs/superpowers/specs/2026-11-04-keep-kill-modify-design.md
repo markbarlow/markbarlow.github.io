@@ -110,41 +110,53 @@ and WCAG AA contrast measured on every text pair, which caught one failing label
 **Not verified:** the live round-trip against a real Apps Script deployment, which
 needs Mark's own Google account.
 
-## Noted, not yet built
+## Drop sounds — built 2026-11-16
 
-### A sound on each drop — TODO, waiting on Mark's audio files
+Three files Mark supplied, one per bucket, in `keep-kill-modify/sounds/`:
+`helsing-bells.mp3` (Keep, 8.5s), `jekyll-bubbles.mp3` (Modify, 4.3s),
+`zombie.mp3` (Kill, 4.0s). 280KB in total.
 
-One per bucket, in character: a positive choral swell for **Keep**, a quizzical
-rising inflection for **Modify**, a groan for **Kill**.
+### Mark's calls, which overrule my earlier advice
 
-**Synthesis was tried and rejected.** Nine candidates were generated with Web
-Audio — three per bucket, balanced to within 1.3x peak — and published as a
-preview at <https://claude.ai/artifact/BqefxNFo6zW1zK8W6J44cw>. Mark did not
-like them. So "synthesised or sampled" is settled: **sampled**, and he is
-sourcing the audio himself. Do not re-propose synthesis.
+Both of these were argued the other way in this document and decided the other
+way on purpose. Do not quietly "fix" them.
 
-When the files arrive, what the implementation needs:
+- **Played full length, overlapping.** People sort every couple of seconds and
+  the bells ring for eight, so drops pile on top of each other. That is the
+  intent: Mark wants surprise and cacophony the first time a room tries it.
+  I had recommended trimming to half a second; he wants the mess.
+- **Sound on by default**, with a small mute button in the top right corner,
+  remembered per browser. I had recommended defaulting to off. Overruled for
+  the same reason — a sound nobody hears is not a surprise.
 
-- **Where they live:** `keep-kill-modify/sounds/`, with a `README.md` naming
-  each file's source and licence, as `fonts/README.md` already does. Anything
-  without a licence that clearly permits this use does not ship.
-- **Format:** MP3 plays everywhere that matters. Keep each file small — these
-  load on venue wifi, and the page's whole point is that it is light.
-- **Length is the design constraint, not timbre.** Each sound plays once per
-  card, about twenty times in three minutes. Measured against the synthesised
-  set, anything past roughly half a second wears out fast. If Mark's files are
-  long, trim them for the per-card sound and consider keeping the full-length
-  version for the final card only, where it reads as a reward rather than a tax.
-- **Default off**, with a visible speaker toggle, remembered in `localStorage`.
-  People open this from a Slack link on a work laptop, sometimes beside someone
-  else. Browsers block audio until the first interaction anyway, so the first
-  card would be silent whatever we do; an explicit toggle turns that limitation
-  into a choice.
-- **Fire-and-forget.** Playback is decorative: a failed, missing or blocked file
-  must never delay or block a drop, exactly as the drop animations already work.
-  Call `play()` inside a try and swallow the rejected promise.
-- **Not tied to `prefers-reduced-motion`.** That flag is about motion, not
-  sound. The toggle is the control for this.
+### How it works
+
+- One `AudioContext` built at page load and the three files decoded into it
+  immediately. **This timing matters:** decoding on the first gesture is too
+  late, because the gesture and the first drop can be the same keypress, and
+  that card lands silent — the one card the surprise exists for. Found by
+  measurement, not reasoning; the first version had exactly this bug.
+- A fresh `AudioBufferSourceNode` per drop, so sounds overlap rather than cut
+  each other off. Every gesture also resumes the context, so a tab switch
+  cannot leave it dead.
+- Muting stops everything already ringing, not just future drops. Muting
+  halfway through an eight-second peal has to actually stop the peal.
+- Playback is fire-and-forget throughout: a missing, blocked or undecodable
+  file leaves the page silent and working, and nothing in the sound path can
+  delay a drop.
+- Fires on sort drops and on review-screen moves alike.
+
+Verified in the browser by instrumenting Web Audio: all three start with real
+decoded buffers including the first card, twenty sounds across a full sort,
+overlapping output measured, mute silences a peal mid-ring and blocks new
+drops, the setting survives a reload, and the default is unmuted.
+
+### Still open
+
+`sounds/README.md` records where each file came from and under what licence,
+and those lines are **not yet filled in**. These are served from a public
+website, so the licence has to permit redistribution — "free to download" is
+not enough. If Mark recorded them himself, saying so closes it.
 
 #### Reference sounds — audio.com, cannot ship, kept on purpose
 

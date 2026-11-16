@@ -102,6 +102,22 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 
 /* ---- sort ------------------------------------------------------------ */
 .topbar{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap}
+
+/* sound toggle, pinned to the corner of the page rather than any one screen */
+.mute{
+  position:fixed; top:12px; right:12px; z-index:60;
+  width:38px; height:38px; padding:0; display:grid; place-items:center;
+  background:rgba(30,24,37,.88); border:1px solid var(--rule);
+  color:var(--bone-dim); cursor:pointer;
+}
+.mute:hover{color:var(--bone); border-color:var(--bone-dim)}
+.mute:focus-visible{outline:2px solid var(--spot); outline-offset:2px}
+.mute svg{width:19px; height:19px; display:block; fill:none;
+  stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.mute .slash{opacity:0}
+.mute.off{color:var(--spot)}
+.mute.off .waves{opacity:0}
+.mute.off .slash{opacity:1}
 .meter{display:flex; align-items:center; gap:12px; margin:14px 0 4px}
 .meter-track{flex:1 1 auto; height:11px; border:1px solid var(--rule)}
 .meter-fill{height:100%; width:0; background:var(--spot); transition:width .32s ease}
@@ -277,6 +293,17 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     <circle cx="71" cy="71" r="2.4" fill="currentColor"/>
   </symbol>
 </svg>
+
+<button type="button" id="mute" class="mute" aria-pressed="false" aria-label="Mute the sounds">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"></path>
+    <g class="waves">
+      <path d="M15.4 9.3a3.8 3.8 0 0 1 0 5.4"></path>
+      <path d="M17.9 6.9a7.3 7.3 0 0 1 0 10.2"></path>
+    </g>
+    <path class="slash" d="M15.5 9.5l5 5m0-5l-5 5"></path>
+  </svg>
+</button>
 
 <!-- ================= INTRO ================= -->
 <section class="screen" id="s-intro">
@@ -517,6 +544,104 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     } catch (e) { /* private mode, blocked storage: carry on without it */ }
     return null;
   }
+  /* ---------- sound ---------------------------------------------------
+     One file per bucket, played whole on every drop, deliberately
+     overlapping: people sort faster than the bells ring and the pile-up
+     is the intended effect. On by default; the corner button mutes.
+     Sound is a garnish, so every path here fails silently and nothing in
+     it can delay or block a drop. */
+
+  var SOUND_SRC = {
+    keep:   'sounds/helsing-bells.mp3',
+    modify: 'sounds/jekyll-bubbles.mp3',
+    kill:   'sounds/zombie.mp3'
+  };
+  var MUTE_KEY = 'kkm:muted';
+  var snd = { ctx: null, out: null, raw: {}, buf: {}, live: [] };
+
+  function muted() { return store(MUTE_KEY) === '1'; }
+
+  /* Build the context at load, suspended, and decode into it straight away.
+     Decoding only when the first gesture arrives is too late: the gesture
+     and the first drop can be the same event, and that card lands silent —
+     which is the one card the surprise is for. */
+  function prefetch() {
+    ensureCtx();
+    Object.keys(SOUND_SRC).forEach(function (k) {
+      fetch(SOUND_SRC[k])
+        .then(function (r) { return r.ok ? r.arrayBuffer() : null; })
+        .then(function (ab) { if (ab) { snd.raw[k] = ab; decodeOne(k); } })
+        .catch(function () { /* no sound, and the page is fine without it */ });
+    });
+  }
+
+  function ensureCtx() {
+    if (snd.ctx) { return snd.ctx; }
+    var C = window.AudioContext || window.webkitAudioContext;
+    if (!C) { return null; }
+    try { snd.ctx = new C(); } catch (e) { return null; }
+    snd.out = snd.ctx.createGain();
+    snd.out.connect(snd.ctx.destination);
+    return snd.ctx;
+  }
+
+  function decodeOne(k) {
+    if (!snd.ctx || !snd.raw[k] || snd.buf[k]) { return; }
+    try {
+      /* decodeAudioData detaches the buffer, so hand it a copy */
+      snd.ctx.decodeAudioData(snd.raw[k].slice(0),
+        function (b) { snd.buf[k] = b; },
+        function () { /* undecodable: stay silent */ });
+    } catch (e) { /* older signature or bad data */ }
+  }
+
+  /* Browsers keep the context suspended until a real interaction, whatever
+     we set. Every gesture resumes it, so a tab switch cannot leave it dead. */
+  function unlockSound() {
+    var c = ensureCtx();
+    if (!c) { return; }
+    if (c.state === 'suspended') { c.resume(); }
+    Object.keys(snd.raw).forEach(decodeOne);
+  }
+
+  function playBucket(b) {
+    if (muted() || !snd.ctx || !snd.buf[b]) { return; }
+    try {
+      var src = snd.ctx.createBufferSource();
+      src.buffer = snd.buf[b];
+      src.connect(snd.out);
+      src.onended = function () {
+        var i = snd.live.indexOf(src);
+        if (i > -1) { snd.live.splice(i, 1); }
+      };
+      src.start();
+      snd.live.push(src);
+    } catch (e) { /* a drop must never wait on a sound */ }
+  }
+
+  function stopAllSound() {
+    for (var i = snd.live.length - 1; i >= 0; i--) {
+      try { snd.live[i].stop(); } catch (e) { /* already ended */ }
+    }
+    snd.live.length = 0;
+  }
+
+  function paintMute() {
+    var b = $('mute'), off = muted();
+    if (!b) { return; }
+    b.classList.toggle('off', off);
+    b.setAttribute('aria-pressed', off ? 'true' : 'false');
+    b.setAttribute('aria-label', off ? 'Turn the sounds on' : 'Mute the sounds');
+    b.title = off ? 'Sound off' : 'Sound on';
+  }
+
+  function toggleMute() {
+    var next = !muted();
+    store(MUTE_KEY, next ? '1' : '0');
+    if (next) { stopAllSound(); }   /* muting mid-peal has to actually stop it */
+    paintMute();
+  }
+
   function uuid() {
     try {
       if (window.crypto && crypto.randomUUID) { return crypto.randomUUID(); }
@@ -680,6 +805,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     var a = ACTS[state.index];
 
     flyOut(bucket);
+    playBucket(bucket);
 
     state.votes[a.id] = bucket;
     state.lastId = a.id;
@@ -790,6 +916,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
   }
 
   function moveTo(id, bucket) {
+    playBucket(bucket);
     state.votes[id] = bucket;
     if (bucket !== 'modify') { delete state.notes[id]; }
     saveDraft();
@@ -1216,6 +1343,11 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 
   /* ---------- wiring ---------------------------------------------------- */
   function wire() {
+    $('mute').addEventListener('click', toggleMute);
+    document.addEventListener('pointerdown', unlockSound, true);
+    document.addEventListener('keydown', unlockSound, true);
+    document.addEventListener('click', unlockSound, true);
+
     $('go').addEventListener('click', function () {
       state.index = 0;
       state.votes = {};
@@ -1303,6 +1435,8 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     state.index = firstUnvoted();
 
     wire();
+    paintMute();
+    prefetch();
 
     if (ACTS.length === 0) {
       paintIntro();

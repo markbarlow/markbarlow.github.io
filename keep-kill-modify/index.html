@@ -584,7 +584,18 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     if (!C) { return null; }
     try { snd.ctx = new C(); } catch (e) { return null; }
     snd.out = snd.ctx.createGain();
-    snd.out.connect(snd.ctx.destination);
+    /* The files are mastered to sit about -17 LUFS, which is loud for one
+       sound and too loud for four at once. Since drops deliberately pile
+       up, a limiter on the way out keeps a cacophony loud rather than
+       letting it clip into distortion. Single sounds barely touch it. */
+    var lim = snd.ctx.createDynamicsCompressor();
+    lim.threshold.value = -8;
+    lim.knee.value = 0;
+    lim.ratio.value = 20;
+    lim.attack.value = 0;
+    lim.release.value = 0.1;
+    snd.out.connect(lim);
+    lim.connect(snd.ctx.destination);
     return snd.ctx;
   }
 

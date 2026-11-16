@@ -145,6 +145,13 @@ way on purpose. Do not quietly "fix" them.
   file leaves the page silent and working, and nothing in the sound path can
   delay a drop.
 - Fires on sort drops and on review-screen moves alike.
+- **Mastered up about 10 dB** from how they were downloaded (−26/−28.5 LUFS to
+  roughly −17) and matched to within 1 dB of each other, so no bucket is the
+  loud one. Details and the ffmpeg command are in `sounds/README.md`.
+- **A limiter before the destination, which is load-bearing.** At these levels a
+  fast run of eight drops measured 1.085 of full scale — distortion. The
+  limiter brings it to 0.87 and leaves a single sound at 0.60. Anyone raising
+  the file levels again has to re-measure a pile-up, not assume it still holds.
 
 Verified in the browser by instrumenting Web Audio: all three start with real
 decoded buffers including the first card, twenty sounds across a full sort,

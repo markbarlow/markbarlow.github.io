@@ -190,7 +190,7 @@ td.p{transition:all .6s}
 </head>
 <body>
 <div id="wrap">
-  <div id="title" class="abs">What is an MCP server, really?<small>An AI app plugged into a vendor's data and tools: and where the data goes next</small></div>
+  <div id="title" class="abs">What is an MCP server, really?<small>A brief explainer of the data flows</small></div>
   <div id="dummy" class="abs">All data shown is dummy data</div>
   <div id="cap" class="abs"><div class="n" id="capn">1</div><div class="tx" id="capt"></div></div>
   <div id="dots"></div>
@@ -229,7 +229,7 @@ td.p{transition:all .6s}
   <div id="mcp-db" class="abs"></div>
   <div id="db" class="abs">
     <h4>Ravelin platform data</h4>
-    <p>Orders, customers & decisions Acme sent for fraud checks</p>
+    <p>Orders, customers & fraud check decisions</p>
     <div class="rows"><i style="width:92%"></i><i style="width:70%"></i><i style="width:84%"></i><i style="width:58%"></i></div>
   </div>
 
@@ -251,24 +251,25 @@ td.p{transition:all .6s}
   <div id="blind" class="abs"><div><b>Ravelin's view ends here</b>It saw two tool calls. It cannot see, trace or recall where this data goes next.</div></div>
 
   <div id="final" class="abs">
-    <h2>The server is Ravelin's. <span>What it hands over is Acme's to protect.</span></h2>
+    <h2>The server is Ravelin's. <span>It is Acme's responsbility to protect the data returned.</span></h2>
     <div class="cols">
       <div class="col colr"><h3>Ravelin controls</h3><ul>
         <li>Authenticating callers & scoping access to Acme's data only</li>
+        <li>Restricting permissions based on the authenticated user's role</li>
         <li>Which tools exist and what each can return</li>
         <li>Logging and rate-limiting the calls it receives</li></ul></div>
       <div class="col cola"><h3>Acme is responsible for</h3><ul>
-        <li>Who in Acme can connect, and with which permissions</li>
+        <li>Who in Acme can connect, and with which roles and permissions</li>
+        <li>Which AI providers see the data during the chat, and the terms that govern it</li>
         <li>Everything that happens once the data is in the chat: copies, shares, other agents & MCPs</li>
-        <li>Which AI provider sees the data on its way to the chat, and the terms that govern it</li>
-        <li>Storage, retention, DPIA & legal basis for the PII now in its own systems</li></ul></div>
+        <li>Storage, retention, DPIA & legal basis for the PII retrieved from Ravelin</li></ul></div>
     </div>
-    <p class="foot">Treat an MCP connection like giving a person an export button: grant least privilege, minimise PII in tool outputs, and log what leaves.</p>
+    <!-- <p class="foot">Treat an MCP connection like giving a person an export button: grant least privilege, minimise PII in tool outputs, and log what leaves.</p> -->
   </div>
 
 </div>
   <div id="scrim" class="abs"></div>
-<button id="start">▶ Start the walkthrough</button>
+<!-- <button id="start">▶ Start the walkthrough</button> -->
 <div id="ctl"><button id="bp">❚❚ Pause</button><button id="br">↺ Restart</button></div>
 </div>
 
@@ -295,7 +296,7 @@ const ROWS=[
 ];
 const PROMPT='What is our block rate over the last 30 minutes, and send me the top 10 highest value blocked orders';
 const STEPS=[
- 'Acme\'s fraud analyst has added Ravelin\'s <b>remote MCP server</b> to Claude. On connect, the server lists the <b>tools</b> Claude is allowed to call.',
+ 'Acme\'s fraud analyst has added Ravelin\'s <b>remote MCP server</b> to Claude. On connecting, the server lists the <b>tools</b> Claude is allowed to call.',
  'The analyst asks a plain-English question. <b>No dashboard, no query language.</b>',
  'Claude picks the right tools and sends two <b>tool calls</b> to Ravelin, relayed by <b>Anthropic</b> over the MCP connection and authenticated as Acme.',
  'Ravelin\'s server runs them against Acme\'s data and returns the results back through Anthropic: <em>including real customer PII.</em>',
@@ -465,7 +466,7 @@ function idle(){
   ['#acme','#rav','#win','#tools','#anth'].forEach(q=>$(q).classList.add('on'));
   $('#mcp').style.opacity=1;$('#db').style.opacity=1;
   $$('.lbl').forEach(l=>l.classList.add('show'));$('#start').classList.add('show');
-  $('#capn').textContent='▶';$('#capt').innerHTML='<b>MCP (Model Context Protocol)</b> lets an AI app use tools and data that live on another system. Meet the players below, then press <b>Play</b> when you are ready.';
+  $('#capn').textContent='▶';$('#capt').innerHTML='<b>MCP (Model Context Protocol)</b> lets an AI app use tools and data that live on another system. Press <b>Play</b> when you are ready.';
   $('#bp').textContent='▶ Play';
 }
 $('#start').onclick=play;

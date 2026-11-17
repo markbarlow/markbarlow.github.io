@@ -245,11 +245,8 @@ td.p{transition:all .6s}
     </div>
   </div>
 
-  <div class="lbl aws" style="left:270px;top:98px">① Acme's fraud analyst, using Claude Desktop</div>
-  <div class="lbl" style="left:548px;top:232px;white-space:normal;width:190px;border-radius:16px">② Anthropic <small>runs Claude and relays its tool calls</small></div>
-  <div class="lbl rav" style="left:970px;top:108px">③ Ravelin's MCP server</div>
-  <div class="lbl gcp" style="left:970px;top:432px">④ Ravelin's data <small>Acme's orders &amp; customers</small></div>
-  <div class="lbl aws" style="left:558px;top:290px;white-space:normal;width:220px;border-radius:16px">⑤ Acme's other internal tools &amp; agents <small>(they come into play later)</small></div>
+  <div class="lbl aws" style="left:270px;top:98px">Acme's fraud analyst, using Claude Desktop</div>
+  <div class="lbl aws" style="left:558px;top:290px;white-space:normal;width:220px;border-radius:16px">Acme's other internal tools &amp; agents</div>
   <div id="xbadge" class="abs">⚠ Customer PII leaves Ravelin</div>
   <div id="blind" class="abs"><div><b>Ravelin's view ends here</b>It saw two tool calls. It cannot see, trace or recall where this data goes next.</div></div>
 
@@ -372,7 +369,7 @@ async function play(){
   await sleep(1800);
 
   /* 1 — ask */
-  await sleep(2500,true);
+  await sleep(1500,true);
   setCap(1);
   const ib=$('#inputbar');ib.classList.add('typing');
   await type($('#typed'),PROMPT,28);
@@ -382,7 +379,7 @@ async function play(){
   await sleep(1400);
 
   /* 2 — tool calls out */
-  await sleep(2500,true);
+  await sleep(1500,true);
   setCap(2);
   const th=add('<div class="think"><span class="dots"><span></span><span></span><span></span></span>Claude is choosing tools…</div>','');
   await sleep(1300);
@@ -400,7 +397,7 @@ async function play(){
   $('#db').classList.add('hot');await sleep(900);
 
   /* 3 — response with PII */
-  await sleep(2500,true);
+  await sleep(1500,true);
   setCap(3);
   $('#db').classList.remove('hot');
   await fly('rows','res',{x:1080,y:446},{x:1080,y:360},800);
@@ -416,7 +413,7 @@ async function play(){
   $('#rav').classList.remove('flash');$('#xbadge').classList.remove('on');
 
   /* 4 — answer rendered */
-  await sleep(2500,true);
+  await sleep(1500,true);
   setCap(4);
   let html='<div class="ans"><b class="big">1.2%</b> of orders were blocked in the last 30 minutes (11 of 902).<br>Top 10 blocked orders by value:</div><table><tr><th>Order</th><th>Customer</th><th>Email</th><th>Card</th><th style="text-align:right">Value</th></tr>';
   ROWS.forEach(r=>html+=`<tr>${r.map((c,i)=>`<td class="${i==1||i==2||i==3?'p':''}${i==4?' v':''}">${c}</td>`).join('')}</tr>`);
@@ -429,7 +426,7 @@ async function play(){
   await sleep(2800);
 
   /* 5 — spreads */
-  await sleep(2500,true);
+  await sleep(1500,true);
   setCap(5);
   $('#tools').classList.add('on');await sleep(900);
   const src=pos($('#chat table'));
@@ -446,7 +443,7 @@ async function play(){
   await sleep(4500);
 
   /* 6 — takeaway */
-  await sleep(2500,true);
+  await sleep(1500,true);
   setCap(6);
   $('#scrim').classList.add('on');$('#final').classList.add('on');$('#blind').classList.remove('on');
   await sleep(900);

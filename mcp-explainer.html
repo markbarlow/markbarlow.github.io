@@ -251,7 +251,7 @@ td.p{transition:all .6s}
   <div id="blind" class="abs"><div><b>Ravelin's view ends here</b>It saw two tool calls. It cannot see, trace or recall where this data goes next.</div></div>
 
   <div id="final" class="abs">
-    <h2>The server is Ravelin's. <span>It is Acme's responsbility to protect the data returned.</span></h2>
+    <h2>The server is Ravelin's. <span>It is Acme's responsibility to protect the data returned.</span></h2>
     <div class="cols">
       <div class="col colr"><h3>Ravelin controls</h3><ul>
         <li>Authenticating callers & scoping access to Acme's data only</li>
@@ -318,7 +318,7 @@ function reset(){
   $$('.pk').forEach(e=>e.remove());
   ['#acme','#rav'].forEach(s=>$(s).classList.remove('on','flash','dim'));
   $('#rav').classList.remove('dim');
-  $$('.lbl').forEach(l=>l.classList.remove('show'));$('#start').classList.remove('show');$('#mcp').style.opacity=0;$('#db').style.opacity=0;
+  $$('.lbl').forEach(l=>l.classList.remove('show'));$('#start')?.classList.remove('show');$('#mcp').style.opacity=0;$('#db').style.opacity=0;
   ['#anth','#scrim','#win','#conn','#c1','#c2','#mcplabel','#xbadge','#blind','#final','#tools','#authchip','#mcp-db','#legend']
     .forEach(s=>$(s)&&$(s).classList.remove('on'));
   $$('#tl div').forEach(d=>d.classList.remove('on','use'));
@@ -465,11 +465,11 @@ function idle(){
   reset();
   ['#acme','#rav','#win','#tools','#anth'].forEach(q=>$(q).classList.add('on'));
   $('#mcp').style.opacity=1;$('#db').style.opacity=1;
-  $$('.lbl').forEach(l=>l.classList.add('show'));$('#start').classList.add('show');
+  $$('.lbl').forEach(l=>l.classList.add('show'));$('#start')?.classList.add('show');
   $('#capn').textContent='▶';$('#capt').innerHTML='<b>MCP (Model Context Protocol)</b> lets an AI app use tools and data that live on another system. Press <b>Play</b> when you are ready.';
   $('#bp').textContent='▶ Play';
 }
-$('#start').onclick=play;
+if($('#start'))$('#start').onclick=play;
 idle();
 </script>
 </body>

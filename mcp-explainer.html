@@ -172,6 +172,8 @@ td.p{transition:all .6s}
 
 /* caption */
 #cap{left:28px;right:28px;top:70px;height:56px;display:flex;align-items:center;justify-content:flex-start;gap:14px}
+#cap .n.playbtn{position:relative;z-index:12;cursor:pointer;padding-left:3px;animation:pulse 2s ease-in-out infinite;transition:filter .2s}
+#cap .n.playbtn:hover{filter:brightness(1.15)}
 #cap .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--claude);color:#fff;font-weight:800;display:grid;place-items:center;font-size:16px}
 #cap .tx{font-size:17px;line-height:1.35;max-width:1050px;transition:opacity .4s}
 #cap .tx b{color:#fff}
@@ -315,6 +317,7 @@ function pos(el){const r=el.getBoundingClientRect(),s=stage.getBoundingClientRec
 
 function reset(){
   anims.forEach(a=>a.cancel());anims.clear();
+  $('#capn').classList.remove('playbtn');$('#capn').removeAttribute('title');
   $$('.pk').forEach(e=>e.remove());
   ['#acme','#rav'].forEach(s=>$(s).classList.remove('on','flash','dim'));
   $('#rav').classList.remove('dim');
@@ -468,7 +471,9 @@ function idle(){
   $$('.lbl').forEach(l=>l.classList.add('show'));$('#start')?.classList.add('show');
   $('#capn').textContent='▶';$('#capt').innerHTML='<b>MCP (Model Context Protocol)</b> lets an AI app use tools and data that live on another system. Press <b>Play</b> when you are ready.';
   $('#bp').textContent='▶ Play';
+  $('#capn').classList.add('playbtn');$('#capn').title='Play';
 }
+$('#capn').onclick=()=>{if(isIdle)play()};
 if($('#start'))$('#start').onclick=play;
 idle();
 </script>

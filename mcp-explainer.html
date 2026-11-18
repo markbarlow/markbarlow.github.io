@@ -360,10 +360,10 @@ async function play(from=0){
   const cap=i=>{if(i>=from){fast=false;sec=i}setCap(i)};
   const sleep=(ms,raw)=>fast?(tk.dead?Promise.reject('x'):Promise.resolve()):new Promise((res,rej)=>{ms=raw?ms:ms*SLOW;let t=0;const iv=setInterval(()=>{if(tk.dead){clearInterval(iv);rej('x')}else if(!paused){t+=30;if(t>=ms){clearInterval(iv);res()}}},30)});
   const anim=async(el,kf,o)=>{chk();if(fast)o={...o,duration:1};const a=el.animate(kf,{fill:'forwards',...o});anims.add(a);if(paused)a.pause();try{await a.finished}catch(e){}anims.delete(a);chk()};
-  // End-of-section gap: wait for →/space in hold mode, otherwise the plain 1.5s pause. No-op while fast-forwarding.
+  // End-of-section gap: wait for →/space in hold mode, otherwise a short 0.5s pause. No-op while fast-forwarding.
   const hold=async()=>{
     if(fast)return;
-    if(!holdMode)return sleep(1500,true);
+    if(!holdMode)return sleep(500,true);
     tk.released=false;setHeld(true);
     await new Promise((res,rej)=>{const iv=setInterval(()=>{if(tk.dead){clearInterval(iv);rej('x')}else if(tk.released){clearInterval(iv);res()}},40)});
     setHeld(false);

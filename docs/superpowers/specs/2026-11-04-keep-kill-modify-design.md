@@ -109,6 +109,14 @@ Three consequences that had to be handled, none of them optional:
   whenever some people skipped it, and the count turns to the accent colour
   below half, because a 2-1 split from three people reads identically to a 6-3
   split from nine otherwise.
+- **An activity nobody answered must still appear.** The results loop dropped
+  any activity with no responses, which was right when every card was forced
+  into a bucket and wrong the moment skipping existed: a thing the whole room
+  skips is a thing nobody in the room attends, which is the strongest Kill
+  signal the exercise can produce, and it was being silently discarded. Such
+  activities now show in a "Nobody answered" group below the settled ones, and
+  as zero rows in the CSV with contention left blank rather than entropy's -1
+  sentinel. Found on 2026-11-25 by noticing 17 activities render 16 rows.
 - **Contention had to stop being raw entropy.** Entropy does not care how many
   answered: three people splitting 1-1-1 scores 1.585, above ten people
   splitting 4-3-3 at 1.571. Ordering by that would put the activities nobody

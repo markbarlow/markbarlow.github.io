@@ -230,6 +230,10 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
 .res-notes ul{margin:6px 0 0; padding-left:20px; display:flex; flex-direction:column; gap:4px}
 .res-notes li{font-style:italic; color:#E4D7C4; font-size:16px}
 .settled{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:16px 0}
+.unanswered{border:1px dashed var(--rule); padding:12px 15px; margin:16px 0}
+.unanswered ul{margin:8px 0 0; padding-left:20px; display:flex; flex-direction:column; gap:4px}
+.unanswered li{color:var(--bone)}
+.unanswered .note-small{margin:10px 0 0}
 .settled div{border:1px solid var(--rule); padding:10px 14px; display:flex; gap:9px; align-items:baseline}
 .settled b{font-family:var(--font-display); font-weight:400; font-size:21px}
 .legend{display:flex; gap:16px; flex-wrap:wrap; align-items:center}
@@ -1266,8 +1270,9 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       var n = r.c.keep + r.c.modify + r.c.kill;
       out.push([
         q(r.a.id), q(r.a.name), r.c.keep, r.c.modify, r.c.kill,
-        n, (r.total ? r.total - n : 0), entropy(r.c).toFixed(3),
-        (r.total ? weighted(r.c, r.total).toFixed(3) : ''),
+        n, (r.total ? r.total - n : 0),
+        (n ? entropy(r.c).toFixed(3) : ''),
+        (n && r.total ? weighted(r.c, r.total).toFixed(3) : ''),
         q((r.notes || []).join(' | '))
       ].join(','));
     }
@@ -1296,6 +1301,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     var counts = data.counts || {};
     var allNotes = data.notes || {};
     var rows = [], settled = { keep: 0, modify: 0, kill: 0 }, answered = 0;
+    var unanswered = [];
 
     for (var i = 0; i < ACTS.length; i++) {
       var a = ACTS[i];
@@ -1306,7 +1312,13 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
         kill: Number(raw.kill) || 0
       };
       var n = c.keep + c.modify + c.kill;
-      if (n === 0) { continue; }
+      if (n === 0) {
+        /* Nobody gave this one a verdict. Dropping it here would hide the
+           strongest signal in the exercise: an activity the whole room
+           skipped is one nobody in the room attends. */
+        unanswered.push(a);
+        continue;
+      }
       answered++;
       var top = Math.max(c.keep, c.modify, c.kill);
       if (top === n) {
@@ -1370,11 +1382,31 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     }
     body.appendChild(set);
 
+    if (unanswered.length) {
+      var un = el('div', 'unanswered');
+      un.appendChild(el('p', 'eyebrow', 'Nobody answered'));
+      var ul = el('ul');
+      for (var u = 0; u < unanswered.length; u++) {
+        ul.appendChild(el('li', null, unanswered[u].name));
+      }
+      un.appendChild(ul);
+      un.appendChild(el('p', 'note-small', total === 1
+        ? 'The one person who responded skipped these.'
+        : 'Every one of the ' + total + ' skipped these, so nobody here attends them \u2014 '
+          + 'which is itself an answer. Or they were added after people voted.'));
+      body.appendChild(un);
+    }
+
     var foot = el('div', 'actions');
     var dl = el('button', 'btn', 'Download CSV');
     dl.type = 'button';
     dl.addEventListener('click', function () {
-      var blob = new Blob([csvFor(rows)], { type: 'text/csv;charset=utf-8' });
+      /* the export carries the unanswered ones too, as zero rows, so the
+         record does not have the hole the screen used to have */
+      var all = rows.concat(unanswered.map(function (a3) {
+        return { a: a3, c: { keep: 0, modify: 0, kill: 0 }, notes: [], total: total };
+      }));
+      var blob = new Blob([csvFor(all)], { type: 'text/csv;charset=utf-8' });
       var url = URL.createObjectURL(blob);
       var a2 = document.createElement('a');
       a2.href = url;

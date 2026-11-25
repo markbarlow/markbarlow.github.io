@@ -5,27 +5,27 @@ window.KKM_CONFIG = {
 
   /* ---- Which review this is -------------------------------------------- */
 
-  /* >>> CURRENTLY IN REHEARSAL MODE <<<
-     Practice ballots go to their own id, so they never mix into the real
-     tally and #results starts empty on the day.
+  /* >>> LIVE. Every ballot sent now counts. <<<
+     There is no longer any "Rehearsal" wording on the page, so nothing on
+     screen distinguishes a test from the real thing. Anything you submit
+     while testing lands in the real tally and has to be deleted from the
+     Sheet by hand: its rows are the ones whose session_id column reads
+     'product-team-2026-11'. Keep row 1, the header.
 
-     ON THE DAY, change BOTH of these back:
-         SESSION_ID:   'product-team-rehearsal'  ->  'product-team-2026-11'
-         SESSION_NAME: 'Rehearsal ...'           ->  'Product team away day'
+     The old practice ballots live on under 'product-team-rehearsal' and
+     are invisible to this round, so there is no need to touch those.
 
-     Leave it in rehearsal mode and the away day's answers land in the
-     practice bucket on top of the practice votes. The name below says
-     "Rehearsal" on the page itself so this is visible, not just a comment.
+     To go back to practising:
+         SESSION_ID:   'product-team-rehearsal'
+         SESSION_NAME: 'Rehearsal: Product team away day'
 
-     The Apps Script has a matching list in its CONFIG.expected, holding
-     BOTH ids. So long as both are there, switching between them needs no
-     script change and no redeploy. If you ever add a new session id,
-     add it there too, or the results show a bare count instead of
-     "7 of 10" -- and adding one means redeploying the script. */
-  SESSION_ID: 'product-team-rehearsal',
+     The Apps Script holds BOTH ids in its CONFIG.expected, so switching
+     either way needs no script change and no redeploy. A new id would
+     need adding there, and that does mean redeploying. */
+  SESSION_ID: 'product-team-2026-11',
 
   /* Shown on the page. */
-  SESSION_NAME: 'Rehearsal: Product team away day',
+  SESSION_NAME: 'Product team away day',
 
   /* ---- Where the answers go -------------------------------------------- */
 

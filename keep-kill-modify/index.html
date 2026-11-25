@@ -1392,8 +1392,8 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       un.appendChild(ul);
       un.appendChild(el('p', 'note-small', total === 1
         ? 'The one person who responded skipped these.'
-        : 'Every one of the ' + total + ' skipped these, so nobody here attends them \u2014 '
-          + 'which is itself an answer. Or they were added after people voted.'));
+        : 'Every one of the ' + total + ' skipped these, so nobody here attends '
+          + 'them. That is itself an answer. Or they were added after people voted.'));
       body.appendChild(un);
     }
 

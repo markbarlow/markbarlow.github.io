@@ -1158,7 +1158,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
       var msg = (err && err.message) ? String(err.message) : 'The request failed.';
       if (!/[.!?]$/.test(msg)) { msg += '.'; }
       $('err-detail').textContent = msg +
-        ' Nothing has been lost — try again, or save your answers and send them to the facilitator.';
+        ' Nothing has been lost. Try again, or save your answers and send them to the facilitator.';
     });
   }
 
@@ -1193,7 +1193,7 @@ button{font-family:var(--font-body); font-size:inherit; cursor:pointer}
     }
     $('done-close').textContent = hasClose()
       ? ("The team's results unlock on " + closeDateText() +
-         '. Until then nobody can see the split \u2014 not even the facilitator.')
+         '. Until then nobody can see the split, not even the facilitator.')
       : 'Sit tight, the results will go up on the screen once everyone has sorted.';
   }
 

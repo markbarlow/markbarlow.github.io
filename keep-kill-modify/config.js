@@ -25,7 +25,7 @@ window.KKM_CONFIG = {
   SESSION_ID: 'product-team-rehearsal',
 
   /* Shown on the page. */
-  SESSION_NAME: 'Rehearsal — Product team away day',
+  SESSION_NAME: 'Rehearsal: Product team away day',
 
   /* ---- Where the answers go -------------------------------------------- */
 
